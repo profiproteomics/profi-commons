@@ -7,14 +7,14 @@
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>ProFI-Commons-Java</name>  
+  <name>ProFI-Commons-Java</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <dependencies>
-  
+
     <!-- Logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -22,7 +22,7 @@
       <version>1.7.2</version>
       <scope>compile</scope>
     </dependency>
-      
+
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
@@ -44,9 +44,9 @@
       <version>4.11</version>
       <scope>test</scope>
     </dependency>
-    
+
   </dependencies>
-  
+
   <build>
 
     <pluginManagement>
@@ -62,7 +62,7 @@
           </configuration>
 
         </plugin>
-	
+
 	<!-- Cobertura plugin, format xml -->
 	<plugin>
           <groupId>org.codehaus.mojo</groupId>
@@ -102,8 +102,8 @@
         </plugin>
 
       </plugins>
-    </pluginManagement>    
+    </pluginManagement>
 
   </build>
-  
+
 </project>
