@@ -7,7 +7,7 @@ import java.util.Properties;
 
 import org.junit.Test;
 
-public class PropertiesLoaderTest {
+public class PropertiesUtilsTest {
 
     private static final String TEST_RESOURCES_PATH = "src" + File.separatorChar + "test"
 	    + File.separatorChar + "resources" + File.separatorChar;
@@ -20,9 +20,15 @@ public class PropertiesLoaderTest {
 	assertTrue("Properties file loaded by ClassLoader",
 		(propsClassLoader != null) && !propsClassLoader.isEmpty());
 
+	final String totoValue = PropertiesUtils.getProperty(propsClassLoader, "toto");
+	assertEquals("Property value from ClassLoader", "1", totoValue);
+
 	final Properties propsFile = PropertiesUtils.loadProperties(TEST_RESOURCES_PATH
 		+ PROPERTIES_FILE_NAME);
 	assertTrue("Properties file loaded as regular file", (propsFile != null) && !propsFile.isEmpty());
+
+	final String tataValue = PropertiesUtils.getProperty(propsFile, "tata");
+	assertEquals("Property value as regular file", "yes", tataValue);
     }
 
 }
