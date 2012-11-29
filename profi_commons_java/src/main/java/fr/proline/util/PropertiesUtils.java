@@ -4,6 +4,7 @@ import static fr.proline.util.StringUtils.LINE_SEPARATOR;
 import static fr.proline.util.StringUtils.NULL;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
@@ -81,7 +82,7 @@ public final class PropertiesUtils {
 	    if (is != null) {
 		try {
 		    is.close();
-		} catch (Exception exClose) {
+		} catch (IOException exClose) {
 		    LOG.error("Error closing [" + name + ']', exClose);
 		}
 	    }
