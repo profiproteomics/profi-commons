@@ -16,11 +16,11 @@ public class PropertiesLoaderTest {
 
     @Test
     public void test() {
-	final Properties propsClassLoader = PropertiesLoader.loadProperties(PROPERTIES_FILE_NAME);
+	final Properties propsClassLoader = PropertiesUtils.loadProperties(PROPERTIES_FILE_NAME);
 	assertTrue("Properties file loaded by ClassLoader",
 		(propsClassLoader != null) && !propsClassLoader.isEmpty());
 
-	final Properties propsFile = PropertiesLoader.loadProperties(TEST_RESOURCES_PATH
+	final Properties propsFile = PropertiesUtils.loadProperties(TEST_RESOURCES_PATH
 		+ PROPERTIES_FILE_NAME);
 	assertTrue("Properties file loaded as regular file", (propsFile != null) && !propsFile.isEmpty());
     }

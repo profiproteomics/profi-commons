@@ -23,6 +23,8 @@ public final class StringUtils {
      */
     public static final String LINE_SEPARATOR = getLineSeparator();
 
+    public static final String NULL = "NULL";
+
     private static final String LINE_SEPARATOR_KEY = "line.separator";
 
     /* Private constructor (Utility class) */
@@ -50,6 +52,27 @@ public final class StringUtils {
 	}
 
 	return empty;
+    }
+
+    /**
+     * Check if a given CharSequence (String or buffer) is terminated by a given character.
+     * 
+     * @param cs
+     *            Souce CharSequence to check
+     * @param term
+     *            Terminator char
+     * 
+     * @return <code>true</code> if last character of given CharSequence is <em>term</em>
+     */
+    public static boolean isTerminated(final CharSequence cs, final char term) {
+	boolean terminated = false;
+
+	if (cs != null) {
+	    final int length = cs.length();
+	    terminated = ((length > 0) && (cs.charAt(length - 1) == term));
+	}
+
+	return terminated;
     }
 
     /**

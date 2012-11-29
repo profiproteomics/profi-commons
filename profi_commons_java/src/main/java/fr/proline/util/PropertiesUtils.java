@@ -1,6 +1,7 @@
 package fr.proline.util;
 
 import static fr.proline.util.StringUtils.LINE_SEPARATOR;
+import static fr.proline.util.StringUtils.NULL;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -11,19 +12,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Utility class for loading a properties file from <code>ClassLoader</code> or regular file.
+ * Utility class for handling <code>Properties</code> and properties files.
  * 
  * @author LMN
  * 
  */
-public final class PropertiesLoader {
+public final class PropertiesUtils {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PropertiesLoader.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PropertiesUtils.class);
 
     private static final int BUFFER_LENGTH = 2048;
 
     /* Private constructor (Utility class) */
-    private PropertiesLoader() {
+    private PropertiesUtils() {
     }
 
     /* Public class methods */
@@ -91,16 +92,51 @@ public final class PropertiesLoader {
     }
 
     /**
+     * Tries to retrive a property value from a non-typed properties Map.
+     * 
+     * @param properties
+     *            Non-typed properties Map (must not be <code>null</code>).
+     * @param key
+     *            Key of the property (must not be <code>null</code> : <code>Properties</code> is a
+     *            <code>Hashtable</code>).
+     * @return Property value as String or <code>null</code> if not defined or the value is not a
+     *         <code>String</code> instance.
+     */
+    public static String getProperty(final Map<Object, Object> properties, final String key) {
+
+	if (properties == null) {
+	    throw new IllegalArgumentException("Properties Map is null");
+	}
+
+	if (key == null) {
+	    throw new IllegalArgumentException("Key is null");
+	}
+
+	String result = null;
+
+	final Object value = properties.get(key);
+
+	if (value instanceof String) {
+	    result = (String) value;
+	} else if (value != null) {
+	    LOG.warn(String.format("Properties Map contains non String value for %s : %s [%s]", key, value
+		    .getClass().getName(), value));
+	}
+
+	return result;
+    }
+
+    /**
      * Formats properties for debug logging purpose.
      * 
      * @param props
      *            Properties (must not be <code>null</code>).
      * @return Formatted string containing all key - value pairs.
      */
-    public static String formatProperties(final Properties props) {
+    public static String formatProperties(final Map<Object, Object> props) {
 
 	if (props == null) {
-	    throw new IllegalArgumentException("Props is null");
+	    throw new IllegalArgumentException("Props Map is null");
 	}
 
 	final StringBuilder buff = new StringBuilder(BUFFER_LENGTH);
@@ -108,11 +144,29 @@ public final class PropertiesLoader {
 	synchronized (props) {
 
 	    for (final Map.Entry<Object, Object> entry : props.entrySet()) {
-		buff.append(entry.getKey()).append(" [").append(entry.getValue()).append(']');
+		final Object key = entry.getKey();
+
+		if (key == null) {
+		    buff.append(NULL);
+		} else {
+		    buff.append(key);
+		}
+
+		buff.append(" : ");
+
+		final Object value = entry.getValue();
+
+		if (value == null) {
+		    buff.append(NULL);
+		} else {
+		    buff.append(value.getClass().getName());
+		    buff.append(" [").append(value).append(']');
+		}
+
 		buff.append(LINE_SEPARATOR);
 	    }
 
-	}
+	} // End of synchronized block on props
 
 	return buff.toString();
     }
