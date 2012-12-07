@@ -156,7 +156,7 @@ object IntFormattable {
 //
 class FloatFormattable(val value: Float) extends ISQLFormattable {
   
-  override def escaped(dialect: AbstractSQLDialect): String = "%f".format(value)
+  override def escaped(dialect: AbstractSQLDialect): String = "%f".formatLocal(java.util.Locale.UK,value)
   override def addTo(statement: StatementWrapper, dialect: AbstractSQLDialect): Unit = statement.addFloat(value)
   
 }
@@ -169,7 +169,7 @@ object FloatFormattable {
 //
 class DoubleFormattable(val value: Double) extends ISQLFormattable {
   
-  override def escaped(dialect: AbstractSQLDialect): String = "%f".format(value)
+  override def escaped(dialect: AbstractSQLDialect): String = "%f".formatLocal(java.util.Locale.UK,value)
   override def addTo(statement: StatementWrapper, dialect: AbstractSQLDialect): Unit = statement.addDouble(value)
   
 }
@@ -183,9 +183,14 @@ object DoubleFormattable {
 class DateTimeFormattable(val value: DateTime) extends ISQLFormattable {
   
   override def escaped(dialect: AbstractSQLDialect): String = {
-    dialect.toSQLString(dialect.timeStampFormatter.print(value))
+    dialect.toSQLString( dialect.timeStampFormatter.print(value) )
   }
-  override def addTo(statement: StatementWrapper, dialect: AbstractSQLDialect): Unit = statement.addDateTime(value)
+  override def addTo(statement: StatementWrapper, dialect: AbstractSQLDialect): Unit = {
+    dialect.typeMapper.dateTimeType match {
+      case SupportedTypes.DATETIME => statement.addDateTime(value)
+      case SupportedTypes.STRING => statement.addString( dialect.timeStampFormatter.print(value) )
+    }
+  }
   
 }
 object DateTimeFormattable {  
@@ -198,10 +203,17 @@ object DateTimeFormattable {
 //
 class TimestampFormattable(val value: Timestamp) extends ISQLFormattable {
   
+  private def _toDateTime() = new DateTime( value.getTime() )
+  
   override def escaped(dialect: AbstractSQLDialect): String = {
-    dialect.toSQLString(dialect.timeStampFormatter.print( new DateTime( value.getTime() ) ))
+    dialect.toSQLString( dialect.timeStampFormatter.print( _toDateTime ) )
   }
-  override def addTo(statement: StatementWrapper, dialect: AbstractSQLDialect): Unit = statement.addTimestamp(value)
+  override def addTo(statement: StatementWrapper, dialect: AbstractSQLDialect): Unit = {
+    dialect.typeMapper.timestampType match {
+      case SupportedTypes.TIMESTAMP =>  statement.addTimestamp(value)
+      case SupportedTypes.STRING => statement.addString( dialect.timeStampFormatter.print( _toDateTime ) )
+    }
+  }
   
 }
 object TimestampFormattable {  
@@ -217,7 +229,13 @@ object TimestampFormattable {
 class DurationFormattable(val value: Duration) extends ISQLFormattable {
   
   override def escaped(dialect: AbstractSQLDialect): String = value.getMillis.toString
-  override def addTo(statement: StatementWrapper, dialect: AbstractSQLDialect): Unit = statement.addLong(value.getMillis)
+  
+  override def addTo(statement: StatementWrapper, dialect: AbstractSQLDialect): Unit = {
+    dialect.typeMapper.durationType match {
+      case SupportedTypes.DURATION => statement.addLong( value.getMillis )
+      case SupportedTypes.STRING => statement.addString( value.getMillis.toString )
+    }
+  }
   
 }
 object DurationFormattable {

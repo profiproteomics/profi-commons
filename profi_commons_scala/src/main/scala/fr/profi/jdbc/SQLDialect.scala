@@ -16,7 +16,7 @@ import org.joda.time.format.ISODateTimeFormat
  * SQL specific classes like Nullable, NullComparable and Identifier.
  * See their documentation for more info on how to use them.
  */
-abstract class AbstractSQLDialect( val timeStampFormatter: DateTimeFormatter = ISODateTimeFormat.dateTimeNoMillis,
+abstract class AbstractSQLDialect( val timeStampFormatter: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSSS"),
                                    val booleanFormatter: IBooleanFormatter = DefaultBooleanFormatter,
                                    val typeMapper: ITypeMapper = DefaultTypeMapper,
                                    val generateKeyParam: Any = 1
@@ -50,23 +50,21 @@ abstract class AbstractSQLDialect( val timeStampFormatter: DateTimeFormatter = I
   def toSQLString(str: String): String = quoteString(escapeString(str))
 }
 
-object DefaultSQLDialect extends AbstractSQLDialect(
-  ISODateTimeFormat.dateTimeNoMillis,
+
+object DefaultSQLDialect extends AbstractSQLDialect
+/*(
+  DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSSS"), //  ISODateTimeFormat.dateTimeNoMillis,
   DefaultBooleanFormatter,
   DefaultTypeMapper
 )
 
-object HSQLDBDialect extends AbstractSQLDialect(
-  DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSSS"),
-  DefaultBooleanFormatter,
-  DefaultTypeMapper
-)
+object HSQLDBDialect extends AbstractSQLDialect
 
 object H2Dialect extends AbstractSQLDialect
 
-object PgDialect extends AbstractSQLDialect
+object PgDialect extends AbstractSQLDialect*/
 
-object SQLiteDialect extends AbstractSQLDialect(
+object SQLiteSQLDialect extends AbstractSQLDialect(
   DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSSS"),
   AsIntBooleanFormatter,
   SQLiteTypeMapper,

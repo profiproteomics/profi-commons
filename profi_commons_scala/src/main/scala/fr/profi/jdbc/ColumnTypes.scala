@@ -19,8 +19,7 @@ trait IColumnType[T] {
    * @throws RunTimeException if the value was null
    */
   @throws( classOf[Exception] )
-  def nextValue: T = nextValueOption.getOrElse(
-    throw new Exception("unexpected null value") )
+  def nextValue: T = nextValueOption.getOrElse( throw new Exception("unexpected null value") )
   
   /**
    * To be implemented. Should return Some if the value

@@ -39,6 +39,7 @@ trait TransactionManagement {
     this.connection.rollback()
     this.inTransaction = false
   }
+  def rollback() = rollbackTransaction()
   
   /**
    * Commits all changed done in the Transaction.
@@ -50,7 +51,8 @@ trait TransactionManagement {
     this.connection.commit()
     this.inTransaction = false
     this.connection.setAutoCommit(true)
-  }
+  }  
+  def commit() = commitTransaction()
   
   def isInTransaction(): Boolean = inTransaction  
   

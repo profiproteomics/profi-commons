@@ -2,7 +2,7 @@ package fr.profi.jdbc
 
 package object easy {
 
-  import java.sql.Date
+  import java.util.Date
   import java.sql.Timestamp
   
   import org.joda.time.DateTime

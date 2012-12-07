@@ -39,7 +39,7 @@ class ResultSetRow(val rs: ResultSet) {
   def nextDoubleOrElse( value: Double ): Double = _nextValueOrElse(rs.getDouble,value)
   def nextStringOrElse( value: String ): String = _nextValueOrElse(rs.getString,value)
   def nextTimestampOrElse( value: Timestamp ): Timestamp = _nextValueOrElse(rs.getTimestamp,value)
-  def nextDatepOrElse( value: Date ): Date = _nextValueOrElse(rs.getTimestamp,value)
+  def nextDateOrElse( value: Date ): Date = _nextValueOrElse(rs.getTimestamp,value)
   def nextObjectOrElse( value: AnyRef ): AnyRef = _nextValueOrElse(rs.getObject,value)
 
   lazy val columnNames: Array[String] = {

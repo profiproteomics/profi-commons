@@ -208,7 +208,8 @@ trait SQLQueryExecution {
    */
   def execute(sql: String, params: ISQLFormattable*): Int = {
     connection.usingStatement { statement =>
-      statement.executeUpdate(dialect.formatSeq(sql, params.toSeq))
+      val sqlString = dialect.formatSeq(sql, params.toSeq)
+      statement.executeUpdate( sqlString )
     }
   }
 

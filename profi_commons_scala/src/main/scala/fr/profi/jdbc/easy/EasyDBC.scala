@@ -12,7 +12,26 @@ class EasyDBC (
   val connection: Connection,
   val dialect: AbstractSQLDialect = DefaultSQLDialect,
   val txIsolationLevel: TxIsolationLevels.Value = TxIsolationLevels.READ_COMMITTED
-) extends TransactionManagement with SQLQueryExecution
+) extends TransactionManagement with SQLQueryExecution {
+  
+  def inTx[T]( txCode: (EasyDBC) => T ): T = {
+    
+    this.beginTransaction()
+    
+    try {
+      val result = txCode( this )
+      if( this.isInTransaction ) this.commitTransaction()
+      result
+    } catch {
+      case e: Throwable => {
+        this.rollbackTransaction()
+        throw e
+      }
+    }
+    
+  }
+  
+}
  
 object EasyDBC {
   def apply(c: Connection,

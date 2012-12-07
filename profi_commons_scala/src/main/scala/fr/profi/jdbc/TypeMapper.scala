@@ -19,7 +19,7 @@ trait ITypeMapper {
   val dateType: Any = SupportedTypes.DATE
   val timestampType: Any = SupportedTypes.TIMESTAMP
   val dateTimeType: Any = SupportedTypes.DATETIME
-  val durationTimeType: Any = SupportedTypes.DURATION
+  val durationType: Any = SupportedTypes.DURATION
 }
 
 object DefaultTypeMapper extends ITypeMapper
@@ -29,5 +29,5 @@ object SQLiteTypeMapper extends ITypeMapper {
   override val dateType = SupportedTypes.STRING
   override val timestampType = SupportedTypes.STRING
   override val dateTimeType = SupportedTypes.STRING
-  override val durationTimeType = SupportedTypes.STRING
+  override val durationType = SupportedTypes.STRING
 }
