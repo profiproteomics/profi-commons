@@ -3,8 +3,6 @@ package fr.profi.jdbc
 import java.util.Date
 import java.sql.Timestamp
 
-import org.apache.commons.lang.StringEscapeUtils.escapeSql
-
 import org.joda.time.DateTime
 import org.joda.time.Duration
 import org.joda.time.format.DateTimeFormat
