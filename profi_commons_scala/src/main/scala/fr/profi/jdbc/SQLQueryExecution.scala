@@ -71,6 +71,11 @@ trait SQLQueryExecution {
   def selectHeadOption[T](sql: String, params: ISQLFormattable*)(block: ResultSetRow => T): Option[T] = {
     select(sql, params.toArray: _*)(block).headOption
   }
+  
+  def selectHeadOrElse[T](sql: String, params: ISQLFormattable*)(block: ResultSetRow => T, default: T): T = {
+    val head = select(sql, params.toArray: _*)(block).headOption
+    if( head == None ) default else head.get
+  }
 
   /**
    * Return the head record from a query that must be guaranteed to return at least one record.
@@ -81,6 +86,7 @@ trait SQLQueryExecution {
    * @param block is a function converting the returned row to something useful.
    * @throws NoSuchElementException if the query did not return any records.
    */
+  @throws( classOf[NoSuchElementException] )
   def selectHead[T](sql: String, params: ISQLFormattable*)(block: ResultSetRow => T): T = {
     select(sql, params.toArray: _*)(block).head
   }
