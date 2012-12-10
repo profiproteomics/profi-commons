@@ -18,7 +18,7 @@ import org.joda.time.DateTime
  * ## Set parameters and execute in on shot
  *     statement.executeWith( param1, param2, param3 )
  */
-private[jdbc] trait StatementWrapper {
+trait StatementWrapper {
   
   val jdbcPrepStmt: PreparedStatement
   val dialect: AbstractSQLDialect
@@ -44,7 +44,7 @@ private[jdbc] trait StatementWrapper {
    * @return self to allow for chaining calls
    */
   def <<( param: ISQLFormattable ): StatementWrapper = {
-    param.addTo(this,dialect)
+    param.addTo(this)
     this
   }
 
@@ -103,6 +103,11 @@ private[jdbc] trait StatementWrapper {
   def addDouble(value: Double): Unit = addValue( () => jdbcPrepStmt.setDouble(_parameterIndex, value) )
 
   /**
+   * Add a Bytes to the current parameter index
+   */
+  def addBytes(value: Array[Byte]): Unit = addValue( () => jdbcPrepStmt.setBytes(_parameterIndex, value) )
+
+  /**
    * Add Null to the current parameter index
    */
   def addNull(): Unit = addValue( () => jdbcPrepStmt.setNull(_parameterIndex, Types.NULL) )
@@ -112,13 +117,12 @@ private[jdbc] trait StatementWrapper {
     _parameterIndex = _parameterIndex + 1
   }
 
-  private[jdbc] def close() = jdbcPrepStmt.close()
+  def close() = jdbcPrepStmt.close()
 }
 
 class PreparedStatementWrapper(
   val jdbcPrepStmt: PreparedStatement,
-  val dialect: AbstractSQLDialect,
-  val generatedKeyParam: Any = 1 ) extends StatementWrapper {
+  val dialect: AbstractSQLDialect ) extends StatementWrapper {
   
   /**
    * Executes the statement with the previously set parameters
@@ -134,15 +138,15 @@ class PreparedStatementWrapper(
    * @return the number of affected records
    */
   def executeWith( params: ISQLFormattable* ): Int = {
-    params.foreach( param => param.addTo( this, dialect ) )
+    params.foreach( param => param.addTo( this ) )
     execute
   }
   
-  def generatedInt(): Int = {
+  def generatedInt: Int = {
     
     val rsWithGenKeys = this.jdbcPrepStmt.getGeneratedKeys()
     
-    generatedKeyParam match {
+    dialect.generateKeyParam match {
       case s: String => rsWithGenKeys.getInt(s)
       case i: Int => if( rsWithGenKeys.next() ) rsWithGenKeys.getInt(i) else 0
     }

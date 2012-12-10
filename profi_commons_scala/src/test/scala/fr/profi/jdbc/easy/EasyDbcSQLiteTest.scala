@@ -8,25 +8,25 @@ class EasyDbcSQLiteTest {
   @Test
   def simpleTest() {
     
-    val eDBC = fr.profi.jdbc.eDbcSQLiteTestInstance
-    eDBC.execute("CREATE TABLE person (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, age INTEGER)")
+    val ezDBC = fr.profi.jdbc.eDbcSQLiteTestInstance
+    ezDBC.execute("CREATE TABLE person (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, age INTEGER)")
     
-    eDBC.beginTransaction()
+    ezDBC.beginTransaction()
     
     var generatedIntSum: Int = 0
-    eDBC.executePrepared("INSERT INTO person VALUES (NULL, ?, ?)",true) { stmt =>
+    ezDBC.executePrepared("INSERT INTO person VALUES (NULL, ?, ?)",true) { stmt =>
       for ( i <- 1 to 3 ) {   
         stmt.executeWith( new java.util.Date, 1 )
-        generatedIntSum += stmt.generatedInt()
+        generatedIntSum += stmt.generatedInt
       }
     }
     
-    eDBC.commitTransaction()
+    ezDBC.commitTransaction()
     
-    assertEquals( 3, eDBC.selectInt("SELECT count(*) FROM person") )
+    assertEquals( 3, ezDBC.selectInt("SELECT count(*) FROM person") )
     assertEquals( 6, generatedIntSum )
     
-    println( eDBC.select("SELECT name FROM person") { r => r.nextStringOrElse("") } (0) )
+    println( ezDBC.select("SELECT name FROM person") { r => r.nextStringOrElse("") } (0) )
     
   }
   

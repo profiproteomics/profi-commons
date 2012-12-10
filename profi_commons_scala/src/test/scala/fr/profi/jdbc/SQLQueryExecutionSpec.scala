@@ -38,7 +38,7 @@ class SQLQueryExecutionSpec extends FunSpec with ShouldMatchers with BeforeAndAf
         eDBC.inTx { tx =>
           val expected = Seq("test1", "test2", "test3")
           val actual = tx.select("select name from transactionspec") { row =>
-            row.nextString.get
+            row.nextString
           }
 
           actual should equal(expected)
@@ -50,7 +50,7 @@ class SQLQueryExecutionSpec extends FunSpec with ShouldMatchers with BeforeAndAf
           val actual = tx.select(
             """select name from transactionspec 
                             where id > 1000
-                        """) { _.nextString.get }
+                        """) { _.nextString }
 
           actual should be('empty)
         }
@@ -63,7 +63,7 @@ class SQLQueryExecutionSpec extends FunSpec with ShouldMatchers with BeforeAndAf
         eDBC.inTx { tx =>
           val expected = Some("test1")
           val actual = tx.selectHeadOption("select name from transactionspec") { row =>
-            row.nextString.get
+            row.nextString
           }
 
           actual should equal(expected)
@@ -76,7 +76,7 @@ class SQLQueryExecutionSpec extends FunSpec with ShouldMatchers with BeforeAndAf
           val actual = tx.selectHeadOption(
             """select name from transactionspec 
                             where id > 1000
-                        """) { _.nextString.get }
+                        """) { _.nextString }
 
           actual should equal(expected)
         }

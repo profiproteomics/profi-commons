@@ -24,7 +24,7 @@ class SQLDialectSpec extends FunSpec with ShouldMatchers {
     }
   }
   
-  describe("SQLiteSQLDialect") {
+  /*describe("SQLiteSQLDialect") {
     
     val dialect = SQLiteSQLDialect
     
@@ -32,6 +32,6 @@ class SQLDialectSpec extends FunSpec with ShouldMatchers {
       dialect.booleanFormatter.formatBoolean(true).isInstanceOf[Integer] should equal(true)
     }
     
-  }
+  }*/
   
 }

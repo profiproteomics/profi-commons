@@ -43,8 +43,8 @@ class ResultSetRowSpec extends FunSpec with ShouldMatchers with BeforeAndAfterEa
         tx.execute("create table boolean_table(c1 boolean, c2 boolean)")
         tx.execute("insert into boolean_table values(?, null)", value1.get)
         tx.select("select c1, c2 from boolean_table") { row =>
-          row.nextBoolean should equal(value1)
-          row.nextBoolean should equal(value2)
+          row.nextBooleanOption should equal(value1)
+          row.nextBooleanOption should equal(value2)
         }
       }
     }
@@ -56,8 +56,8 @@ class ResultSetRowSpec extends FunSpec with ShouldMatchers with BeforeAndAfterEa
         tx.execute("create table long_table(c1 bigint, c2 bigint)")
         tx.execute("insert into long_table values(?, null)", value1.get)
         tx.select("select c1, c2 from long_table") { row =>
-          row.nextLong should equal(value1)
-          row.nextLong should equal(value2)
+          row.nextLongOption should equal(value1)
+          row.nextLongOption should equal(value2)
         }
       }
     }
@@ -69,8 +69,8 @@ class ResultSetRowSpec extends FunSpec with ShouldMatchers with BeforeAndAfterEa
         tx.execute("create table int_table(c1 int, c2 int)")
         tx.execute("insert into int_table values(?, null)", value1.get)
         tx.select("select c1, c2 from int_table") { row =>
-          row.nextInt should equal(value1)
-          row.nextInt should equal(value2)
+          row.nextIntOption should equal(value1)
+          row.nextIntOption should equal(value2)
         }
       }
     }
@@ -82,24 +82,24 @@ class ResultSetRowSpec extends FunSpec with ShouldMatchers with BeforeAndAfterEa
         tx.execute("create table string_table(c1 varchar(256), c2 varchar(16))")
         tx.execute("insert into string_table values(?, null)", value1.get)
         tx.select("select c1, c2 from string_table") { row =>
-          row.nextString should equal(value1)
-          row.nextString should equal(value2)
+          row.nextStringOption should equal(value1)
+          row.nextStringOption should equal(value2)
         }
       }
     }
-/*
+
     it("should return a Date") {
-      edDBCH2TestInstance.inTx { tx =>
+      eDBC.inTx { tx =>
         val value1 = Some(new Date)
         val value2 = None
         tx.execute("create table date_table(c1 timestamp, c2 timestamp)")
         tx.execute("insert into date_table values(?, null)", value1.get)
         tx.select("select c1, c2 from date_table") { row =>
-          row.nextDate.get.getTime should equal(value1.get.getTime)
-          row.nextDate should equal(value2)
+          row.nextDate.getTime should equal(value1.get.getTime)
+          row.nextDateOption should equal(value2)
         }
       }
-    }*/
+    }
 
     it("should return a Float") {
       eDBC.inTx { tx =>
@@ -108,8 +108,8 @@ class ResultSetRowSpec extends FunSpec with ShouldMatchers with BeforeAndAfterEa
         tx.execute("create table float_table(c1 real, c2 real)")
         tx.execute("insert into float_table values(?, null)", value1.get)
         tx.select("select c1, c2 from float_table") { row =>
-          row.nextFloat should equal(value1)
-          row.nextFloat should equal(value2)
+          row.nextFloatOption should equal(value1)
+          row.nextFloatOption should equal(value2)
         }
       }
     }
@@ -121,8 +121,8 @@ class ResultSetRowSpec extends FunSpec with ShouldMatchers with BeforeAndAfterEa
         tx.execute("create table double_table(c1 double, c2 double)")
         tx.execute("insert into double_table values(?, null)", value1.get)
         tx.select("select c1, c2 from double_table") { row =>
-          row.nextDouble should equal(value1)
-          row.nextDouble should equal(value2)
+          row.nextDoubleOption should equal(value1)
+          row.nextDoubleOption should equal(value2)
         }
       }
     }

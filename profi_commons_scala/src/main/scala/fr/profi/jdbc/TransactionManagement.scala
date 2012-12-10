@@ -12,7 +12,7 @@ trait TransactionManagement {
   
   protected val connection: java.sql.Connection
   protected val txIsolationLevel: TxIsolationLevels.Value
-  protected var inTransaction: Boolean = false
+  //protected var inTransaction: Boolean = false
   
   /**
    * Begins the Transaction.
@@ -25,7 +25,7 @@ trait TransactionManagement {
     this.connection.setAutoCommit(false)
     this.connection.setTransactionIsolation( this.txIsolationLevel.id )
     
-    this.inTransaction = true
+    //this.inTransaction = true
     ()
   }
   
@@ -37,7 +37,7 @@ trait TransactionManagement {
   @throws( classOf[java.sql.SQLException] )
   def rollbackTransaction(): Unit = { 
     this.connection.rollback()
-    this.inTransaction = false
+    //this.inTransaction = false
   }
   def rollback() = rollbackTransaction()
   
@@ -49,11 +49,11 @@ trait TransactionManagement {
   @throws( classOf[java.sql.SQLException] )
   def commitTransaction(): Unit = {
     this.connection.commit()
-    this.inTransaction = false
+    //this.inTransaction = false
     this.connection.setAutoCommit(true)
   }  
   def commit() = commitTransaction()
   
-  def isInTransaction(): Boolean = inTransaction  
+  def isInTransaction(): Boolean = ! this.connection.getAutoCommit  
   
 }

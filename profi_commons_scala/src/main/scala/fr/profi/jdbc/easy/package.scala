@@ -18,6 +18,7 @@ package object easy {
   implicit def long2Formattable(wrapped: Long) = LongFormattable(wrapped)  
   implicit def float2Formattable(wrapped: Float) = FloatFormattable(wrapped)
   implicit def double2Formattable(wrapped: Double) = DoubleFormattable(wrapped)
+  implicit def bytes2Formattable(wrapped: Array[Byte]) = BytesFormattable(wrapped)
   implicit def date2Formattable(wrapped: Date) = DateTimeFormattable(wrapped)
   implicit def timestamp2Formattable(wrapped: Timestamp) = TimestampFormattable(wrapped)
   implicit def dateTime2Formattable(wrapped: DateTime) = DateTimeFormattable(wrapped)  
@@ -61,12 +62,30 @@ package object easy {
     case Some(value) => DurationFormattable(value)
   }
   
-  // ResultSetRowImplicits
+ /**
+ * Defines a number of implicit conversion methods for the supported ColumnTypes. A call
+ * to one of these methods will return the next value of the right type. The methods make
+ * it easy to step through a row in order to build an object from it as shown in the example
+ * below.
+ *
+ * Handles all types supported by jdbc as well as Option variants of those.
+ *
+ *     import fr.profi.jdbc.ResultSetRowImplicits._
+ *
+ *     case class Person( id: Long, name: String, birthdate: DateTime )
+ *
+ *     InTransaction { tx =>
+ *         tx.select( "select id, name, birthdate from people" ) { r =>
+ *             Person( r, r, r )
+ *         }
+ *     }
+ */
   implicit def row2Boolean(row: ResultSetRow) = BooleanColumnType(row).nextValue
   implicit def row2Int(row: ResultSetRow): Int = IntColumnType(row).nextValue
   implicit def row2Long(row: ResultSetRow): Long = LongColumnType(row).nextValue
   implicit def row2Float(row: ResultSetRow) = FloatColumnType(row).nextValue
   implicit def row2Double(row: ResultSetRow) = DoubleColumnType(row).nextValue
+  implicit def row2Bytes(row: ResultSetRow) = BytesColumnType(row).nextValue
   implicit def row2String(row: ResultSetRow) = StringColumnType(row).nextValue
   implicit def row2Date(row: ResultSetRow) = DateColumnType(row).nextValue
   implicit def row2Timestamp(row: ResultSetRow) = TimestampColumnType(row).nextValue
@@ -78,6 +97,7 @@ package object easy {
   implicit def row2LongOption(row: ResultSetRow) = LongColumnType(row).nextValueOption
   implicit def row2FloatOption(row: ResultSetRow) = FloatColumnType(row).nextValueOption
   implicit def row2DoubleOption(row: ResultSetRow) = DoubleColumnType(row).nextValueOption
+  implicit def row2BytesOption(row: ResultSetRow) = BytesColumnType(row).nextValueOption
   implicit def row2StringOption(row: ResultSetRow) = StringColumnType(row).nextValueOption
   implicit def row2DateOption(row: ResultSetRow) = DateColumnType(row).nextValueOption
   implicit def row2TimestampOption(row: ResultSetRow) = TimestampColumnType(row).nextValueOption

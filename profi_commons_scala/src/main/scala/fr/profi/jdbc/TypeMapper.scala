@@ -7,15 +7,17 @@ import org.joda.time.DateTime
 import org.joda.time.Duration
 
 object SupportedTypes extends Enumeration {
-  val STRING, BOOLEAN, LONG, INT, FLOAT, DOUBLE, DATE, TIMESTAMP, DATETIME, DURATION = Value
+  val BOOLEAN, INTEGER, LONG, FLOAT, DOUBLE, BYTES, STRING, DATE, TIMESTAMP, DATETIME, DURATION = Value
 }
 
-trait ITypeMapper {
-  val stringType: Any = SupportedTypes.STRING
+trait ITypeMapper {  
   val booleanType: Any = SupportedTypes.BOOLEAN
+  val integerType: Any = SupportedTypes.INTEGER
   val longType: Any = SupportedTypes.LONG
   val floatType: Any = SupportedTypes.FLOAT
   val doubleType: Any = SupportedTypes.DOUBLE
+  val bytesType: Any = SupportedTypes.BYTES
+  val stringType: Any = SupportedTypes.STRING
   val dateType: Any = SupportedTypes.DATE
   val timestampType: Any = SupportedTypes.TIMESTAMP
   val dateTimeType: Any = SupportedTypes.DATETIME

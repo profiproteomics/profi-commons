@@ -19,14 +19,15 @@ import org.joda.time.format.ISODateTimeFormat
 abstract class AbstractSQLDialect( val timeStampFormatter: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSSS"),
                                    val booleanFormatter: IBooleanFormatter = DefaultBooleanFormatter,
                                    val typeMapper: ITypeMapper = DefaultTypeMapper,
-                                   val generateKeyParam: Any = 1
+                                   val generateKeyParam: Any = 1,
+                                   val inExpressionCountLimit: Int = 50000
                                    ) {
   
-  var sqlQuote = "'"
+  var quotingChar ='\''
 
-  def format(sql: String, params: ISQLFormattable*): String = formatSeq(sql, params.toSeq)
+  def format(sql: String, params: ISQLFormattable*): String = formatSeq(sql, params.toArray )
 
-  def formatSeq(sql: String, params: Seq[ISQLFormattable]): String = {
+  def formatSeq(sql: String, params: Array[ISQLFormattable] ): String = {
     sql.replace("?", "%s").format( params.map(p => p.escaped(this) ): _* )
   }
 
@@ -40,7 +41,7 @@ abstract class AbstractSQLDialect( val timeStampFormatter: DateTimeFormatter = D
    */
   def quoteString(str: String): String = {
     val sb = new StringBuilder
-    sb.append(sqlQuote).append(str).append(sqlQuote)
+    sb.append(quotingChar).append(str).append(quotingChar)
     sb.toString
   }
 
@@ -66,7 +67,8 @@ object PgDialect extends AbstractSQLDialect*/
 
 object SQLiteSQLDialect extends AbstractSQLDialect(
   DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSSS"),
-  AsIntBooleanFormatter,
+  DefaultBooleanFormatter,
   SQLiteTypeMapper,
-  "last_insert_rowid()"
+  "last_insert_rowid()",
+  999
 )
