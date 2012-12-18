@@ -40,6 +40,17 @@ package object sql {
     }
   }
   
+  object StringOrBoolAsBool {
+    
+    def asBoolean(boolean: Any): Boolean = boolean match {
+      case s: String => SQLStrToBool(s)
+      case b: Boolean => b
+      case _ => throw new IllegalArgumentException("can't only take a String or a Boolean as input")
+    }
+    implicit def string2boolean( value: Any ): Boolean = asBoolean(value)
+    
+  }
+  
   def getTimeAsSQLTimestamp(): java.sql.Timestamp = new java.sql.Timestamp(new java.util.Date().getTime)
   
   def escapeStringForPgCopy( s: String ): String = {
@@ -57,10 +68,22 @@ package object sql {
     
     import fr.proline.util.StringUtils.isEmpty
     
-    val recordStrings = record.map { case s:String => if( escape ) escapeStringForPgCopy(s) else s
-                                     case a:Any => a.toString()
+    def stringify( value: Any ): String = {
+       value match {
+         case s:String => if( escape ) escapeStringForPgCopy(s) else s
+         case a:Any => a.toString()
+       }
+    }
+    
+    val recordStrings = record.map { case opt: Option[Any] => {
+                                       opt match {
+                                         case None => "\\N"
+                                         case Some(value) => stringify( value )
+                                       }
+                                     }
+                                     case value: Any => stringify( value )
                                    }
-                              .map { str => if( isEmpty(str) ) "\\N" else str }
+                              //.map { str => if( str == null ) "\\N" else str }
     
     (recordStrings.mkString("\t") + "\n").getBytes("UTF-8")
   }
