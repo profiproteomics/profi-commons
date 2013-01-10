@@ -37,6 +37,7 @@ public final class SQLUtils {
 		}
 		finally {
 			if (st != null) st.close();
+			s.close();
 		}
 	}
 }

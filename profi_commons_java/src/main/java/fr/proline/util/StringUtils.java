@@ -118,7 +118,7 @@ public final class StringUtils {
 	try {
 	    result = System.getProperty(LINE_SEPARATOR_KEY);
 	} catch (Exception ex) {
-	    LOG.error("Unable to retrieve System property \"" + LINE_SEPARATOR + '\"', ex);
+	    LOG.error("Unable to retrieve System property \"" + LINE_SEPARATOR_KEY + '\"', ex);
 	}
 
 	if (result == null) {
