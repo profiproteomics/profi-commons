@@ -44,7 +44,7 @@ trait SQLQueryExecution {
   def select[T](sql: String, params: ISQLFormattable*)(block: ResultSetRow => T): Seq[T] = {
     val results = new ArrayBuffer[T]
     _selectIntoBuffer(Some(results), sql, params.toArray )(block)
-    results.toSeq
+    results
   }
 
   /**
@@ -59,6 +59,24 @@ trait SQLQueryExecution {
   def selectAndProcess(sql: String, params: ISQLFormattable*)(block: ResultSetRow => Unit): Unit = {
     _selectIntoBuffer(None, sql, params.toArray)(block)
   }
+  
+  def selectAllRecordsAsMaps( sql: String ): Array[Map[String,Any]] = {
+    
+    var colNames: Array[String] = null
+    val records = Array.newBuilder[Map[String,Any]]
+    
+    // Execute SQL query to load records
+    this.selectAndProcess( sql ) { r => 
+      
+      // Retrieve column names
+      if( colNames == null ) { colNames = r.columnNames }
+      
+      // Build the record
+      records += colNames.map( colName => ( colName -> r.nextAnyRefOrElse(null) ) ).toMap
+    }
+    
+    records.result()
+  }
 
   /**
    * Returns the first record returned by the query after being converted by the
@@ -69,12 +87,16 @@ trait SQLQueryExecution {
    * @param block is a function converting the row to something else
    */
   def selectHeadOption[T](sql: String, params: ISQLFormattable*)(block: ResultSetRow => T): Option[T] = {
-    select(sql, params.toArray: _*)(block).headOption
+    this._usingStatement { statement =>
+      val rs = statement.executeQuery(dialect.formatSeq(sql, params.toArray))
+      if( rs.next ) Some(block(ResultSetRow(rs)))
+      else None
+    }
   }
   
   def selectHeadOrElse[T](sql: String, params: ISQLFormattable*)(block: ResultSetRow => T, default: T): T = {
-    val head = select(sql, params.toArray: _*)(block).headOption
-    if( head == None ) default else head.get
+    val headOpt = this.selectHeadOption(sql, params:_*)(block)
+    if( headOpt == None ) default else headOpt.get
   }
 
   /**
@@ -88,7 +110,11 @@ trait SQLQueryExecution {
    */
   @throws( classOf[NoSuchElementException] )
   def selectHead[T](sql: String, params: ISQLFormattable*)(block: ResultSetRow => T): T = {
-    select(sql, params.toArray: _*)(block).head
+    val headOpt = this.selectHeadOption(sql, params:_*)(block)
+    if( headOpt == None )
+      throw new NoSuchElementException("can't find a record for this SQL query: '"+sql+"'")
+    else
+      return headOpt.get
   }
 
   /**
@@ -235,24 +261,6 @@ trait SQLQueryExecution {
   def selectDuration(sql: String, params: ISQLFormattable*): Duration = {
     selectHead(sql, params.toArray: _*)(row2Duration)
   }
-  
-  def selectRecordsAsMaps( sql: String ): Array[Map[String,Any]] = {
-    
-    var colNames: Array[String] = null
-    val records = Array.newBuilder[Map[String,Any]]
-    
-    // Execute SQL query to load records
-    this.selectAndProcess( sql ) { r => 
-      
-      // Retrieve column names
-      if( colNames == null ) { colNames = r.columnNames }
-      
-      // Build the record
-      records += colNames.map( colName => ( colName -> r.nextObjectOrElse(null) ) ).toMap
-    }
-    
-    records.result()
-  }
 
   /**
    * Executes the given query and returns the number of affected records
@@ -299,12 +307,13 @@ trait SQLQueryExecution {
 
   private def _selectIntoBuffer[T](
                 buffer: Option[ArrayBuffer[T]],
-                sql: String, params: Array[ISQLFormattable] ) (block: (ResultSetRow) => T): Unit = {
-                
+                sql: String, params: Array[ISQLFormattable],
+                maxRecords: Int = 0 ) (block: (ResultSetRow) => T): Unit = {
+    
     this._usingStatement { statement =>
       val rs = statement.executeQuery(dialect.formatSeq(sql, params))
       val append = buffer.isDefined
-
+      
       while (rs.next) {
         val value = block(ResultSetRow(rs))
         if (append) buffer.get.append(value)
