@@ -53,6 +53,10 @@ package object easy {
     case None => NullFormattable( null )
     case Some(value) => TimestampFormattable(value)
   }
+  implicit def dateOption2Formattable(wrapped: Option[Date]) = wrapped match {
+    case None => NullFormattable( null )
+    case Some(value) => DateTimeFormattable(value)
+  }
   implicit def dateTimeOption2Formattable(wrapped: Option[DateTime]) = wrapped match {
     case None => NullFormattable( null )
     case Some(value) => DateTimeFormattable(value)
