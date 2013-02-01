@@ -2,14 +2,15 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>fr.proline.util</groupId>
-  <artifactId>ProFI-Commons-Scala</artifactId>
-  <version>0.0.2</version>
-
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <scala.version>2.9.1</scala.version>
+    <profi.commons.version>0.0.2</profi.commons.version>
   </properties>
+  
+  <groupId>fr.proline.util</groupId>
+  <artifactId>ProFI-Commons-Scala</artifactId>
+  <version>${profi.commons.version}</version>
 
   <repositories>
     <repository>
@@ -74,7 +75,7 @@
     <dependency>
       <groupId>fr.proline.util</groupId>
       <artifactId>ProFI-Commons-Java</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>${profi.commons.version}</version>
     </dependency>
 
     <!-- Test -->
