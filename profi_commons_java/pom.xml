@@ -2,9 +2,15 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <artifactId>ProFI-Pom</artifactId>
+    <groupId>fr.proline</groupId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+
   <groupId>fr.proline.util</groupId>
   <artifactId>ProFI-Commons-Java</artifactId>
-  <version>0.0.2</version>
+  <version>0.0.2-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>ProFI-Commons-Java</name>
@@ -19,90 +25,27 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.2</version>      
-    </dependency>
-
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-core</artifactId>
-      <version>1.0.7</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <version>1.0.7</version>
-      <scope>test</scope>
     </dependency>
 
     <!-- JUnit tests -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
 
   </dependencies>
-
-  <build>
-
-    <pluginManagement>
-      <plugins>
-
-        <!-- Java build -->
-        <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-
-          <configuration>
-            <source>1.6</source>
-            <target>1.6</target>
-          </configuration>
-
-        </plugin>
-
-	<!-- Cobertura plugin, format xml -->
-	<plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>cobertura-maven-plugin</artifactId>
-          <version>2.5.2</version>
-
-          <configuration>
-            <formats>
-              <format>xml</format>
-            </formats>
-          </configuration>
-
-          <executions>
-            <execution>
-              <phase>package</phase>
-              <goals>
-                <goal>cobertura</goal>
-              </goals>
-            </execution>
-          </executions>
-
-        </plugin>
-
-
-	<!-- FindBugs plugin, format xml -->
-	<plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>findbugs-maven-plugin</artifactId>
-          <version>2.5.2</version>
-
-	  <configuration>
-            <findbugsXmlOutput>true</findbugsXmlOutput>
-            <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
-            <xmlOutput>true</xmlOutput>
-          </configuration>
-
-        </plugin>
-
-      </plugins>
-    </pluginManagement>
-
-  </build>
 
 </project>
