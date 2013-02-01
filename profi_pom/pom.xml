@@ -59,7 +59,7 @@
       <dependency>
         <groupId>postgresql</groupId>
         <artifactId>postgresql</artifactId>
-        <version>9.1-901.jdbc4</version>
+        <version>9.1-901-1.jdbc4</version> <!-- 9.1-902.jdbc4 not available on 1 feb. 2013 -->
       </dependency>
 
       <dependency>
