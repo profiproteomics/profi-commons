@@ -50,12 +50,6 @@
       </dependency>
 
       <!-- Databases -->
-	  <dependency>
-        <groupId>com.googlecode.flyway</groupId>
-        <artifactId>flyway-core</artifactId>
-        <version>2.0.3</version> <!-- Latest version checked on 1 feb. 2013 -->
-      </dependency>
-
       <dependency>
         <groupId>postgresql</groupId>
         <artifactId>postgresql</artifactId>
