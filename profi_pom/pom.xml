@@ -18,14 +18,14 @@
   <dependencyManagement>
     <dependencies>
 
-	  <!-- Loggers -->
+      <!-- Loggers -->
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
         <version>1.7.2</version> <!-- Latest version checked on 1 feb. 2013 -->
       </dependency>
 
-	  <dependency>
+      <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>
         <version>1.0.9</version> <!-- Latest version checked on 1 feb. 2013 -->
@@ -106,7 +106,7 @@
         <groupId>org.dbunit</groupId>
         <artifactId>dbunit</artifactId>
         <version>2.4.9</version> <!-- Latest version checked on 1 feb. 2013 -->
-		<!-- Exclude SL4J which is an older version than the logback dependency -->
+        <!-- Exclude SL4J which is an older version than the logback dependency -->
         <exclusions>
           <exclusion>
             <groupId>org.slf4j</groupId>
@@ -141,8 +141,8 @@
           <groupId>org.scala-tools</groupId>
           <artifactId>maven-scala-plugin</artifactId>
           <version>2.15.2</version>
-		  <configuration>
-		    <scalaVersion>${scala.version}</scalaVersion>
+          <configuration>
+            <scalaVersion>${scala.version}</scalaVersion>
             <args>
               <arg>-make:transitivenocp</arg>
               <arg>-dependencyfile</arg>
@@ -180,7 +180,7 @@
               </goals>
             </execution>
           </executions>
-		</plugin>
+        </plugin>
 
         <!-- Cobertura plugin, format xml -->
         <plugin>
