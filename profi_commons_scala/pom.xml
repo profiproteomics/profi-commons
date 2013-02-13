@@ -115,7 +115,7 @@
         </configuration>
       </plugin>
 
-      <plugin>
+      <!--  <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-eclipse-plugin</artifactId>
         <configuration>
@@ -131,7 +131,7 @@
             <classpathContainer>ch.epfl.lamp.sdt.launching.SCALA_CONTAINER</classpathContainer>
           </classpathContainers>
         </configuration>
-      </plugin>
+      </plugin> -->
 
     </plugins>
   </build>
