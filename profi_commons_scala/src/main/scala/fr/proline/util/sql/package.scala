@@ -77,13 +77,12 @@ package object sql {
     
     val recordStrings = record.map { case opt: Option[Any] => {
                                        opt match {
-                                         case None => "\\N"
+                                         case None => """\N"""
                                          case Some(value) => stringify( value )
                                        }
                                      }
                                      case value: Any => stringify( value )
                                    }
-                              //.map { str => if( str == null ) "\\N" else str }
     
     (recordStrings.mkString("\t") + "\n").getBytes("UTF-8")
   }
