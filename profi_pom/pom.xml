@@ -183,10 +183,10 @@
         </plugin>
 
 	<!-- Maven Dependency Plugin -->
-	<dependency>
+	<plugin>
 	  <artifactId>maven-dependency-plugin</artifactId>
 	  <version>2.6</version>
-        </dependency> <!-- Latest version checked on 20 feb. 2013 -->
+        </plugin> <!-- Latest version checked on 20 feb. 2013 -->
 
         <!-- Cobertura plugin, format xml -->
         <plugin>
