@@ -182,10 +182,16 @@
           </executions>
         </plugin>
 
-        <!-- Maven Dependency Plugin -->
+        <!-- FindBugs plugin, format xml -->
         <plugin>
-          <artifactId>maven-dependency-plugin</artifactId>
-          <version>2.1</version> <!-- Version before 20 aug. 2009 -->
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>findbugs-maven-plugin</artifactId>
+          <version>2.5.2</version>
+          <configuration>
+            <findbugsXmlOutput>true</findbugsXmlOutput>
+            <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+            <xmlOutput>true</xmlOutput>
+          </configuration>
         </plugin>
 
         <!-- Cobertura plugin, format xml -->
@@ -206,18 +212,6 @@
               </goals>
             </execution>
           </executions>
-        </plugin>
-
-        <!-- FindBugs plugin, format xml -->
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>findbugs-maven-plugin</artifactId>
-          <version>2.5.2</version>
-          <configuration>
-            <findbugsXmlOutput>true</findbugsXmlOutput>
-            <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
-            <xmlOutput>true</xmlOutput>
-          </configuration>
         </plugin>
 
       </plugins>
