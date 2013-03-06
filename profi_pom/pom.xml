@@ -214,6 +214,13 @@
           </executions>
         </plugin>
 
+        <!-- JaCoCo plugin -->
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>0.6.2-SNAPSHOT</version>
+        </plugin>
+
       </plugins>
     </pluginManagement>
   </build>
