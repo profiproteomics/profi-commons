@@ -218,7 +218,7 @@
         <plugin>
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
-          <version>0.6.2-SNAPSHOT</version>
+          <version>0.6.2.201302030002</version> <!-- Latest version checked on 7 march 2013 -->
         </plugin>
 
       </plugins>
