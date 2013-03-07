@@ -9,8 +9,10 @@ object MathUtils {
 
     if (value.isInstanceOf[Float]) {
       value.asInstanceOf[Float]
-    } else {
+    } else if (value.isInstanceOf[Number]) {
       value.asInstanceOf[Number].floatValue
+    } else {
+      throw new IllegalArgumentException("Value is not a Number")
     }
 
   }
@@ -22,8 +24,10 @@ object MathUtils {
 
     if (value.isInstanceOf[Double]) {
       value.asInstanceOf[Double]
-    } else {
+    } else if (value.isInstanceOf[Number]) {
       value.asInstanceOf[Number].doubleValue
+    } else {
+      throw new IllegalArgumentException("Value is not a Number")
     }
 
   }
