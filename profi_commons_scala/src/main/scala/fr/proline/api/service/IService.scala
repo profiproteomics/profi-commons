@@ -11,6 +11,7 @@ trait IService extends Runnable with HasProgress {
   // Define a run method which implements the Thread interruption policy
   def run(): Unit = {
     
+    // TODO LMN : better use Thread.interrupted() or Thread.currentThread().isInterrupted() to know if a thread is interrupted
     this.registerOnProgressAction( Thread.sleep(1) )
     
     try {
