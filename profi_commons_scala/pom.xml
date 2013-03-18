@@ -5,12 +5,12 @@
   <parent>
     <artifactId>ProFI-Pom</artifactId>
     <groupId>fr.proline</groupId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
   </parent>
 
   <groupId>fr.proline.util</groupId>
   <artifactId>ProFI-Commons-Scala</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.0.2</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -45,7 +45,7 @@
     <dependency>
       <groupId>fr.proline.util</groupId>
       <artifactId>ProFI-Commons-Java</artifactId>
-      <version>0.0.3-SNAPSHOT</version>
+      <version>0.0.3</version>
     </dependency>
 
     <!-- Test -->
