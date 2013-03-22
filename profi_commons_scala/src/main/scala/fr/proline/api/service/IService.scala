@@ -4,6 +4,8 @@ import scala.collection.mutable.ArrayBuffer
 
 import com.weiglewilczek.slf4s.Logging
 
+import fr.proline.util.ThreadLogger
+
 trait IService extends Runnable with HasProgress with Logging {
 
   protected def beforeInterruption() = {}
@@ -11,7 +13,13 @@ trait IService extends Runnable with HasProgress with Logging {
   def runService(): Boolean
 
   // Define a run method which implements the Thread interruption policy
-  def run(): Unit = {
+  def run() {
+
+    val currentThread = Thread.currentThread
+
+    if (!currentThread.getUncaughtExceptionHandler.isInstanceOf[ThreadLogger]) {
+      currentThread.setUncaughtExceptionHandler(new ThreadLogger(logger.name))
+    }
 
     /* Check interrupt state before executing work */
     if (Thread.interrupted()) {
