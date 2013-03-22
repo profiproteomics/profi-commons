@@ -15,7 +15,10 @@ trait IService extends Runnable with HasProgress with Logging {
 
     /* Check interrupt state before executing work */
     if (Thread.interrupted()) {
-      logger.warn("Current thread interrupted before running Service")
+      val message = "Current thread interrupted before running IService"
+      logger.warn(message)
+
+      throw new InterruptedException(message)
     } else {
 
       registerOnProgressAction({
@@ -29,9 +32,10 @@ trait IService extends Runnable with HasProgress with Logging {
       try {
         runService()
       } catch {
+
         case ie: InterruptedException => {
           /* Log and re-throw InterruptedException */
-          logger.warn("Service IService.runService() interrupted", ie)
+          logger.warn("IService.runService() interrupted", ie)
 
           beforeInterruption()
 
