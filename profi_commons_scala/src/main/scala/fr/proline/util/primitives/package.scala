@@ -38,11 +38,11 @@ package object primitives {
     } else {
       val longValue = value.asInstanceOf[Number].longValue
 
-      if ((longValue < Integer.MIN_VALUE) || ((longValue > Integer.MAX_VALUE))) {
-        throw new IllegalArgumentException("Integer value out of range");
+      if ((longValue < Integer.MIN_VALUE) || (longValue > Integer.MAX_VALUE)) {
+        throw new IllegalArgumentException("Integer value out of range")
       }
 
-      longValue.asInstanceOf[Int];
+      longValue.asInstanceOf[Int]
     }
 
   }
