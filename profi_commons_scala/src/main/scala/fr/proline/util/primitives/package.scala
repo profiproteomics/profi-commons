@@ -19,11 +19,13 @@ package object primitives {
    * Tries to cast any value to Scala Double primitive.
    */
   def toDouble(value: Any): Double = {
-
-    if (value.isInstanceOf[Double]) {
-      value.asInstanceOf[Double]
-    } else {
-      value.asInstanceOf[Number].doubleValue
+    
+    value match {
+      case d: Double => d
+      case f: Float => f.toDouble
+      case i: Int => i.toDouble
+      case l: Long => l.toDouble
+      case _ => value.asInstanceOf[Number].doubleValue
     }
 
   }
