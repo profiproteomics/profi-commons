@@ -17,7 +17,7 @@ package object math {
   
   def getMedianObject[T]( objects: List[T], sortingFunc: Function2[T,T,Boolean] ): T = {
   
-    val sortedObjects = objects.sort { (a,b) => sortingFunc(a,b) } 
+    val sortedObjects = objects.sortWith { (a,b) => sortingFunc(a,b) } 
     val nbObjects = sortedObjects.length
     
     // Compute median index

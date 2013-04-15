@@ -95,14 +95,20 @@ case class StringFormattable(val value: String) extends ISQLFormattable {
 case class BooleanFormattable(val value: Boolean) extends ISQLFormattable {
   
   override def escaped(dialect: AbstractSQLDialect): String = {
-    dialect.booleanFormatter.formatBoolean(value).toString
+    val formattedBool = dialect.booleanFormatter.formatBoolean(value)
+    formattedBool match {
+      case strBool: String => dialect.quoteString( strBool )
+      case _ => formattedBool.toString
+    }
   }
   override def addTo(statement: StatementWrapper): Unit = {
     val dialect  = statement.dialect
-    dialect.typeMapper.booleanType match {      
+    dialect.typeMapper.booleanType match {
       case SupportedTypes.BOOLEAN => statement.addBoolean(value)
       case SupportedTypes.INTEGER => statement.addBoolean(value)
-      case SupportedTypes.STRING => statement.addString( this.escaped(dialect) )
+      case SupportedTypes.STRING => statement.addString(
+        dialect.booleanFormatter.formatBoolean(value).toString
+      )
     }
   }
   
