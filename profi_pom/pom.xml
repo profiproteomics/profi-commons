@@ -49,6 +49,13 @@
         <version>4.1.11.Final</version> <!-- Latest version is 4.2.0.Final on 8 avr. 2013 -->
       </dependency>
 
+      <!-- JSON-RPC -->
+      <dependency>
+        <groupId>com.thetransactioncompany</groupId>
+        <artifactId>jsonrpc2-base</artifactId>
+        <version>1.35</version>
+      </dependency>
+
       <!-- Databases -->
       <dependency>
         <groupId>postgresql</groupId>
