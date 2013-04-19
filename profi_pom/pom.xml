@@ -25,6 +25,13 @@
         <version>1.7.5</version> <!-- Latest version checked on 8 avr. 2013 -->
       </dependency>
 
+      <!-- Bridge Apache commons-logging over SLF4J -->
+      <dependency>
+	    <groupId>org.slf4j</groupId>
+	    <artifactId>jcl-over-slf4j</artifactId>
+	    <version>1.7.5</version> <!-- Latest version checked on 19 avr. 2013 -->
+      </dependency>
+
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>
