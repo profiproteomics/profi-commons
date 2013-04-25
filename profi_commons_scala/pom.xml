@@ -34,11 +34,10 @@
       <artifactId>slf4s_2.9.1</artifactId>
     </dependency>
 
-    <!-- Prequel dependencies -->
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
-      <version>1.6.2</version>
+      <!-- Version inherited from ProFI-Pom -->
     </dependency>
 
     <!-- ProFi Commons (Java) -->
