@@ -40,6 +40,13 @@
       <!-- Version inherited from ProFI-Pom -->
     </dependency>
 
+    <!-- joda-time 2.2 requires joda-convert to compile Scala projects -->
+    <dependency>
+      <groupId>org.joda</groupId>
+      <artifactId>joda-convert</artifactId>
+      <!-- Version inherited from ProFI-Pom -->
+    </dependency>
+
     <!-- ProFi Commons (Java) -->
     <dependency>
       <groupId>fr.proline.util</groupId>
