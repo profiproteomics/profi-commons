@@ -59,7 +59,7 @@
       <dependency>
         <groupId>joda-time</groupId>
         <artifactId>joda-time</artifactId>
-        <version>2.2</version> <!-- Latest version checked on 25 avr. 2013 -->
+        <version>1.6.2</version> <!-- Latest version is 2.2 on 25 avr. 2013 -->
       </dependency>
 
       <dependency>
