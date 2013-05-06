@@ -9,10 +9,11 @@ package object primitives {
 
     if (value.isInstanceOf[Float]) {
       value.asInstanceOf[Float]
+    } else if (value.isInstanceOf[String]) {
+      java.lang.Float.valueOf(value.asInstanceOf[String])
     } else {
       value.asInstanceOf[Number].floatValue
     }
-
   }
 
   /**
@@ -22,7 +23,9 @@ package object primitives {
 
     if (value.isInstanceOf[Double]) {
       value.asInstanceOf[Double]
-    } else {
+    } else if (value.isInstanceOf[String]) {
+      java.lang.Double.valueOf(value.asInstanceOf[String])
+    } else  {
       value.asInstanceOf[Number].doubleValue()
     }
 
@@ -35,6 +38,8 @@ package object primitives {
 
     if (value.isInstanceOf[Int]) {
       value.asInstanceOf[Int]
+    } else if (value.isInstanceOf[String]) {
+      java.lang.Integer.valueOf(value.asInstanceOf[String])
     } else {
       val longValue = value.asInstanceOf[Number].longValue
 
