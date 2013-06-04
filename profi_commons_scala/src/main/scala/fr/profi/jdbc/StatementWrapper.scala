@@ -142,13 +142,13 @@ class PreparedStatementWrapper(
     execute
   }
   
-  def generatedInt: Int = {
+  def generatedLong: Long = {
     
     val rsWithGenKeys = this.jdbcPrepStmt.getGeneratedKeys()
     
     dialect.generateKeyParam match {
-      case s: String => rsWithGenKeys.getInt(s)
-      case i: Int => if( rsWithGenKeys.next() ) rsWithGenKeys.getInt(i) else 0
+      case s: String => rsWithGenKeys.getLong(s)
+      case i: Int => if( rsWithGenKeys.next() ) rsWithGenKeys.getLong(i) else 0L
     }
     
   }
