@@ -15,6 +15,13 @@ class PrimitivesTest {
   val dblValue: Double = 1.2345
 
   @Test
+  def testInt() {
+    assertEquals("Java Long to Scala Int", 273, toInt(java.lang.Long.valueOf(273L)))
+
+    assertEquals("String to Scala Int", -528, toInt("-528"))
+  }
+
+  @Test
   def testFloat() {
     assertEquals("Primitive Scala Float to Scala Float", flValue, toFloat(flValue), JavaMathUtils.EPSILON_FLOAT)
     assertEquals("Primitive Scala Float to AnyVal to Scala Float", flValue, valToFloat(flValue), JavaMathUtils.EPSILON_FLOAT)
