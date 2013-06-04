@@ -13,11 +13,11 @@ class EasyDbcSQLiteTest {
     
     ezDBC.beginTransaction()
     
-    var generatedIntSum: Int = 0
+    var generatedIntSum: Long = 0L
     ezDBC.executePrepared("INSERT INTO person VALUES (NULL, ?, ?)",true) { stmt =>
       for ( i <- 1 to 3 ) {   
         stmt.executeWith( new java.util.Date, 1 )
-        generatedIntSum += stmt.generatedInt
+        generatedIntSum += stmt.generatedLong
       }
     }
     
