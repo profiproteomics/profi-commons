@@ -7,6 +7,8 @@ import java.sql.Types
 
 import org.joda.time.DateTime
 
+import fr.proline.util.primitives._
+
 /**
  * Wrapper around PreparedStatement making is easier to add parameters.
  *
@@ -158,8 +160,8 @@ class PreparedStatementWrapper(
     val rsWithGenKeys = this.jdbcPrepStmt.getGeneratedKeys()
     
     dialect.generateKeyParam match {
-      case s: String => rsWithGenKeys.getLong(s)
-      case i: Int => if( rsWithGenKeys.next() ) rsWithGenKeys.getLong(i) else 0L
+      case s: String => toLong(rsWithGenKeys.getObject(s))
+      case i: Int => if (rsWithGenKeys.next()) toLong(rsWithGenKeys.getObject(i)) else 0L
     }
     
   }
