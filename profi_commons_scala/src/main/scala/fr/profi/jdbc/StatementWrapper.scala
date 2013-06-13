@@ -144,7 +144,8 @@ class PreparedStatementWrapper(
     execute
   }
   
-  /* Proline-Core 1.1.1 only use long as generated PK
+  // Proline-Core 1.1.1 only use long as generated PK
+  // But EasyDBC can be used in an other context
   def generatedInt: Int = {
     
     val rsWithGenKeys = this.jdbcPrepStmt.getGeneratedKeys()
@@ -154,8 +155,7 @@ class PreparedStatementWrapper(
       case i: Int => if( rsWithGenKeys.next() ) rsWithGenKeys.getInt(i) else 0
     }
     
-  }  
-  */
+  }
   
   def generatedLong: Long = {
     

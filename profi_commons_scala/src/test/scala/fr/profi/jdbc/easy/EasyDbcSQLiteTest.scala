@@ -13,17 +13,20 @@ class EasyDbcSQLiteTest {
     
     ezDBC.beginTransaction()
     
+    var generatedIntSum: Int = 0
     var generatedLongSum: Long = 0L
     ezDBC.executePrepared("INSERT INTO person VALUES (NULL, ?, ?)",true) { stmt =>
       for ( i <- 1 to 3 ) {   
-        stmt.executeWith( new java.util.Date, 1 )        
+        stmt.executeWith( new java.util.Date, 1 )
+        generatedIntSum += stmt.generatedInt
         generatedLongSum += stmt.generatedLong
       }
     }
     
     ezDBC.commitTransaction()
     
-    assertEquals( 3, ezDBC.selectInt("SELECT count(*) FROM person") )   
+    assertEquals( 3, ezDBC.selectInt("SELECT count(*) FROM person") )
+    assertEquals( 6, generatedIntSum )
     assertEquals( 6L, generatedLongSum )
     
     println( ezDBC.select("SELECT name FROM person") { r => r.nextStringOrElse("") } (0) )
