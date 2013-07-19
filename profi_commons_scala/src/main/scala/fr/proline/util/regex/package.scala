@@ -9,13 +9,16 @@ package object regex {
     import java.util.regex.Pattern
     
     // Private cache of compiled regexes
-    val regexCache = new collection.mutable.HashMap[String,Regex]
+    val regexCache = new collection.mutable.HashMap[Pair[String,String],Regex]
     
     def getRegex( s: String, groupNames: String* ) = {
-      if( regexCache.contains(s) ) regexCache(s)
+      val groupNamesAsStr = groupNames.mkString("%")
+      val regexKey = (s, groupNamesAsStr)
+      
+      if( regexCache.contains(regexKey) ) regexCache(regexKey)
       else {
         val regex = new Regex(s, groupNames: _* )
-        regexCache += (s -> regex)
+        regexCache += ( regexKey -> regex)
         regex
       }
     }
