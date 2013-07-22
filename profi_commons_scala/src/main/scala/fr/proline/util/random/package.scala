@@ -9,10 +9,9 @@ object random {
     val length = randomInt(lengthMin, lengthMax)
     
     val newKey = (1 to length).map( x => {
-        val index = Random.nextInt(chars.length)
-        chars(index)
-      }
-    ).mkString("")
+      val index = Random.nextInt(chars.length)
+      chars(index)
+    }).mkString("")
     
     newKey
   }
