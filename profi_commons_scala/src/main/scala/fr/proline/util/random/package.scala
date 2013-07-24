@@ -1,8 +1,8 @@
 package fr.proline.util
 
-import scala.util.Random
-
-object random {
+package object random {
+  
+  import scala.util.Random
 
   def randomString(chars: String, lengthMin: Int, lengthMax: Int): String = {
     
