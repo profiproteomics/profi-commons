@@ -70,12 +70,25 @@ package object math {
     ( slope, intercept )
   }
   
-  /** Interpolate a value using the slope and intercept of a line
+  /** Interpolates a value using the slope and intercept of a line
    *  estimated with two consecutive data points coordinates
    *  in the provided Pair[Double,Double] vector.
-   **/
-  def interpolateValue( index: Int, xValue: Float, xyValues: Seq[Pair[Double,Double]] ): Double = {
-    require( index >= -1 && index < xyValues.length, "index is out of range" )
+   *  Assumes that XY values are already sorted by X.
+   *  If fixOutOfRange is true then out of range values will be replaced by first or last XY pair of the vector.
+   *  
+   * @param xValue the X value
+   * @param xyValues the XY values
+   * @paramm fixOutOfRange enable/disable the support for out of range values
+   * @return the interpolated Y value
+   */
+  // TODO: create a LinearInterpolator class which allows to index the XY vector (faster lookup) => use EntityHistogram as backend ???
+  def linearInterpolation( xValue: Double, xyValues: Seq[Pair[Double,Double]], fixOutOfRange: Boolean ): Double = {
+    
+    var index = xyValues.indexWhere( _._1 >= xValue )
+    if( index == -1 && fixOutOfRange ) {
+      if( !fixOutOfRange ) throw new IllegalArgumentException("index is out of range")
+      else index = if( xValue < xyValues.head._1 ) 0 else xyValues.length - 1
+    }
     
     // If we are looking at the left-side of the vector boundaries
     // then we take the Y value of the first element
@@ -101,12 +114,28 @@ package object math {
  
   }
   
-  /** Interpolate a value using the slope and intercept of a line
+  def linearInterpolation( xValue: Double, xyValues: Seq[Pair[Double,Double]] ): Double = {
+    linearInterpolation(xValue,xyValues,true)
+  }
+  
+  /** Interpolates a value using the slope and intercept of a line
    *  estimated with two consecutive data points coordinates
    *  in the provided Pair[Float,Float] vector.
-   **/
-  def interpolateValue( index: Int, xValue: Float, xyValues: Seq[Pair[Float,Float]] ): Float = {
-    require( index >= -1 && index < xyValues.length, "index is out of range" )
+   *  Assumes that XY values are already sorted by X.   *  
+   *  If fixOutOfRange is true then out of range values will be replaced by first or last XY pair of the vector.
+   *  
+   * @param xValue the X value
+   * @param xyValues the XY values
+   * @paramm fixOutOfRange enable/disable the support for out of range values
+   * @return the interpolated Y value
+   */
+  def linearInterpolation( xValue: Float, xyValues: Seq[Pair[Float,Float]], fixOutOfRange: Boolean ): Float = {
+    
+    var index = xyValues.indexWhere( _._1 >= xValue )
+    if( index == -1 && fixOutOfRange ) {
+      if( !fixOutOfRange ) throw new IllegalArgumentException("index is out of range")
+      else index = if( xValue < xyValues.head._1 ) 0 else xyValues.length - 1
+    }
     
     // If we are looking at the left-side of the vector boundaries
     // then we take the Y value of the first element
@@ -130,6 +159,10 @@ package object math {
       }
     }
  
+  }
+  
+  def linearInterpolation( xValue: Float, xyValues: Seq[Pair[Float,Float]] ): Float = {
+    linearInterpolation(xValue,xyValues,true)
   }
   
 }
