@@ -70,4 +70,66 @@ package object math {
     ( slope, intercept )
   }
   
+  /** Interpolate a value using the slope and intercept of a line
+   *  estimated with two consecutive data points coordinates
+   *  in the provided Pair[Double,Double] vector.
+   **/
+  def interpolateValue( index: Int, xValue: Float, xyValues: Seq[Pair[Double,Double]] ): Double = {
+    require( index >= -1 && index < xyValues.length, "index is out of range" )
+    
+    // If we are looking at the left-side of the vector boundaries
+    // then we take the Y value of the first element
+    if( index == 0  ) xyValues.head._2
+    // Else if we are looking at the right-side of the vector boundaries
+    // then we take the Y of the last element
+    else if( index == -1 ) xyValues.last._2
+    // Else we are inside the vector boundaries
+    // We then compute the linear interpolation
+    else {
+      val( x1, y1 ) = xyValues(index-1)
+      val( x2, y2) = xyValues(index)
+      
+      // If the vector contains two consecutive values with a same X coordinate
+      // Then we take the mean of the corresponding Y values
+      if( x1 == x2 ) (y1 + y2)/2
+      // Else we compute the linear interpolation
+      else {
+        val ( a, b ) = calcLineParams( x1, y1, x2, y2 )
+        (a * xValue + b)
+      }
+    }
+ 
+  }
+  
+  /** Interpolate a value using the slope and intercept of a line
+   *  estimated with two consecutive data points coordinates
+   *  in the provided Pair[Float,Float] vector.
+   **/
+  def interpolateValue( index: Int, xValue: Float, xyValues: Seq[Pair[Float,Float]] ): Float = {
+    require( index >= -1 && index < xyValues.length, "index is out of range" )
+    
+    // If we are looking at the left-side of the vector boundaries
+    // then we take the Y value of the first element
+    if( index == 0  ) xyValues.head._2
+    // Else if we are looking at the right-side of the vector boundaries
+    // then we take the Y of the last element
+    else if( index == -1 ) xyValues.last._2
+    // Else we are inside the vector boundaries
+    // We then compute the linear interpolation
+    else {
+      val( x1, y1 ) = xyValues(index-1)
+      val( x2, y2) = xyValues(index)
+      
+      // If the vector contains two consecutive values with a same X coordinate
+      // Then we take the mean of the corresponding Y values
+      if( x1 == x2 ) (y1 + y2)/2
+      // Else we compute the linear interpolation
+      else {
+        val ( a, b ) = calcLineParams( x1, y1, x2, y2 )
+        (a * xValue + b).toFloat
+      }
+    }
+ 
+  }
+  
 }
