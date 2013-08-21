@@ -3,12 +3,16 @@ package fr.profi.util
 import scala.collection.mutable.ArrayBuffer
 import scala.math.{floor,sqrt}
 
+package stat {
+  
+  case class Bin( center: Double, lowerBound: Double, upperBound: Double )
+
+}
+
 package object stat {
   
   // Inspired by: https://github.com/geetduggal/growcode/blob/master/src/main/scala/Histogram.scala
   class EntityHistogramComputer[T]( val entities: Seq[T], val valueExtractor: T => Double ) {
-    
-    case class Bin( center: Double, lowerBound: Double, upperBound: Double )
 
     def calcHistogram( nbins: Int = sqrt(entities.length).toInt, range: Option[(Double,Double)] = None ): Array[Pair[Bin,Seq[T]]] = {
     
