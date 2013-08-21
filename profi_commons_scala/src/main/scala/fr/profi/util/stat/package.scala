@@ -15,7 +15,12 @@ package object stat {
   class EntityHistogramComputer[T]( val entities: Seq[T], val valueExtractor: T => Double ) {
 
     def calcHistogram( nbins: Int = sqrt(entities.length).toInt, range: Option[(Double,Double)] = None ): Array[Pair[Bin,Seq[T]]] = {
-    
+      require( nbins > 0, "the histogram must contain at least one bin" )
+      
+      if( range.isDefined ) {
+        require( range.get._2 >= range.get._1, "invalid value range" )
+      }
+      
       val sortedEntities = entities.sortBy( e => valueExtractor(e) )
       val( lowestEntity, highestEntity ) = (sortedEntities.head,sortedEntities.last)
       
