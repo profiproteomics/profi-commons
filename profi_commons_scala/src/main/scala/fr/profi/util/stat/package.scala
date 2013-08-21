@@ -10,17 +10,17 @@ package object stat {
     
     case class Bin( center: Double, lowerBound: Double, upperBound: Double )
 
-    def calcHistogram( drange: Option[(Double,Double)] = None, nbins: Int = sqrt(entities.length).toInt ): Array[Pair[Bin,Seq[T]]] = {
+    def calcHistogram( nbins: Int = sqrt(entities.length).toInt, range: Option[(Double,Double)] = None ): Array[Pair[Bin,Seq[T]]] = {
     
       val sortedEntities = entities.sortBy( e => valueExtractor(e) )
       val( lowestEntity, highestEntity ) = (sortedEntities.head,sortedEntities.last)
       
-      val minVal = valueExtractor(lowestEntity)      
-      val b = 1e-10 
+      val minVal = valueExtractor(lowestEntity)
+      val b = 1e-10
       
       // The bin width. Simply the bounds of the histogram divided by the number of bins
       val binSize = {
-        if ( drange.isDefined ) (drange.get._2 - drange.get._1) / nbins
+        if ( range.isDefined ) (range.get._2 - range.get._1) / nbins
         else ( valueExtractor(highestEntity) - minVal ) / nbins
       } + b // small hack in order to be sure all values are included in the histogram range
       
