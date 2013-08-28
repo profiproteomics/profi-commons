@@ -117,13 +117,13 @@ class ResultSetRow(val rs: ResultSet) {
   private def _getValue[T](colLabel: String, f: (String) => T): T = f(colLabel)
   
   def _getValueOption[T](colLabel: String, f: (String) => T): Option[T] = {
-    val value = f(colLabel)   
+    val value = f(colLabel)
     if (rs.wasNull) None
-    else Some(value)
+    else Option(value)
   }
   
   private def _getValueOrElse[T](colLabel: String, f: (String) => T, defaultValue: T): T = {    
-    val value = f(colLabel)    
+    val value = f(colLabel)
     if (rs.wasNull) defaultValue
     else value
   }
@@ -133,7 +133,7 @@ class ResultSetRow(val rs: ResultSet) {
   }
   
   private def _nextValue[T](f: (Int) => T): T = {
-    _incrementPosition    
+    _incrementPosition
     f(_position)
   }
 
@@ -143,7 +143,7 @@ class ResultSetRow(val rs: ResultSet) {
     val value = f(_position)
     
     if (rs.wasNull) None
-    else Some(value)
+    else Option(value)
   }
   
   private def _nextValueOrElse[T](f: (Int) => T, defaultValue: T): T = {
