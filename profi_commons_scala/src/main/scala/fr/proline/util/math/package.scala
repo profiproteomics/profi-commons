@@ -4,18 +4,23 @@ package fr.proline.util
 package object math {
 
   /** Computes the median value of a sequence of Doubles */
-  /*def median(s: Seq[Double]) = {
+  /*def median(s: Seq[Double]): Double = {
     val (lower, upper) = s.sortWith(_<_).splitAt(s.size / 2)
     if (s.size % 2 == 0) (lower.last + upper.head) / 2.0 else upper.head
+  }
+  
+  def median(s: Seq[Float]): Float = {
+    val (lower, upper) = s.sortWith(_<_).splitAt(s.size / 2)
+    if (s.size % 2 == 0) (lower.last + upper.head) / 2.0f else upper.head
   }*/
   
-  def median[T](s: Seq[T])(implicit n: Fractional[T]) = {
+  def median[T](s: Seq[T])(implicit n: Fractional[T]): T = {
     import n._
     val (lower, upper) = s.sortWith(_<_).splitAt(s.size / 2)
     if (s.size % 2 == 0) (lower.last + upper.head) / fromInt(2) else upper.head
   }
   
-  def getMedianObject[T]( objects: List[T], sortingFunc: Function2[T,T,Boolean] ): T = {
+  def getMedianObject[T]( objects: Seq[T], sortingFunc: Function2[T,T,Boolean] ): T = {
   
     val sortedObjects = objects.sortWith { (a,b) => sortingFunc(a,b) } 
     val nbObjects = sortedObjects.length

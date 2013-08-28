@@ -55,4 +55,8 @@ package object random {
     }
   }
   
+  def randomGaussian( mean: Double, stdDev: Double ): Double = {
+    (Random.nextGaussian() * stdDev) + mean
+  }
+  
 }
