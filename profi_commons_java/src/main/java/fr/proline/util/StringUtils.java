@@ -53,6 +53,17 @@ public final class StringUtils {
 
 	return empty;
     }
+    
+    /**
+     * Checks if given String is not empty (same rules than the <code>isEmpty</code> method).
+     * 
+     * @param s
+     *            Source String to check
+     * @return <code>true</code> if given String is not <code>null</code> and not empty
+     */
+    public static boolean isNotEmpty(final String s) {
+    return ! StringUtils.isEmpty(s);
+    }
 
     /**
      * Check if a given CharSequence (String or buffer) is terminated by a given character.
