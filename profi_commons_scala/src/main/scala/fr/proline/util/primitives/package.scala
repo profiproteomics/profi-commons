@@ -11,7 +11,7 @@ package object primitives {
       case v: Boolean           => v
       case v: java.lang.Boolean => v.booleanValue
       case v: String            => java.lang.Boolean.parseBoolean(normalizeString(v))
-      case _                    => throw new IllegalArgumentException("Value is not boolean Type")
+      case _                    => throw new IllegalArgumentException("Type of value is "+getTypeAsString(value)+" not boolean")
     }
 
   }
@@ -25,7 +25,7 @@ package object primitives {
       case v: Int    => v
       case v: Number => checkInt(v.longValue)
       case v: String => checkInt(java.lang.Long.parseLong(normalizeString(v)))
-      case _         => throw new IllegalArgumentException("Value is not integer Type")
+      case _         => throw new IllegalArgumentException("Type of value is "+getTypeAsString(value)+" not integer")
     }
 
   }
@@ -39,7 +39,7 @@ package object primitives {
       case v: Long   => v
       case v: Number => v.longValue
       case v: String => java.lang.Long.parseLong(normalizeString(v))
-      case _         => throw new IllegalArgumentException("Value is not long Type")
+      case _         => throw new IllegalArgumentException("Type of value is "+getTypeAsString(value)+" not long")
     }
 
   }
@@ -53,7 +53,7 @@ package object primitives {
       case v: Float  => v
       case v: Number => v.floatValue
       case v: String => java.lang.Float.parseFloat(normalizeString(v))
-      case _         => throw new IllegalArgumentException("Value is not float Type")
+      case _         => throw new IllegalArgumentException("Type of value is "+getTypeAsString(value)+" not float")
     }
 
   }
@@ -67,7 +67,7 @@ package object primitives {
       case v: Double => v
       case v: Number => v.doubleValue
       case v: String => java.lang.Double.parseDouble(normalizeString(v))
-      case _         => throw new IllegalArgumentException("Value is not double Type")
+      case _         => throw new IllegalArgumentException("Type of value is "+getTypeAsString(value)+" not double")
     }
 
   }
@@ -88,6 +88,16 @@ package object primitives {
     }
 
     longValue.asInstanceOf[Int]
+  }
+  
+  private def getTypeAsString(value: Any): String = {
+    val valueType = try {
+      value.asInstanceOf[AnyRef].getClass.toString
+    } catch {
+      case _ => "unknown"
+    }
+    
+    valueType
   }
 
 }
