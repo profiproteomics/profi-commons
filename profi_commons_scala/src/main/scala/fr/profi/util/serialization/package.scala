@@ -87,6 +87,8 @@ package object serialization {
       
       // Configure serialization visibility
       // http://stackoverflow.com/questions/7105745/how-to-specify-jackson-to-only-use-fields-preferably-globally
+      // Note: the following settings breaks the compatibility with lazy fields
+      // -> the fix consists in using the @JsonProperty annotation on serializable lazy fields
       mapper.setVisibility(PropertyAccessor.ALL, Visibility.NONE)
       mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY)
       
