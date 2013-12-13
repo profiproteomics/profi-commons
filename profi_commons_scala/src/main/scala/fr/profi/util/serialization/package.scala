@@ -42,6 +42,8 @@ package object serialization {
     def deserialize[IT: Manifest](value: OT) : IT
   }
   
+  object ProfiJson extends ProfiJson
+  
   /* Inspired from:
    * http://stackoverflow.com/questions/12591457/scala-2-10-json-serialization-and-deserialization
    * http://stackoverflow.com/questions/15887785/jackson-scala-module-serialize-enumeration-fails
@@ -49,7 +51,7 @@ package object serialization {
    * http://stackoverflow.com/questions/16966743/small-example-of-jackson-scala-module
    * http://stackoverflow.com/questions/17135166/looking-for-a-good-example-of-polymorphic-serialization-deserialization-using-ja
   */
-  object ProfiJson extends ProfiSerializer[String] with JacksonSerializer {
+  trait ProfiJson extends ProfiSerializer[String] with JacksonSerializer {
     
     def getObjectMapper(): ObjectMapper = new ObjectMapper()
     
@@ -127,7 +129,7 @@ package object serialization {
     }
   }
   
-  object CustomDoubleSerializer {
+  private[this] object CustomDoubleSerializer {
     
     import java.text.{DecimalFormat,DecimalFormatSymbols}
     private val decimalSymbols = new DecimalFormatSymbols()
@@ -142,7 +144,7 @@ package object serialization {
     
   }
   
-  class CustomDoubleSerializer() extends NonTypedScalarSerializerBase[java.lang.Double]( classOf[java.lang.Double] ) {
+  private[this] class CustomDoubleSerializer() extends NonTypedScalarSerializerBase[java.lang.Double]( classOf[java.lang.Double] ) {
    
     /*override def serializeWithType( value: Double, jgen: JsonGenerator, provider: SerializerProvider, typeSer: TypeSerializer ) {
       this.serialize( value, jgen, provider )
@@ -171,7 +173,7 @@ package object serialization {
   
   }
   
-  class CustomArrayOfDoubleSerializer() extends ArraySerializerBase[Array[Double]](classOf[Array[Double]], null) {
+  private[this] class CustomArrayOfDoubleSerializer() extends ArraySerializerBase[Array[Double]](classOf[Array[Double]], null) {
     
     override def _withValueTypeSerializer( vts: TypeSerializer): ContainerSerializer[_] = {
       this.asInstanceOf[ContainerSerializer[_]]
