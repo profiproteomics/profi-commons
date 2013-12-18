@@ -104,11 +104,10 @@ package object serialization {
       objectMapper.writeValue(writer, value)
     }
     
-    def deserialize[T: Manifest](value: String) : T = {
+    /*def deserializeWithJacks[T: Manifest](value: String) : T = {
       JacksMapper.readValue[T](value)
-    }
+    }*/
   
-    /*
     // Code snippet used for Jackson Scala Module deserialization
     
     def deserialize[T: Manifest](value: String) : T = {
@@ -126,7 +125,7 @@ package object serialization {
         def getActualTypeArguments = m.typeArguments.map(typeFromManifest).toArray
         def getOwnerType = null
       }
-    }*/
+    }
     
   }
   
