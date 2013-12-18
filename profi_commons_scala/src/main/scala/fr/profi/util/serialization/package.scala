@@ -18,7 +18,7 @@ import com.fasterxml.jackson.databind.`type`.TypeFactory
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.JsonScalaEnumeration
 
-import com.lambdaworks.jacks.JacksMapper
+//import com.lambdaworks.jacks.JacksMapper
 //import scala.annotation.target.param
 //import scala.annotation.target.getter
 //import scala.reflect.BeanProperty
@@ -71,7 +71,7 @@ package object serialization {
     _configureObjectMapper(objectMapper)
     
     // Configure Jacks object mapper (used for deserialization)
-    _configureObjectMapper(JacksMapper.mapper)
+    //_configureObjectMapper(JacksMapper.mapper)
   
     private def _configureObjectMapper( mapper: ObjectMapper ) {
       
