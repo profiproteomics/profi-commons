@@ -14,6 +14,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <version.path>${basedir}/src/main/scala/fr/proline/util</version.path>
   </properties>
 
   <dependencies>
@@ -46,14 +47,14 @@
       <artifactId>joda-convert</artifactId>
       <!-- Version inherited from ProFI-Pom -->
     </dependency>
-    
+
     <!-- Serialization -->
     <dependency>
       <groupId>com.fasterxml.jackson.module</groupId>
       <artifactId>jackson-module-scala_${scala.version}</artifactId>
       <!-- Version inherited from ProFI-Pom -->
     </dependency>
-    
+
     <dependency>
       <groupId>com.lambdaworks</groupId>
       <artifactId>jacks_${scala.version}</artifactId>
@@ -114,6 +115,40 @@
     <sourceDirectory>src/main/scala</sourceDirectory>
     <testSourceDirectory>src/test/scala</testSourceDirectory>
 
+    <pluginManagement>
+      <plugins>
+        <!-- For Eclipse build -->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>com.google.code.maven-replacer-plugin</groupId>
+                    <artifactId>replacer</artifactId>
+                    <versionRange>[1.5.2,)</versionRange>
+                    <goals>
+                      <goal>replace</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <execute>
+                       <runOnIncremental>false</runOnIncremental>
+                     </execute>
+                  </action>
+                </pluginExecution>
+
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
     <plugins>
       <plugin>
         <groupId>org.scala-tools</groupId>
@@ -132,6 +167,36 @@
             <arg>-target:jvm-1.5</arg>
           </args>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>com.google.code.maven-replacer-plugin</groupId>
+        <artifactId>replacer</artifactId>
+
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+              <goals>
+                <goal>replace</goal>
+              </goals>
+           </execution>
+         </executions>
+
+         <configuration>
+           <file>${version.path}/ScalaVersion.scala.template</file>
+           <outputFile>${version.path}/ScalaVersion.scala</outputFile>
+           <replacements>
+             <replacement>
+               <token>@moduleName@</token>
+               <value>${project.artifactId}</value>
+             </replacement>
+             <replacement>
+               <token>@version@</token>
+               <value>${project.version}_${maven.build.timestamp}_${user.name}</value>
+             </replacement>
+           </replacements>
+         </configuration>
+
       </plugin>
 
       <!--  <plugin>
