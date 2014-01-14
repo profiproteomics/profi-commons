@@ -1,0 +1,15 @@
+package fr.proline.util;
+
+import fr.proline.util.version.IVersion;
+
+public class JavaVersion implements IVersion {
+
+    public String getModuleName() {
+	return "@moduleName@";
+    }
+
+    public String getVersion() {
+	return "@version@";
+    }
+
+}
