@@ -94,7 +94,7 @@ package object primitives {
     val valueType = try {
       value.asInstanceOf[AnyRef].getClass.toString
     } catch {
-      case _ => "unknown"
+      case e: Throwable => "unknown"
     }
     
     valueType

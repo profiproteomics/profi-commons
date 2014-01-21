@@ -2,7 +2,7 @@ package fr.proline.api.service
 
 import scala.collection.mutable.ArrayBuffer
 
-import com.weiglewilczek.slf4s.Logging
+import com.typesafe.scalalogging.slf4j.Logging
 
 import fr.proline.util.ThreadLogger
 
@@ -18,7 +18,7 @@ trait IService extends Runnable with HasProgress with Logging {
     val currentThread = Thread.currentThread
 
     if (!currentThread.getUncaughtExceptionHandler.isInstanceOf[ThreadLogger]) {
-      currentThread.setUncaughtExceptionHandler(new ThreadLogger(logger.name))
+      currentThread.setUncaughtExceptionHandler(new ThreadLogger())
     }
 
     /* Check interrupt state before executing work */
