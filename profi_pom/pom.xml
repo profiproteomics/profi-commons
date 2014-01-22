@@ -232,26 +232,11 @@
             <args>
               <arg>-make:transitivenocp</arg>
               <arg>-deprecation</arg>
-              <arg>-feature</arg>
               <arg>-dependencyfile</arg>
               <arg>${project.build.directory}/.scala_dependencies</arg> <!-- Must follow "-dependencyfile" arg -->
             </args>
           </configuration>
           <executions>
-            <execution>
-              <id>compile</id>
-              <phase>compile</phase>
-              <goals>
-                <goal>compile</goal>
-              </goals>
-            </execution>
-            <execution>
-              <id>test-compile</id>
-              <phase>test-compile</phase>
-              <goals>
-                <goal>testCompile</goal>
-              </goals>
-            </execution>
             <execution>
               <id>scala-compile-first</id>
               <phase>process-resources</phase>
@@ -261,8 +246,22 @@
               </goals>
             </execution>
             <execution>
+              <id>compile</id>
+              <phase>compile</phase>
+              <goals>
+                <goal>compile</goal>
+              </goals>
+            </execution>
+            <execution>
               <id>scala-test-compile</id>
               <phase>process-test-resources</phase>
+              <goals>
+                <goal>testCompile</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>test-compile</id>
+              <phase>test-compile</phase>
               <goals>
                 <goal>testCompile</goal>
               </goals>
