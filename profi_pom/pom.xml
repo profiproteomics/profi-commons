@@ -243,8 +243,10 @@
                 <goal>compile</goal>
               </goals>
               <configuration>
-                <arg>-deprecation</arg>
-                <arg>-feature</arg>
+                <args>
+                  <arg>-deprecation</arg>
+                  <arg>-feature</arg>
+                </args>
               </configuration>
             </execution>
             <execution>
@@ -254,8 +256,10 @@
                 <goal>testCompile</goal>
               </goals>
               <configuration>
-                <arg>-deprecation</arg>
-                <arg>-feature</arg>
+                <args>
+                  <arg>-deprecation</arg>
+                  <arg>-feature</arg>
+                </args>
               </configuration>
             </execution>
             <execution>
