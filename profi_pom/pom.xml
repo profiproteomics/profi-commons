@@ -231,8 +231,10 @@
             <scalaVersion>${scala-library.version}</scalaVersion>
             <args>
               <arg>-make:transitivenocp</arg>
+              <arg>-deprecation</arg>
+              <arg>-feature</arg>
               <arg>-dependencyfile</arg>
-              <arg>${project.build.directory}/.scala_dependencies</arg>
+              <arg>${project.build.directory}/.scala_dependencies</arg> <!-- Must follow "-dependencyfile" arg -->
             </args>
           </configuration>
           <executions>
@@ -242,12 +244,6 @@
               <goals>
                 <goal>compile</goal>
               </goals>
-              <configuration>
-                <args>
-                  <arg>-deprecation</arg>
-                  <arg>-feature</arg>
-                </args>
-              </configuration>
             </execution>
             <execution>
               <id>test-compile</id>
@@ -255,12 +251,6 @@
               <goals>
                 <goal>testCompile</goal>
               </goals>
-              <configuration>
-                <args>
-                  <arg>-deprecation</arg>
-                  <arg>-feature</arg>
-                </args>
-              </configuration>
             </execution>
             <execution>
               <id>scala-compile-first</id>
