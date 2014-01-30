@@ -5,7 +5,7 @@ import java.sql.SQLException
 import scala.collection.mutable.ArrayBuffer
 
 import org.scalatest.FunSpec
-import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.Matchers
 import org.scalatest.BeforeAndAfterEach
 
 import org.junit.runner.RunWith
@@ -15,7 +15,7 @@ import easy._
 
 
 @RunWith(classOf[JUnitRunner])
-class SQLQueryExecutionSpec extends FunSpec with ShouldMatchers with BeforeAndAfterEach {
+class SQLQueryExecutionSpec extends FunSpec with Matchers with BeforeAndAfterEach {
   
   val eDBC = eDbcH2TestInstance
   

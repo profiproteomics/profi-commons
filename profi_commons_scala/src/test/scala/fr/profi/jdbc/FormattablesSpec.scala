@@ -3,14 +3,14 @@ package fr.profi.jdbc
 import org.joda.time.Duration
 
 import org.scalatest.FunSpec
-import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.Matchers
 import org.scalatest.BeforeAndAfterEach
 
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class FormattablesSpec extends FunSpec with ShouldMatchers {
+class FormattablesSpec extends FunSpec with Matchers {
 
   val dialect = DefaultSQLDialect
   

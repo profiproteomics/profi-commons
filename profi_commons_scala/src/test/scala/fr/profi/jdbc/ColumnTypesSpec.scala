@@ -5,11 +5,11 @@ import java.sql.SQLException
 import org.joda.time.DateTime
 import org.joda.time.Duration
 import org.junit.runner.RunWith
-import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.Matchers
 import org.scalatest.FunSpec
 import org.scalatest.junit.JUnitRunner
 
-trait ColumnTypeSpec[T] extends FunSpec with ShouldMatchers {
+trait ColumnTypeSpec[T] extends FunSpec with Matchers {
 
   val testIdentifier = columnTypeFactory.getClass.getSimpleName.replace("$", "")
 

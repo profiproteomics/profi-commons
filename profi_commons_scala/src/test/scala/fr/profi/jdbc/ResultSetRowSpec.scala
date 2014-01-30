@@ -4,7 +4,7 @@ import java.util.Date
 import java.sql.SQLException
 
 import org.scalatest.FunSpec
-import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.Matchers
 import org.scalatest.BeforeAndAfterEach
 
 import org.joda.time.DateTime
@@ -18,7 +18,7 @@ import org.scalatest.junit.JUnitRunner
 import easy._
 
 @RunWith(classOf[JUnitRunner])
-class ResultSetRowSpec extends FunSpec with ShouldMatchers with BeforeAndAfterEach {
+class ResultSetRowSpec extends FunSpec with Matchers with BeforeAndAfterEach {
 
   val eDBC = eDbcH2TestInstance
   
