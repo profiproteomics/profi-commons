@@ -1,6 +1,9 @@
 package fr.proline.util
 
 package object primitives {
+  
+  def isZeroOrNaN( value: Float ) = value.isNaN || value == 0f
+  def isZeroOrNaN( value: Double ) = value.isNaN || value == 0d
 
   /**
    * Tries to cast any value to Scala Boolean primitive.
