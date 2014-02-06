@@ -60,7 +60,7 @@ trait IService extends Runnable with HasProgress with Logging {
 
 trait HasProgress extends Logging {
 
-  case class Step
+  case class Step()
 
   import scala.collection.mutable.ArrayBuffer
 
