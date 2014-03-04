@@ -171,13 +171,11 @@
       </dependency>
 
       <!-- Scala tests -->
-      
-      <!-- Latest version checked on 9 dec. 2013 -->
-      <!--
+      <!-- Latest version checked on 9 dec. 2013
       <dependency>
         <groupId>org.scala-tools.testing</groupId>
         <artifactId>specs_${scala.version}</artifactId>
-        <version>1.6.9</version> 
+        <version>1.6.9</version>
         <scope>test</scope>
       </dependency>
       -->
