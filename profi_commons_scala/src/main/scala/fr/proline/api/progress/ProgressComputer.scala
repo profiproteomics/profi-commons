@@ -9,7 +9,7 @@ class ProgressComputer[S <: IProgressPlanSequence]( private val progressPlan: Pr
   def getOnProgressUpdatedListener() = {
     val progressComputer = this
     new Object with IProgressUpdatedListener {
-      def registerOnProgressUpdatedAction( action: Float => Unit ) = {
+      def listenOnProgressUpdatedAction( action: Float => Unit ) = {
         progressComputer.registerOnProgressUpdatedAction(action)
       }
     }
@@ -18,7 +18,7 @@ class ProgressComputer[S <: IProgressPlanSequence]( private val progressPlan: Pr
   def getOnStepCompletedListener() = {
     val progressComputer = this
     new Object with IStepCompletedListener {
-      def registerOnStepCompletedAction( action: Float => Unit ) = {
+      def listenOnStepCompletedAction( action: Float => Unit ) = {
         progressComputer.registerOnStepCompletedAction(action)
       }
     }
