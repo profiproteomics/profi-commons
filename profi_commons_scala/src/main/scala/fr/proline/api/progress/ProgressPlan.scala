@@ -156,12 +156,12 @@ case class ProgressStep[S <: IProgressPlanSequence](
   def setProgressUpdater( progressUpdater: IProgressStepListener ) = {
     progressUpdater match {
       case progressUpatedListener: IProgressUpdatedListener => {
-        progressUpatedListener.listenOnProgressUpdatedAction { newProgress =>
+        progressUpatedListener.listenOnProgressUpdatedAction { (stepIdentity,newProgress) =>
           this.setProgress( newProgress )
         }
       }
       case stepCompletedListener: IStepCompletedListener => {  
-        stepCompletedListener.listenOnStepCompletedAction { newProgress =>
+        stepCompletedListener.listenOnStepCompletedAction { (stepIdentity,newProgress) =>
           this.setProgress( newProgress )
         }
       }
@@ -170,7 +170,7 @@ case class ProgressStep[S <: IProgressPlanSequence](
     this
   }
   
-  def registerOnProgressUpdatedAction(action: Float => Unit) = synchronized {
+  def registerOnProgressUpdatedAction(action: Float => Unit ) = synchronized {
     this._onProgressUpdatedActions += action
     this
   }
@@ -184,8 +184,8 @@ case class ProgressStep[S <: IProgressPlanSequence](
 
 trait IProgressStepListener
 trait IProgressUpdatedListener extends IProgressStepListener {
-  def listenOnProgressUpdatedAction( action: Float => Unit )
+  def listenOnProgressUpdatedAction( action: (IProgressStepIdentity,Float) => Unit )
 }
 trait IStepCompletedListener extends IProgressStepListener {
-  def listenOnStepCompletedAction( action: Float => Unit )
+  def listenOnStepCompletedAction( action: (IProgressStepIdentity,Float) => Unit )
 }

@@ -9,7 +9,7 @@ class ProgressComputer[S <: IProgressPlanSequence]( private val progressPlan: Pr
   def getOnProgressUpdatedListener() = {
     val progressComputer = this
     new Object with IProgressUpdatedListener {
-      def listenOnProgressUpdatedAction( action: Float => Unit ) = {
+      def listenOnProgressUpdatedAction( action: (IProgressStepIdentity,Float) => Unit ) = {
         progressComputer.registerOnProgressUpdatedAction(action)
       }
     }
@@ -18,7 +18,7 @@ class ProgressComputer[S <: IProgressPlanSequence]( private val progressPlan: Pr
   def getOnStepCompletedListener() = {
     val progressComputer = this
     new Object with IStepCompletedListener {
-      def listenOnStepCompletedAction( action: Float => Unit ) = {
+      def listenOnStepCompletedAction( action: (IProgressStepIdentity,Float) => Unit ) = {
         progressComputer.registerOnStepCompletedAction(action)
       }
     }
@@ -28,8 +28,8 @@ class ProgressComputer[S <: IProgressPlanSequence]( private val progressPlan: Pr
   
   // A number that specifies how much of the task has been completed
   private var _progress = 0f
-  private val _onProgressUpdatedActions = new ArrayBuffer[Float => Unit](0)
-  private val _onStepCompletedActions = new ArrayBuffer[Float => Unit](0)
+  private val _onProgressUpdatedActions = new ArrayBuffer[ (IProgressStepIdentity,Float) => Unit](0)
+  private val _onStepCompletedActions = new ArrayBuffer[ (IProgressStepIdentity,Float) => Unit](0)
   
   // Watch for progress update and step completion
   for( step <- this.getSteps() ) {    
@@ -38,7 +38,7 @@ class ProgressComputer[S <: IProgressPlanSequence]( private val progressPlan: Pr
         this.updateProgress()
         
         // Execute on progress updated registered actions
-        for( action <- _onProgressUpdatedActions ) action(this._progress)
+        for( action <- _onProgressUpdatedActions ) action( step.identity, this._progress)
       }
       
     }
@@ -48,7 +48,7 @@ class ProgressComputer[S <: IProgressPlanSequence]( private val progressPlan: Pr
         this.updateProgress()
         
         // Execute on progress updated registered actions
-        for( action <- _onStepCompletedActions ) action(this._progress)
+        for( action <- _onStepCompletedActions ) action(step.identity,this._progress)
       }
     }
   }
@@ -109,11 +109,11 @@ class ProgressComputer[S <: IProgressPlanSequence]( private val progressPlan: Pr
     
   }
   
-  def registerOnProgressUpdatedAction( action: Float => Unit ) = {
+  def registerOnProgressUpdatedAction( action: (IProgressStepIdentity,Float) => Unit ) = {
     _onProgressUpdatedActions += action
   }
   
-  def registerOnStepCompletedAction( action: Float => Unit ) = {
+  def registerOnStepCompletedAction( action: (IProgressStepIdentity,Float) => Unit ) = {
     _onStepCompletedActions += action
   }
   
