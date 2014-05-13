@@ -295,7 +295,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>findbugs-maven-plugin</artifactId>
-          <version>2.5.4-SNAPSHOT</version> <!-- Latest version checked on 13 may 2014 -->
+          <version>2.5.3</version> <!-- Latest version checked on 13 may 2014 -->
           <configuration>
             <findbugsXmlOutput>true</findbugsXmlOutput>
             <xmlOutput>true</xmlOutput>
