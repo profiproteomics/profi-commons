@@ -60,7 +60,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.1</version> <!-- Latest version checked on 20 nov. 2013 -->
+        <version>3.3.2</version> <!-- Latest version checked on 15 may 2014 -->
       </dependency>
 
       <dependency>
