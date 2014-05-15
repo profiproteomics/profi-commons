@@ -1,7 +1,16 @@
 package fr.proline.security;
 
 
-import java.security.*;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 
@@ -84,10 +93,10 @@ public class EncryptionManager {
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
             byte[] decrypted = cipher.doFinal(encrypted);
 
-            String text = new String(decrypted);
+            String text = new String(decrypted,"UTF-8");
             
             return text;
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | UnsupportedEncodingException e) {
         	// should not happen
         	LOG.error("Error while decrypting specified text", e);
         }
@@ -100,9 +109,9 @@ public class EncryptionManager {
         try {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.ENCRYPT_MODE, retrievePublicKey(publicKeyAsString));
-            byte[] encrypted = cipher.doFinal(text.getBytes());
+            byte[] encrypted = cipher.doFinal(text.getBytes("UTF-8"));
             return Base64.encodeBase64String(encrypted);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | UnsupportedEncodingException  e) {
             // should not happen
         	LOG.error("Error while crypting specified text ", e);
         }
