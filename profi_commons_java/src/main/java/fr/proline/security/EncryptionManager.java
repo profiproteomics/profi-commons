@@ -68,7 +68,7 @@ public class EncryptionManager {
             m_keypair = keygenerator.generateKeyPair();
         } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
         	LOG.error("Specified algorithm doesn't exist !", e);
-            new IllegalArgumentException("Specified algorithm doesn't exist !"); // should not happen
+            throw new IllegalArgumentException("Specified algorithm doesn't exist !"); // should not happen
         }
     }
     
