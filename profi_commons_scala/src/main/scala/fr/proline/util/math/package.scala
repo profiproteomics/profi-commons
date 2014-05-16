@@ -90,7 +90,7 @@ package object math {
   def linearInterpolation( xValue: Double, xyValues: Seq[Pair[Double,Double]], fixOutOfRange: Boolean ): Double = {
     
     var index = xyValues.indexWhere( _._1 >= xValue )
-    if( index == -1 && fixOutOfRange ) {
+    if( index == -1 ) {
       if( !fixOutOfRange ) throw new IllegalArgumentException("index is out of range")
       else index = if( xValue < xyValues.head._1 ) 0 else xyValues.length - 1
     }
@@ -137,7 +137,7 @@ package object math {
   def linearInterpolation( xValue: Float, xyValues: Seq[Pair[Float,Float]], fixOutOfRange: Boolean ): Float = {
     
     var index = xyValues.indexWhere( _._1 >= xValue )
-    if( index == -1 && fixOutOfRange ) {
+    if( index == -1 ) {
       if( !fixOutOfRange ) throw new IllegalArgumentException("index is out of range")
       else index = if( xValue < xyValues.head._1 ) 0 else xyValues.length - 1
     }

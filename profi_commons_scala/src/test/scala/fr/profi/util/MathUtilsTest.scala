@@ -1,17 +1,16 @@
-package fr.proline.core.utils
+package fr.profi.util
 
-import org.junit._
 import org.junit.Assert._
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitSuite
-import org.scalatest.junit.JUnitRunner
+import org.junit.Test
+import org.scalatest.junit.AssertionsForJUnit
+
 import fr.proline.util.math._
 
 @Test
-class MathUtilsTest extends JUnitSuite {
+class MathUtilsTest extends AssertionsForJUnit {
   
   @Test
-  def testMedian() = {
+  def testMedian() {
     val evenListOfFloats: List[Float] = List(1,2,3,4,5,6)
     val evenListOfDoubles: List[Double] = List(1,2,3,4,5,6)
     val oddListOfFloats: List[Float] = List(1,2,3,4,5,6,7)
@@ -24,7 +23,7 @@ class MathUtilsTest extends JUnitSuite {
   }
   
   @Test
-  def testGetMedianObject() = {
+  def testGetMedianObject() {
     
     case class Item( value: Int )
     
@@ -41,13 +40,13 @@ class MathUtilsTest extends JUnitSuite {
   }
   
   @Test
-  def testCombinations() = {
+  def testCombinations() {
     val combi = combinations( 2, List(1,2,3) )
     assert( combinations( 2, List(1,2,3) ).toSet === Set( List(1,2), List(1,3), List(2,3) ) )
   }
   
   @Test
-  def testCalcLineParams() = {
+  def testCalcLineParams() {
     
     val lineParamsNoIntercept = calcLineParams( -1,-2, 10, 20 )
     assert( lineParamsNoIntercept._1 === 2 ) // test a value
@@ -56,6 +55,25 @@ class MathUtilsTest extends JUnitSuite {
     val lineParamsWithIntercept = calcLineParams( -1,-3, 10, 19 )
     assert( lineParamsWithIntercept._1 === 2 ) // test a value
     assert( lineParamsWithIntercept._2 === -1 ) // test b value
+  }
+  
+  @Test
+  def testLinearInterpolation() {
+    
+    val xValueAsFloat = 1.5f
+    val xValueOutOfRangeAsFloat = 4f
+    val xyValuesAsFloats = Array( (0f,0f),(1f,1f),(2f,2f) )
+    assert( linearInterpolation( xValueAsFloat, xyValuesAsFloats ) === 1.5f )
+    assert( linearInterpolation( xValueOutOfRangeAsFloat, xyValuesAsFloats, fixOutOfRange = true ) === 4.0f )
+    intercept[IllegalArgumentException]( linearInterpolation( xValueOutOfRangeAsFloat, xyValuesAsFloats, fixOutOfRange = false ) )
+    
+    
+    val xValueAsDouble = 1.5
+    val xValueOutOfRangeAsDouble = 4.0
+    val xyValuesAsDoubles = Array( (0.0,0.0),(1.0,1.0),(2.0,2.0) )
+    assert( linearInterpolation( xValueAsDouble, xyValuesAsDoubles ) === 1.5 )
+    assert( linearInterpolation( xValueOutOfRangeAsDouble, xyValuesAsDoubles, fixOutOfRange = true ) === 4.0 )
+    intercept[IllegalArgumentException]( linearInterpolation( xValueOutOfRangeAsDouble, xyValuesAsDoubles, fixOutOfRange = false ) )    
   }
   
 }

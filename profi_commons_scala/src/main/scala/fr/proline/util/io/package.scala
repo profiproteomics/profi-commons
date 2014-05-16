@@ -8,7 +8,7 @@ package object io {
   
   import scala.io.{BufferedSource,Source}
   
-  class RichBufferedSource(self: BufferedSource) {
+  implicit class RichBufferedSource(self: BufferedSource) {
     def eachLine( fn: String => Unit ) {
       val lines = self.getLines()
       
@@ -26,7 +26,6 @@ package object io {
       }
     }
   }
-  implicit def bufSrcToRichBufSrc(bufSrc: BufferedSource) = new RichBufferedSource(bufSrc)
 
   /** Source: http://asoftsea.tumblr.com/post/529750770/a-transitional-suitcase-for-source */
   import scala.io.BufferedSource
