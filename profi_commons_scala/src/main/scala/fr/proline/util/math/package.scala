@@ -92,7 +92,7 @@ package object math {
     var index = xyValues.indexWhere( _._1 >= xValue )
     if( index == -1 ) {
       if( !fixOutOfRange ) throw new IllegalArgumentException("index is out of range")
-      else index = if( xValue < xyValues.head._1 ) 0 else xyValues.length - 1
+      else index = if( xValue < xyValues.head._1 ) 0 else -1
     }
     
     // If we are looking at the left-side of the vector boundaries
