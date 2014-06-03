@@ -66,7 +66,14 @@
       <dependency>
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-entitymanager</artifactId>
-        <version>4.2.7.SP1</version> <!-- Revert to 4.2.7 version -->
+        <version>4.2.12.Final</version> <!-- Latest 4.2.x version on 3 june 2014 ; TODO upgrade to 4.3.5 -->
+      </dependency>
+
+      <!-- c3p0 pool for Hibernate (same version as hibernate-entitymanager dependency) -->
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-c3p0</artifactId>
+        <version>4.2.12.Final</version>
       </dependency>
 
       <dependency>
