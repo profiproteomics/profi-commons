@@ -64,7 +64,7 @@ class MathUtilsTest extends AssertionsForJUnit {
     val xValueOutOfRangeAsFloat = 4f
     val xyValuesAsFloats = Array( (0f,0f),(1f,1f),(2f,2f) )
     assert( linearInterpolation( xValueAsFloat, xyValuesAsFloats ) === 1.5f )
-    assert( linearInterpolation( xValueOutOfRangeAsFloat, xyValuesAsFloats, fixOutOfRange = true ) === 4.0f )
+    assert( linearInterpolation( xValueOutOfRangeAsFloat, xyValuesAsFloats, fixOutOfRange = true ) === 2.0f )
     intercept[IllegalArgumentException]( linearInterpolation( xValueOutOfRangeAsFloat, xyValuesAsFloats, fixOutOfRange = false ) )
     
     
@@ -72,7 +72,7 @@ class MathUtilsTest extends AssertionsForJUnit {
     val xValueOutOfRangeAsDouble = 4.0
     val xyValuesAsDoubles = Array( (0.0,0.0),(1.0,1.0),(2.0,2.0) )
     assert( linearInterpolation( xValueAsDouble, xyValuesAsDoubles ) === 1.5 )
-    assert( linearInterpolation( xValueOutOfRangeAsDouble, xyValuesAsDoubles, fixOutOfRange = true ) === 4.0 )
+    assert( linearInterpolation( xValueOutOfRangeAsDouble, xyValuesAsDoubles, fixOutOfRange = true ) === 2.0 )
     intercept[IllegalArgumentException]( linearInterpolation( xValueOutOfRangeAsDouble, xyValuesAsDoubles, fixOutOfRange = false ) )    
   }
   
