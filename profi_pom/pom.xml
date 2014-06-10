@@ -69,18 +69,18 @@
         <version>4.2.12.Final</version> <!-- Latest 4.2.x version on 3 june 2014 ; TODO upgrade to 4.3.5 -->
       </dependency>
 
-      <!-- c3p0 Pool for Hibernate (same version as hibernate-entitymanager dependency) -->
+      <!-- C3p0 Pool for Hibernate (same version as hibernate-entitymanager dependency) -->
       <dependency>
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-c3p0</artifactId>
         <version>4.2.12.Final</version>
       </dependency>
 
-      <!-- Latest mchange-commons-java version needed for c3p0 tu use SLF4J Logging Facade -->
+      <!-- Explicit c3p0 latest version to use mchange-commons-java compatible with SLF4J -->
       <dependency>
-        <groupId>com.mchange</groupId>
-        <artifactId>mchange-commons-java</artifactId>
-        <version>0.2.7</version> <!-- Latest version checked on 5 june 2014 -->
+	    <groupId>com.mchange</groupId>
+	    <artifactId>c3p0</artifactId>
+	    <version>0.9.5-pre8</version> <!-- Latest version checked on 10 june 2014 -->
       </dependency>
 
       <dependency>
