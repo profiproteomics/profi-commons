@@ -66,14 +66,14 @@
       <dependency>
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-entitymanager</artifactId>
-        <version>4.2.12.Final</version> <!-- Latest 4.2.x version on 3 june 2014 ; TODO upgrade to 4.3.5 -->
+        <version>4.2.13.Final</version> <!-- Latest 4.2.x version (JPA 2.0) on 10 june 2014 ; TODO upgrade to 4.3.5 -->
       </dependency>
 
       <!-- C3p0 Pool for Hibernate (same version as hibernate-entitymanager dependency) -->
       <dependency>
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-c3p0</artifactId>
-        <version>4.2.12.Final</version>
+        <version>4.2.13.Final</version>
       </dependency>
 
       <!-- Explicit c3p0 latest version to use mchange-commons-java compatible with SLF4J -->
