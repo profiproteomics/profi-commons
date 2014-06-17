@@ -1,0 +1,15 @@
+INFO : [main] +246  ms  13 mai 2014 - 14:39:20.742 fr.proline.util.system.OSInfoTest - Detected OS Type : WINDOWS_AMD64
+ERROR: [Thread-testThreadLogger] +254  ms  13 mai 2014 - 14:39:20.750 fr.proline.util.ThreadLoggerTest - Uncaught Exception in thread "Thread-testThreadLogger"
+java.lang.ArithmeticException: / by zero
+	at fr.proline.util.ThreadLoggerTest$InnerTest.run(ThreadLoggerTest.java:38) ~[test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) ~[na:1.7.0_21]
+INFO : [main] +244  ms  15 mai 2014 - 08:10:59.102 fr.proline.util.system.OSInfoTest - Detected OS Type : WINDOWS_AMD64
+ERROR: [Thread-testThreadLogger] +258  ms  15 mai 2014 - 08:10:59.116 fr.proline.util.ThreadLoggerTest - Uncaught Exception in thread "Thread-testThreadLogger"
+java.lang.ArithmeticException: / by zero
+	at fr.proline.util.ThreadLoggerTest$InnerTest.run(ThreadLoggerTest.java:38) ~[test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) ~[na:1.7.0_21]
+INFO : [main] +175  ms  15 mai 2014 - 08:12:13.648 fr.proline.util.system.OSInfoTest - Detected OS Type : WINDOWS_AMD64
+ERROR: [Thread-testThreadLogger] +181  ms  15 mai 2014 - 08:12:13.654 fr.proline.util.ThreadLoggerTest - Uncaught Exception in thread "Thread-testThreadLogger"
+java.lang.ArithmeticException: / by zero
+	at fr.proline.util.ThreadLoggerTest$InnerTest.run(ThreadLoggerTest.java:38) ~[test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) ~[na:1.7.0_21]
