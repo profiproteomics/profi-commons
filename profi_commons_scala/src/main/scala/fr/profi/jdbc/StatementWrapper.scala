@@ -7,7 +7,7 @@ import java.sql.Types
 
 import org.joda.time.DateTime
 
-import fr.proline.util.primitives._
+import fr.profi.util.primitives._
 
 /**
  * Wrapper around PreparedStatement making is easier to add parameters.

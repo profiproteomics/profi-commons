@@ -1,7 +1,7 @@
 package fr.profi.util
 
 import java.security.MessageDigest
-import fr.proline.util.bytes._
+import fr.profi.util.bytes._
 
 package object security {
   

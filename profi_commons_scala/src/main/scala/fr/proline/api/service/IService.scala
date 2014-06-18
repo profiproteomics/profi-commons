@@ -4,7 +4,7 @@ import scala.collection.mutable.ArrayBuffer
 
 import com.typesafe.scalalogging.slf4j.Logging
 
-import fr.proline.util.ThreadLogger
+import fr.profi.util.ThreadLogger
 
 trait IService extends Runnable with HasProgress with Logging {
 

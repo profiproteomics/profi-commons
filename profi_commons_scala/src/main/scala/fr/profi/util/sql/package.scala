@@ -1,4 +1,4 @@
-package fr.proline.util
+package fr.profi.util
 
 package object sql {
   
@@ -66,7 +66,7 @@ package object sql {
    */
   def encodeRecordForPgCopy( record: List[Any], escape: Boolean = true ): Array[Byte] = {
     
-    import fr.proline.util.StringUtils.isEmpty
+    import fr.profi.util.StringUtils.isEmpty
     
     def stringify( value: Any ): String = {
        value match {

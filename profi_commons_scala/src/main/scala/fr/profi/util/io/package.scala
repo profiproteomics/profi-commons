@@ -1,4 +1,4 @@
-package fr.proline.util
+package fr.profi.util
 
 /**
  * @author David Bouyssie

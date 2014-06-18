@@ -3,9 +3,9 @@ package fr.profi.util
 import org.junit.Assert._
 import org.junit.Test
 
-import fr.proline.util.primitives._
+import fr.profi.util.primitives._
 
-import fr.proline.util.{ MathUtils => JavaMathUtils }
+import fr.profi.util.{ MathUtils => JavaMathUtils }
 
 @Test
 class PrimitivesTest {

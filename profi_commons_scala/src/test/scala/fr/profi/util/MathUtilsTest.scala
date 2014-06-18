@@ -4,7 +4,7 @@ import org.junit.Assert._
 import org.junit.Test
 import org.scalatest.junit.AssertionsForJUnit
 
-import fr.proline.util.math._
+import fr.profi.util.math._
 
 @Test
 class MathUtilsTest extends AssertionsForJUnit {

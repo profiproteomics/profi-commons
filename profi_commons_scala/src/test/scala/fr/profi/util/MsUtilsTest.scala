@@ -3,10 +3,7 @@ package fr.profi.util
 import org.junit.Test
 import org.scalatest.junit.JUnitSuite
 
-import fr.proline.util.ms.calcMozTolInDalton
-import fr.proline.util.ms.massToMoz
-import fr.proline.util.ms.mozToMass
-
+import fr.profi.util.ms._
 
 @Test
 class MsUtilsTest extends JUnitSuite {

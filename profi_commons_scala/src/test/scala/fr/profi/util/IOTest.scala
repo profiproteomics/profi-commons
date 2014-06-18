@@ -8,7 +8,7 @@ import java.nio.file.Files
 import java.nio.file.StandardOpenOption
 import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
-import fr.proline.util.io._
+import fr.profi.util.io._
 
 
 @Test
