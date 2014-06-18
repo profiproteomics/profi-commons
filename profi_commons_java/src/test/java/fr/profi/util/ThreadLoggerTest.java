@@ -1,4 +1,4 @@
-package fr.proline.util;
+package fr.profi.util;
 
 import org.junit.Test;
 import org.slf4j.Logger;

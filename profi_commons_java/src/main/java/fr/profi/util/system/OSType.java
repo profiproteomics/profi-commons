@@ -1,4 +1,4 @@
-package fr.proline.util.system;
+package fr.profi.util.system;
 
 /**
  * OS Type (Linux or Windows) and architecture (amd64 or x86/i386) of a plateform.

@@ -1,4 +1,4 @@
-package fr.proline.security;
+package fr.profi.util.security;
 
 import static org.junit.Assert.assertEquals;
 

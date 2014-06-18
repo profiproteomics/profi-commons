@@ -1,4 +1,4 @@
-package fr.proline.util.system;
+package fr.profi.util.system;
 
 import static org.junit.Assert.*;
 

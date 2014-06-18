@@ -1,9 +1,9 @@
-package fr.proline.util.system;
+package fr.profi.util.system;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.proline.util.StringUtils;
+import fr.profi.util.StringUtils;
 
 /**
  * Utility class to retrieve OS info of the running JVM.

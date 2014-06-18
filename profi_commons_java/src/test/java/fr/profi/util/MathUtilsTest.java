@@ -1,7 +1,7 @@
-package fr.proline.util;
+package fr.profi.util;
 
-import static fr.proline.util.MathUtils.EPSILON_FLOAT;
-import static fr.proline.util.MathUtils.EPSILON_HIGH_PRECISION;
+import static fr.profi.util.MathUtils.EPSILON_FLOAT;
+import static fr.profi.util.MathUtils.EPSILON_HIGH_PRECISION;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
