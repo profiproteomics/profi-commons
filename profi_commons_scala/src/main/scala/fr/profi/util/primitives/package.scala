@@ -102,5 +102,96 @@ package object primitives {
     
     valueType
   }
+  
+  // TODO: handle date type ??
+  object DataType extends Enumeration {
+    val NULL = Value("NULL")
+    val INTEGER = Value("INTEGER")
+    val DECIMAL = Value("DECIMAL")
+    val BOOLEAN = Value("BOOLEAN")
+    val STRING = Value("STRING")
+  }
+  
+  def parseString( str: String ): Any = {
+    
+    import DataType._
+    
+    val dataType = inferDataType( str )
+    
+    dataType match  {
+      case STRING => str
+      case NULL => str
+      case BOOLEAN => str.toBoolean
+      case INTEGER => {
+        try {
+          toInt(str)
+        } catch {
+          case e: Exception => toLong(str)
+        }
+      }
+      case DECIMAL => {
+        
+        val zeroStrippedStr = str.replaceFirst("\\.0*$|(\\.\\d*?)0+$", "$1")
+        val numberOfSigD = zeroStrippedStr.replaceFirst("\\.", "").length
+        
+        if( numberOfSigD > 7 ) str.toDouble
+        else str.toFloat
+        
+      }
+      case _ => throw new Exception("invalid data type")
+    }
+
+  }
+  
+  // TODO: handle scientific notation (i.e. 1e6)
+  def inferDataType( str: String ): DataType.Value = {
+    if (str == null) return DataType.NULL
+    
+    val length = str.length
+    if (length == 0) return DataType.NULL
+    
+    if( str == "true" || str == "false" ) return DataType.BOOLEAN
+    
+    var dataType = DataType.INTEGER
+    var c: Char = '\0'
+    var i = 0
+    var hasDot = false
+    
+    if (str.charAt(0) == '-') {
+      i = 1
+    }
+    
+    while( i < length ) {
+      
+      c = str.charAt(i)
+      
+      if (c < '0' || c > '9') {
+        // TODO: handle ',' character ???
+        if( c == '.' ) {
+          if( hasDot ) return DataType.STRING
+          else {
+            dataType = DataType.DECIMAL
+          }
+        } else {
+          return DataType.STRING
+        }
+      }
+      
+      i += 1
+    }
+    
+    dataType
+  }
 
 }
+
+
+/*
+ * Pattern for number detection
+ * 
+Pattern DOUBLE_PATTERN = Pattern.compile(
+    "[\\x00-\\x20]*[+-]?(NaN|Infinity|((((\\p{Digit}+)(\\.)?((\\p{Digit}+)?)" +
+    "([eE][+-]?(\\p{Digit}+))?)|(\\.((\\p{Digit}+))([eE][+-]?(\\p{Digit}+))?)|" +
+    "(((0[xX](\\p{XDigit}+)(\\.)?)|(0[xX](\\p{XDigit}+)?(\\.)(\\p{XDigit}+)))" +
+    "[pP][+-]?(\\p{Digit}+)))[fFdD]?))[\\x00-\\x20]*");
+*/

@@ -61,12 +61,12 @@ class PrimitivesTest {
   
   @Test
   def testParseString() {
-    /*assertTrue( parseString("true").isInstanceOf[Boolean] )
+    assertTrue( parseString("true").isInstanceOf[Boolean] )
     assertTrue( parseString("0").isInstanceOf[Int] )
     assertTrue( parseString("11000000000000000").isInstanceOf[Long] )
     assertTrue( parseString("0.1").isInstanceOf[Float] )
-    assertTrue( parseString("11000000000000000.0000000000000000001").isInstanceOf[Float] )
-    assertTrue( parseString("Hello Proline !").isInstanceOf[String] )*/
+    assertTrue( parseString("11000000000000000.0000000000000000001").isInstanceOf[Double] )
+    assertTrue( parseString("Hello Proline !").isInstanceOf[String] )
   }
 
 }
