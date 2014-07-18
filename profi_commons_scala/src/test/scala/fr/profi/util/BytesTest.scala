@@ -2,7 +2,7 @@ package fr.profi.util
 
 import org.junit.Assert._
 import org.junit.Test
-
+import java.util.Arrays
 import fr.profi.util.bytes._
 
 @Test
@@ -18,7 +18,19 @@ class BytesTest {
     val bigEndianBytes = floatsToBytes( Array(1f,2f,3f), littleEndian = false )
     assertEquals("Array of floats to bytes", "P4AAAEAAAABAQAAA", base64enc.encode(bigEndianBytes) )
   }
-  
+
+  @Test
+  def testBytesToFloats() {
+    val floats= Array(1f,2f,3f)
+    
+    val littleEndianBytes = floatsToBytes( floats , littleEndian = true )
+    assertTrue(Arrays.equals(bytesTofloats(littleEndianBytes, littleEndian = true), floats))
+    
+    
+    val bigEndianBytes = floatsToBytes( floats, littleEndian = false )
+    assertTrue(Arrays.equals(bytesTofloats(bigEndianBytes, littleEndian = false), floats))
+  }
+
   @Test
   def testDoublesToBytes() {
     val littleEndianBytes = doublesToBytes( Array(1.0,2.0,3.0), littleEndian = true )
@@ -26,6 +38,19 @@ class BytesTest {
     
     val bigEndianBytes = doublesToBytes( Array(1.0,2.0,3.0), littleEndian = false )
     assertEquals("Array of doubles to bytes", "P/AAAAAAAABAAAAAAAAAAEAIAAAAAAAA", base64enc.encode(bigEndianBytes) )    
+  }
+  
+  
+  @Test
+  def testBytesToDoubles() {
+    val doubles =  Array(1.0,2.0,3.0)
+
+    val littleEndianBytes = doublesToBytes(doubles, littleEndian = true )
+    assertTrue(Arrays.equals(bytesTodoubles(littleEndianBytes, littleEndian = true), doubles))
+    
+    
+    val bigEndianBytes = doublesToBytes(doubles, littleEndian = false )
+    assertTrue(Arrays.equals(bytesTodoubles(bigEndianBytes, littleEndian = false), doubles))
   }
   
   @Test

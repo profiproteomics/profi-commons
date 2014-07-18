@@ -1,5 +1,7 @@
 package fr.profi.util
 
+import scala.collection.mutable.ArrayBuffer
+
 package object bytes {
   
   import java.nio.{ByteBuffer,ByteOrder,DoubleBuffer}
@@ -15,7 +17,30 @@ package object bytes {
     // Convert byte buffer into a byte array
     byteBuf.array()
   }
+
+
+  def bytesTofloatsOption( bytes: Option[Array[Byte]], littleEndian: Boolean = true ): Option[Array[Float]] = {
+	if (bytes.isDefined) Some(bytesTofloats(bytes.get, littleEndian)) else None
+  }
   
+  def bytesTofloats( bytes: Array[Byte], littleEndian: Boolean = true ): Array[Float] = {
+    
+    val endianess = if(littleEndian) ByteOrder.LITTLE_ENDIAN else ByteOrder.BIG_ENDIAN
+    
+    // wrap bytes to a byte buffer
+    val byteBuf = ByteBuffer.wrap(bytes).order(endianess)
+    var floats = new ArrayBuffer[Float]()
+    while(byteBuf.hasRemaining()) {
+      floats += byteBuf.getFloat()
+    }
+
+    floats.toArray
+  }
+
+  def bytesTodoublesOption( bytes: Option[Array[Byte]], littleEndian: Boolean = true ): Option[Array[Double]] = {
+	if (bytes.isDefined) Some(bytesTodoubles(bytes.get, littleEndian)) else None
+  }
+
   def doublesToBytes( doubles: Array[Double], littleEndian: Boolean = true ): Array[Byte] = {
     
     val endianess = if(littleEndian) ByteOrder.LITTLE_ENDIAN else ByteOrder.BIG_ENDIAN
@@ -26,6 +51,21 @@ package object bytes {
 
     // Convert byte buffer into a byte array
     byteBuf.array()
+  }
+  
+  
+  def bytesTodoubles( bytes: Array[Byte], littleEndian: Boolean = true ): Array[Double] = {
+    
+    val endianess = if(littleEndian) ByteOrder.LITTLE_ENDIAN else ByteOrder.BIG_ENDIAN
+    // wrap bytes to a byte buffer
+    val byteBuf = ByteBuffer.wrap(bytes).order(endianess)
+    var doubles = new ArrayBuffer[Double]()
+    while(byteBuf.hasRemaining()) {
+      doubles += byteBuf.getDouble()
+    }
+
+    doubles.toArray
+    
   }
   
   private val HEX_CHARS = "0123456789abcdef".toCharArray()
