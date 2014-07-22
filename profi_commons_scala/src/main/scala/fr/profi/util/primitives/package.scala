@@ -1,6 +1,24 @@
 package fr.profi.util
 
+import java.util.regex.Pattern
+
 package object primitives {
+  
+/*
+ * Pattern for number detection
+ * 
+Pattern DOUBLE_PATTERN = Pattern.compile(
+    "[\\x00-\\x20]*[+-]?(NaN|Infinity|((((\\p{Digit}+)(\\.)?((\\p{Digit}+)?)" +
+    "([eE][+-]?(\\p{Digit}+))?)|(\\.((\\p{Digit}+))([eE][+-]?(\\p{Digit}+))?)|" +
+    "(((0[xX](\\p{XDigit}+)(\\.)?)|(0[xX](\\p{XDigit}+)?(\\.)(\\p{XDigit}+)))" +
+    "[pP][+-]?(\\p{Digit}+)))[fFdD]?))[\\x00-\\x20]*");
+*/
+  
+  private val datePattern = Pattern.compile("\\d{4}-[01]\\d-[0-3]\\d")
+  private val dateTimePattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{3}")
+  
+  private def newDateFormat() = new java.text.SimpleDateFormat("yyyy-MM-dd") // dateFormat.setLenient(false)
+  private def newDateTimeFormat() = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
   
   def isZeroOrNaN( value: Float ) = value.isNaN || value == 0f
   def isZeroOrNaN( value: Double ) = value.isNaN || value == 0d
@@ -110,6 +128,8 @@ package object primitives {
     val DECIMAL = Value("DECIMAL")
     val BOOLEAN = Value("BOOLEAN")
     val STRING = Value("STRING")
+    val DATE = Value("DATE")
+    val DATETIME = Value("DATETIME")
   }
   
   def parseString( str: String ): Any = {
@@ -119,14 +139,26 @@ package object primitives {
     val dataType = inferDataType( str )
     
     dataType match  {
-      case STRING => str
-      case NULL => str
-      case BOOLEAN => str.toBoolean
+      case STRING => {
+        try {
+          if( dateTimePattern.matcher(str).matches() ) {
+            return newDateTimeFormat().parse(str)
+          } else if( datePattern.matcher(str).matches() ) {
+            return newDateFormat().parse(str)
+          } else {
+            return str
+          }
+        } catch {
+          case e: Exception => return str
+        }
+      }
+      case NULL => return str
+      case BOOLEAN => return str.toBoolean
       case INTEGER => {
         try {
-          toInt(str)
+          return toInt(str)
         } catch {
-          case e: Exception => toLong(str)
+          case e: Exception => return toLong(str)
         }
       }
       case DECIMAL => {
@@ -134,9 +166,8 @@ package object primitives {
         val zeroStrippedStr = str.replaceFirst("\\.0*$|(\\.\\d*?)0+$", "$1")
         val numberOfSigD = zeroStrippedStr.replaceFirst("\\.", "").length
         
-        if( numberOfSigD > 7 ) str.toDouble
-        else str.toFloat
-        
+        if( numberOfSigD > 7 ) return str.toDouble
+        else return str.toFloat        
       }
       case _ => throw new Exception("invalid data type")
     }
@@ -182,16 +213,39 @@ package object primitives {
     
     dataType
   }
+  
+  def isValidDate( text: String ): Boolean = {
+    
+    if ( text == null || datePattern.matcher(text).matches() == false )
+      return false
+    
+    val df = newDateFormat()
+    df.setLenient(false)
+    
+    try {
+      df.parse(text)
+      return true
+    } catch {
+      case e: Exception => return false
+    }
+    
+  }
+  
+  def isValidDateTime( text: String ): Boolean = {
+    
+    if ( text == null || dateTimePattern.matcher(text).matches() == false )
+      return false
+    
+    val df = newDateTimeFormat()
+    df.setLenient(false)
+    
+    try {
+      df.parse(text)
+      return true
+    } catch {
+      case e: Exception => return false
+    }
+    
+  }
 
 }
-
-
-/*
- * Pattern for number detection
- * 
-Pattern DOUBLE_PATTERN = Pattern.compile(
-    "[\\x00-\\x20]*[+-]?(NaN|Infinity|((((\\p{Digit}+)(\\.)?((\\p{Digit}+)?)" +
-    "([eE][+-]?(\\p{Digit}+))?)|(\\.((\\p{Digit}+))([eE][+-]?(\\p{Digit}+))?)|" +
-    "(((0[xX](\\p{XDigit}+)(\\.)?)|(0[xX](\\p{XDigit}+)?(\\.)(\\p{XDigit}+)))" +
-    "[pP][+-]?(\\p{Digit}+)))[fFdD]?))[\\x00-\\x20]*");
-*/

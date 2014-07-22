@@ -67,6 +67,14 @@ class PrimitivesTest {
     assertTrue( parseString("0.1").isInstanceOf[Float] )
     assertTrue( parseString("11000000000000000.0000000000000000001").isInstanceOf[Double] )
     assertTrue( parseString("Hello Proline !").isInstanceOf[String] )
+    assertTrue( parseString("2014-06-10").isInstanceOf[java.util.Date] )
+    assertTrue( parseString("2014-06-10 18:06:14.703").isInstanceOf[java.util.Date] )
+  }
+  
+  @Test
+  def testIsValidDate() {
+    assertTrue( isValidDate("2014-06-10") )
+    assertTrue( isValidDateTime("2014-06-10 18:06:14.703") )
   }
 
 }
