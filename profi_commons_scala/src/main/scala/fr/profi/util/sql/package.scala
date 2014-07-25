@@ -54,10 +54,10 @@ package object sql {
   def getTimeAsSQLTimestamp(): java.sql.Timestamp = new java.sql.Timestamp(new java.util.Date().getTime)
   
   def escapeStringForPgCopy( s: String ): String = {
-    s.replaceAllLiterally("\\","""\\""")
-     .replaceAllLiterally("\r","""""")
-     .replaceAllLiterally("\n","""\\\n""")
-     .replaceAllLiterally("\t","""\\\t""")
+    s.replaceAllLiterally("\\", """\\""")
+     .replaceAllLiterally("\r", "")
+     .replaceAllLiterally("\n", """\n""")
+     .replaceAllLiterally("\t", """\t""")
   }
   
   /**
