@@ -13,6 +13,20 @@ class PrimitivesTest {
   val flValue: Float = 1.2345f
 
   val dblValue: Double = 1.2345
+  
+  @Test
+  def testIsZeroFloatOrNaN() {
+    assertTrue("zero test", isZeroOrNaN(0f))
+    assertTrue("NaN test", isZeroOrNaN(Float.NaN))
+    assertFalse("non zero/NanN test", isZeroOrNaN(Float.MaxValue))
+  }
+  
+  @Test
+  def testIsZeroDoubleOrNaN() {
+    assertTrue("zero test", isZeroOrNaN(0.0))
+    assertTrue("NaN test", isZeroOrNaN(Double.NaN))
+    assertFalse("non zero/NanN test", isZeroOrNaN(Double.MaxValue))
+  }
 
   @Test
   def testInt() {
@@ -73,8 +87,11 @@ class PrimitivesTest {
   
   @Test
   def testIsValidDate() {
-    assertTrue( isValidDate("2014-06-10") )
-    assertTrue( isValidDateTime("2014-06-10 18:06:14.703") )
+    assertTrue( "valid Date check", isValidDate("2014-06-10") )
+    assertTrue( "valid DateTime check", isValidDateTime("2014-06-10 18:06:14.703") )
+    
+    assertFalse( "invalid Date check", isValidDate("2014:06:10") )
+    assertFalse( "invalid DateTime check", isValidDateTime("2014:06:10 18-06-14.703") )
   }
 
 }

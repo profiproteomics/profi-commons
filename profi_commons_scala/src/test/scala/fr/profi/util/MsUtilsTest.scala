@@ -26,6 +26,7 @@ class MsUtilsTest extends JUnitSuite {
   @Test
   def testCalcMozTolInDalton() = {
     assert( calcMozTolInDalton( 482.2, 0.1, "Da" ) === 0.1 )
+    assert( calcMozTolInDalton( 482.2, 10, "mmu" ) === 0.01 )
     assert( calcMozTolInDalton( 482.2, 10, "ppm" ) === 0.004822 )
   }
   
