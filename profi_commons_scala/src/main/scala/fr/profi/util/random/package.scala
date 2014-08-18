@@ -5,6 +5,9 @@ package object random {
   import scala.util.Random
 
   def randomString(chars: String, lengthMin: Int, lengthMax: Int): String = {
+    require(chars != null,"chars is null")
+    require(chars.isEmpty == false,"chars is empty")
+    require(lengthMin > 0,"lengthMin must be strictly positive")
     
     val length = randomInt(lengthMin, lengthMax)
     

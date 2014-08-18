@@ -2,31 +2,19 @@ package fr.profi.util
 
 package object sql {
   
-  class SQLBool( value: Boolean ) {
-    
-    def this(intValue:Int) = this( intValue match {
-                                     case 1 => true
-                                     case 0 => false
-                                  })
-    override def toString = {
-       value match {
-        case true => "t"
-        case false => "f"
-      }
-    }
-    
-    def toIntString = {
-       value match {
+  def BoolToSQLStr( value: Boolean, asInt: Boolean = false ): String = {
+    if( asInt ) {
+      value match {
         case true => "1"
         case false => "0"
       }
     }
-    
-  }
-  
-  def BoolToSQLStr( value: Boolean, asInt: Boolean = false ): String = {
-    val sqlBool = new SQLBool(value)
-    if( asInt ) sqlBool.toIntString else sqlBool.toString()
+    else {
+      value match {
+        case true => "t"
+        case false => "f"
+      }
+    }
   }
   
   def SQLStrToBool( sqlStr: String ): Boolean = {
@@ -37,6 +25,7 @@ package object sql {
       case "f" => false
       case "1" => true
       case "0" => false
+      case _ => throw new IllegalArgumentException("invalid SQL boolean value")
     }
   }
   
@@ -69,20 +58,21 @@ package object sql {
     import fr.profi.util.StringUtils.isEmpty
     
     def stringify( value: Any ): String = {
-       value match {
-         case s:String => if( escape ) escapeStringForPgCopy(s) else s
-         case a:Any => a.toString()
-       }
+      value match {
+        case s:String => if( escape ) escapeStringForPgCopy(s) else s
+        case a:Any => a.toString()
+      }
     }
     
-    val recordStrings = record.map { case opt: Option[Any] => {
-                                       opt match {
-                                         case None => """\N"""
-                                         case Some(value) => stringify( value )
-                                       }
-                                     }
-                                     case value: Any => stringify( value )
-                                   }
+    val recordStrings = record.map {
+      case opt: Option[Any] => {
+        opt match {
+          case None => """\N"""
+          case Some(value) => stringify( value )
+        }
+      }
+      case value: Any => stringify( value )
+    }
     
     (recordStrings.mkString("\t") + "\n").getBytes("UTF-8")
   }

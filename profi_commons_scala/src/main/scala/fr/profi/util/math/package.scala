@@ -75,11 +75,12 @@ package object math {
     ( slope, intercept )
   }
   
-  /** Interpolates a value using the slope and intercept of a line
-   *  estimated with two consecutive data points coordinates
-   *  in the provided Pair[Double,Double] vector.
-   *  Assumes that XY values are already sorted by X.
-   *  If fixOutOfRange is true then out of range values will be replaced by first or last XY pair of the vector.
+  /** 
+   * Interpolates a value using the slope and intercept of a line
+   * estimated with two consecutive data points coordinates
+   * in the provided Pair[Double,Double] vector.
+   * Assumes that XY values are already sorted by X.
+   * If fixOutOfRange is true then out of range values will be replaced by first or last XY pair of the vector.
    *  
    * @param xValue the X value
    * @param xyValues the XY values
@@ -123,11 +124,12 @@ package object math {
     linearInterpolation(xValue,xyValues,true)
   }
   
-  /** Interpolates a value using the slope and intercept of a line
-   *  estimated with two consecutive data points coordinates
-   *  in the provided Pair[Float,Float] vector.
-   *  Assumes that XY values are already sorted by X.   *  
-   *  If fixOutOfRange is true then out of range values will be replaced by first or last XY pair of the vector.
+  /** 
+   * Interpolates a value using the slope and intercept of a line
+   * estimated with two consecutive data points coordinates
+   * in the provided Pair[Float,Float] vector.
+   * Assumes that XY values are already sorted by X.
+   * If fixOutOfRange is true then out of range values will be replaced by first or last XY pair of the vector.
    *  
    * @param xValue the X value
    * @param xyValues the XY values
