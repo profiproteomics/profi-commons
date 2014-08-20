@@ -9,22 +9,27 @@ import java.io.{InputStream,File,FileInputStream}
 
 package object resources {
   
-  /*def pathToFileOrResourceToFile( path: String, resClass: Class[_] ): File = {
-    var file = new File(path)
-    if( file.exists() == false) {
-      val resource = resClass.getResource(path)
-      if( resource != null ) {
-        file = new File( resource.toURI() )
+  def pathToFileOrResourceToFile( path: String, resClass: Class[_] ): File = {
+    val file = new File(path)
+    
+    if( file.isFile == true) return file
+    else {
+      val fileURL = resClass.getResource(path)
+      if( fileURL != null ) {
+        val f = new File(fileURL.toURI())
+  
+        if (f.isFile) return f
+        else return null
       }
     }
     
-    file
-  }*/
+    null
+  }
   
   def pathToStreamOrResourceToStream( path: String, resClass: Class[_] ): InputStream = {
-    var file = new File(path)
+    val file = new File(path)
     
-    if( file.exists == true) new FileInputStream(file.getAbsolutePath())
+    if (file.isFile == true) new FileInputStream(file.getAbsolutePath)
     else resClass.getResourceAsStream(path)
   }
   
