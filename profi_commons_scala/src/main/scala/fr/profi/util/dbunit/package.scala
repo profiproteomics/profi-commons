@@ -1,5 +1,6 @@
 package fr.profi.util
 
+import java.io.File
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.mutable.HashMap
 import fr.profi.util.resources.pathToFileOrResourceToFile
@@ -10,7 +11,7 @@ import fr.profi.util.resources.pathToFileOrResourceToFile
  */
 package object dbunit {
   
-  def parseDbUnitDataset( datasetPath: String ): Map[String,ArrayBuffer[Map[String,String]]] = {
+  def parseDbUnitDataset( datasetLocation: File ): Map[String,ArrayBuffer[Map[String,String]]] = {
     
     // Workaround for issue "Non-namespace-aware mode not implemented"
     // We use the javax SAXParserFactory with a custom configuration
@@ -22,13 +23,13 @@ package object dbunit {
     // Instantiate the XML loader using the javax SAXParser
     val xmlLoader = xml.XML.withSAXParser(saxParserFactory.newSAXParser)
     
-    parseDbUnitDataset( datasetPath, xmlLoader )
+    parseDbUnitDataset( datasetLocation, xmlLoader )
   }
   
-  def parseDbUnitDataset( datasetPath: String, xmlLoader: xml.factory.XMLLoader[xml.Elem] ): Map[String,ArrayBuffer[Map[String,String]]] = {
+  def parseDbUnitDataset( datasetLocation: File, xmlLoader: xml.factory.XMLLoader[xml.Elem] ): Map[String,ArrayBuffer[Map[String,String]]] = {
 
     // Load the dataset
-    val xmlDoc = xmlLoader.loadFile( pathToFileOrResourceToFile(datasetPath,this.getClass) )
+    val xmlDoc = xmlLoader.loadFile( datasetLocation )
     
     parseDbUnitDataset( xmlDoc )
   }
