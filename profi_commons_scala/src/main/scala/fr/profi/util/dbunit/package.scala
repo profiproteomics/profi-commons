@@ -30,10 +30,15 @@ package object dbunit {
     // Load the dataset
     val xmlDoc = xmlLoader.loadFile( pathToFileOrResourceToFile(datasetPath,this.getClass) )
     
+    parseDbUnitDataset( xmlDoc )
+  }
+  
+  def parseDbUnitDataset( datasetAsXML: xml.Elem ): Map[String,ArrayBuffer[Map[String,String]]] = {
+    
     val recordsByTableName = new HashMap[String,ArrayBuffer[Map[String,String]]]
     
     // Iterate over dataset nodes
-    for( xmlNode <- xmlDoc.child ) {
+    for( xmlNode <- datasetAsXML.child ) {
       
       val attrs = xmlNode.attributes
       
