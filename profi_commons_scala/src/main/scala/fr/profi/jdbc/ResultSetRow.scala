@@ -11,13 +11,15 @@ import scala.collection.mutable.ArrayBuffer
 import org.joda.time.DateTime
 import org.joda.time.Duration
 
+import fr.profi.util.primitives._
+
 /**
  * Wraps a ResultSet in a row context. The ResultSetRow gives access
  * to the current row with no possibility to change row. The data of
  * the row can be accessed though the next<Type> methods which return
  * the optional value of the next column.
  */
-class ResultSetRow(val rs: ResultSet) {
+class ResultSetRow(val rs: ResultSet) extends IValueContainer {
   
   def getBoolean(colLabel: String): Boolean = _getValue(colLabel,rs.getBoolean)
   def getInt(colLabel: String): Int = _getValue(colLabel,rs.getInt)
@@ -99,6 +101,17 @@ class ResultSetRow(val rs: ResultSet) {
   def nextAnyRefOrElse( value: AnyRef ): AnyRef = _nextValueOrElse(rs.getObject,value)
   def nextAnyOrElse( value: Any ): Any = _nextValueOrElse(rs.getObject,value)
   def nextAnyValOrElse( value: AnyVal ): AnyVal = _nextValueOrElse(rs.getObject,value).asInstanceOf[AnyVal]
+  
+  def toAnyMap(): AnyMap = {
+    
+    // Build the peptide record
+    val record = new AnyMap()
+    for( colName <- columnNames ) {
+      record(colName) = this.nextAnyRefOrElse(null)
+    }
+    
+    record
+  }
   
   def wasNull = rs.wasNull()
 

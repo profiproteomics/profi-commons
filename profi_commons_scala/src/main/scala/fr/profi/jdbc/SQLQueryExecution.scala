@@ -12,6 +12,7 @@ import org.joda.time.DateTime
 import org.joda.time.Duration
 
 import easy._
+import fr.profi.util.primitives.AnyMap
 
 /**
  * Performs queries on a given java.sql.Connection object using the
@@ -61,7 +62,6 @@ trait SQLQueryExecution {
   }
   
   def selectAllRecordsAsMaps( sql: String ): Array[Map[String,Any]] = {
-    
     var colNames: Array[String] = null
     val records = Array.newBuilder[Map[String,Any]]
     
@@ -71,8 +71,32 @@ trait SQLQueryExecution {
       // Retrieve column names
       if( colNames == null ) { colNames = r.columnNames }
       
-      // Build the record
+      // Build and append the record
       records += colNames.map( colName => ( colName -> r.nextAnyRefOrElse(null) ) ).toMap
+    }
+    
+    records.result()
+  }
+  
+  def selectAllRecords( sql: String ): Array[AnyMap] = {
+    
+    var colNames: Array[String] = null
+    val records = Array.newBuilder[AnyMap]
+    
+    // Execute SQL query to load records
+    this.selectAndProcess( sql ) { r => 
+      
+      // Retrieve column names
+      if( colNames == null ) { colNames = r.columnNames }
+      
+      // Build the record
+      val record = new AnyMap()
+      for( colName <- colNames ) {
+        record(colName) = r.nextAnyRefOrElse(null)
+      }
+      
+      // Append the record
+      records += record
     }
     
     records.result()
