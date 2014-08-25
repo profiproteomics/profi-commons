@@ -1,8 +1,10 @@
 package fr.profi.util
 
 import java.io.File
+import java.io.InputStream
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.mutable.HashMap
+import scala.xml.factory.XMLLoader
 import fr.profi.util.primitives._
 import fr.profi.util.resources.pathToFileOrResourceToFile
 
@@ -12,7 +14,7 @@ import fr.profi.util.resources.pathToFileOrResourceToFile
  */
 package object dbunit {
   
-  def parseDbUnitDataset( datasetLocation: File, lowerCase: Boolean ): Map[String,ArrayBuffer[StringMap]] = {
+  private def newXmlLoader(): XMLLoader[xml.Elem] = {
     
     // Workaround for issue "Non-namespace-aware mode not implemented"
     // We use the javax SAXParserFactory with a custom configuration
@@ -22,15 +24,29 @@ package object dbunit {
     saxParserFactory.setValidating(false)
 
     // Instantiate the XML loader using the javax SAXParser
-    val xmlLoader = xml.XML.withSAXParser(saxParserFactory.newSAXParser)
-    
-    parseDbUnitDataset( datasetLocation, xmlLoader, lowerCase )
+    xml.XML.withSAXParser(saxParserFactory.newSAXParser)
+  }
+  
+  def parseDbUnitDataset( datasetLocation: File, lowerCase: Boolean ): Map[String,ArrayBuffer[StringMap]] = {
+    parseDbUnitDataset( datasetLocation, newXmlLoader(), lowerCase )
   }
   
   def parseDbUnitDataset( datasetLocation: File, xmlLoader: xml.factory.XMLLoader[xml.Elem], lowerCase: Boolean ): Map[String,ArrayBuffer[StringMap]] = {
 
     // Load the dataset
     val xmlDoc = xmlLoader.loadFile( datasetLocation )
+    
+    parseDbUnitDataset( xmlDoc, lowerCase )
+  }
+  
+  def parseDbUnitDataset( datasetStream: InputStream, lowerCase: Boolean ): Map[String,ArrayBuffer[StringMap]] = {
+    parseDbUnitDataset( datasetStream, newXmlLoader(), lowerCase )
+  }
+  
+  def parseDbUnitDataset( datasetStream: InputStream, xmlLoader: xml.factory.XMLLoader[xml.Elem], lowerCase: Boolean ): Map[String,ArrayBuffer[StringMap]] = {
+
+    // Load the dataset
+    val xmlDoc = xmlLoader.load( datasetStream )
     
     parseDbUnitDataset( xmlDoc, lowerCase )
   }
