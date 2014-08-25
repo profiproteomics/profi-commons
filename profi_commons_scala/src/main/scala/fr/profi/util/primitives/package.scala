@@ -1,6 +1,10 @@
 package fr.profi.util
 
+import java.sql.Timestamp
+import java.util.Date
 import java.util.regex.Pattern
+import scala.collection.immutable.StringOps
+import scala.collection.mutable.HashMap
 
 package object primitives {
   
@@ -19,6 +23,8 @@ Pattern DOUBLE_PATTERN = Pattern.compile(
   
   private def newDateFormat() = new java.text.SimpleDateFormat("yyyy-MM-dd") // dateFormat.setLenient(false)
   private def newDateTimeFormat() = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
+  private val localDateFormat = newDateFormat()
+  private val localDateTimeFormat = newDateTimeFormat()
   
   def isZeroOrNaN( value: Float ) = value.isNaN || value == 0f
   def isZeroOrNaN( value: Double ) = value.isNaN || value == 0d
@@ -31,6 +37,7 @@ Pattern DOUBLE_PATTERN = Pattern.compile(
     value match {
       case v: Boolean           => v
       case v: java.lang.Boolean => v.booleanValue
+      // TODO: parse using StringOrBoolAsBool.asBoolean instead ???
       case v: String            => java.lang.Boolean.parseBoolean(normalizeString(v))
       case _                    => throw new IllegalArgumentException("Type of value is "+getTypeAsString(value)+" not boolean")
     }
@@ -92,7 +99,49 @@ Pattern DOUBLE_PATTERN = Pattern.compile(
     }
 
   }
+  
+  /**
+   * Tries to cast any value to java.lang.String
+   */
+  def castToString(value: Any): String = {
+    if (value == null) return value.asInstanceOf[String]
 
+    value match {
+      case v: String => v
+      case _         => value.toString
+    }
+
+  }
+  
+  /**
+   * Tries to cast any value to java.util.Date
+   */
+  def castToDate(value: Any): Date = {
+    if (value == null) return value.asInstanceOf[Date]
+
+    value match {
+      case v: Date => v
+      case v: String => localDateTimeFormat.parse(normalizeString(v))
+      case _         => throw new IllegalArgumentException("Type of value is "+getTypeAsString(value)+" not Date")
+    }
+
+  }
+  
+  /**
+   * Tries to cast any value to java.sql.Timestamp
+   */
+  def castToTimestamp(value: Any): Timestamp = {
+    if (value == null) return value.asInstanceOf[Timestamp]
+
+    value match {
+      case v: Timestamp => v
+      case v: Date => new java.sql.Timestamp(v.getTime)
+      case v: String => new java.sql.Timestamp( localDateTimeFormat.parse(normalizeString(v)).getTime )
+      case _         => throw new IllegalArgumentException("Type of value is "+getTypeAsString(value)+" not Date")
+    }
+
+  }
+  
   private def normalizeString(rawStr: String): String = {
 
     if (StringUtils.isEmpty(rawStr)) {
@@ -121,6 +170,141 @@ Pattern DOUBLE_PATTERN = Pattern.compile(
     valueType
   }
   
+
+  trait IValueContainer {
+    
+    def getBoolean(key: String): Boolean
+    def getInt(key: String): Int
+    def getLong(key: String): Long
+    def getFloat(key: String): Float
+    def getDouble(key: String): Double
+    def getBytes(key: String): Array[Byte]
+    def getString(key: String): String
+    def getTimestamp(key: String): Timestamp
+    def getDate(key: String): Date
+    def getAnyRef(key: String): AnyRef
+    def getAny(key: String): Any
+    def getAnyVal(key: String): AnyVal
+    
+    def getBooleanOption(key: String): Option[Boolean]
+    def getIntOption(key: String): Option[Int]
+    def getLongOption(key: String): Option[Long]
+    def getFloatOption(key: String): Option[Float]
+    def getDoubleOption(key: String): Option[Double]
+    def getBytesOption(key: String): Option[Array[Byte]]
+    def getStringOption(key: String): Option[String]
+    def getTimestampOption(key: String): Option[Timestamp]
+    def getDateOption(key: String): Option[Date]
+    def getAnyRefOption(key: String): Option[AnyRef]
+    def getAnyOption(key: String): Option[Any]
+    def getAnyValOption(key: String): Option[AnyVal]
+    
+    def getBooleanOrElse( key: String, default: Boolean ): Boolean
+    def getIntOrElse( key: String, default: Int ): Int
+    def getLongOrElse( key: String, default: Long ): Long
+    def getFloatOrElse( key: String, default: Float ): Float
+    def getDoubleOrElse( key: String, default: Double ): Double
+    def getBytesOrElse( key: String, default: Array[Byte] ): Array[Byte]
+    def getStringOrElse( key: String, default: String ): String
+    def getTimestampOrElse( key: String, default: Timestamp ): Timestamp
+    def getDateOrElse( key: String, default: Date ): Date
+    def getAnyRefOrElse( key: String, default: AnyRef ): AnyRef
+    def getAnyOrElse( key: String, default: Any ): Any
+    def getAnyValOrElse( key: String, default: AnyVal ): AnyVal 
+  }
+  
+  // TODO: check the class http://grepcode.com/file_/repo1.maven.org/maven2/org.apache.wicket/wicket-util/6.13.0/org/apache/wicket/util/value/ValueMap.java/?v=source
+  // There may be some interesting stuffs there
+  trait AnyMapLike extends IValueContainer {
+    
+    import fr.profi.util.sql.StringOrBoolAsBool.asBoolean
+    
+    def apply(key: String): Any
+    def contains(key: String): Boolean    
+    def get(key: String): Option[Any]
+    
+    def getIfNotNull(key: String): Option[Any] = {
+      val valOpt = this.get(key)
+      if( valOpt.isEmpty ) None
+      else {
+        val value = valOpt.get
+        if( value == null ) None
+        else Some(value)
+      }
+    }
+    
+    def isDefined(key: String) = this.contains(key) && this(key) != null
+  
+    def getBoolean(key: String): Boolean = asBoolean( this(key) )
+    def getInt(key: String): Int = toInt( this(key) )
+    def getLong(key: String): Long = toLong( this(key) )
+    def getFloat(key: String): Float = toFloat( this(key) )
+    def getDouble(key: String): Double = toDouble( this(key) )
+    def getBytes(key: String): Array[Byte] = this(key).asInstanceOf[Array[Byte]]
+    def getString(key: String): String = castToString( this(key) )
+    def getTimestamp(key: String): Timestamp = castToTimestamp( this(key) )
+    def getDate(key: String): Date = castToDate( this(key) )
+    def getAnyRef(key: String): AnyRef = this(key).asInstanceOf[AnyRef]
+    def getAny(key: String): Any = this(key)
+    def getAnyVal(key: String): AnyVal = this(key).asInstanceOf[AnyVal]
+    
+    def getBooleanOption(key: String): Option[Boolean] = getIfNotNull(key).map( asBoolean(_) )
+    def getIntOption(key: String): Option[Int] = getIfNotNull(key).map( toInt(_) )
+    def getLongOption(key: String): Option[Long] = getIfNotNull(key).map( toLong(_) )
+    def getFloatOption(key: String): Option[Float] = getIfNotNull(key).map( toFloat(_) )
+    def getDoubleOption(key: String): Option[Double] = getIfNotNull(key).map( toDouble(_) )
+    def getBytesOption(key: String): Option[Array[Byte]] = getIfNotNull(key).map( _.asInstanceOf[Array[Byte]] )
+    def getStringOption(key: String): Option[String] = getIfNotNull(key).map( _.toString )
+    def getTimestampOption(key: String): Option[Timestamp] = getIfNotNull(key).map( castToTimestamp(_) )
+    def getDateOption(key: String): Option[Date] = getIfNotNull(key).map( castToDate(_) )
+    def getAnyRefOption(key: String): Option[AnyRef] = getIfNotNull(key).map( _.asInstanceOf[AnyRef] )
+    def getAnyOption(key: String): Option[Any] = getIfNotNull(key)
+    def getAnyValOption(key: String): Option[AnyVal] = getIfNotNull(key).map( _.asInstanceOf[AnyVal] )
+    
+    def getBooleanOrElse( key: String, default: Boolean ): Boolean = getBooleanOption(key).getOrElse(default)
+    def getIntOrElse( key: String, default: Int ): Int = getIntOption(key).getOrElse(default)
+    def getLongOrElse( key: String, default: Long ): Long = getLongOption(key).getOrElse(default)
+    def getFloatOrElse( key: String, default: Float ): Float = getFloatOption(key).getOrElse(default)
+    def getDoubleOrElse( key: String, default: Double ): Double = getDoubleOption(key).getOrElse(default)
+    def getBytesOrElse( key: String, default: Array[Byte] ): Array[Byte] = getBytesOption(key).getOrElse(default)
+    def getStringOrElse( key: String, default: String ): String = getStringOption(key).getOrElse(default)
+    def getTimestampOrElse( key: String, default: Timestamp ): Timestamp = getTimestampOption(key).getOrElse(default)
+    def getDateOrElse( key: String, default: Date ): Date = getDateOption(key).getOrElse(default)
+    def getAnyRefOrElse( key: String, default: AnyRef ): AnyRef = getAnyRefOption(key).getOrElse(default)
+    def getAnyOrElse( key: String, default: Any ): Any = getAnyOption(key).getOrElse(default)
+    def getAnyValOrElse( key: String, default: AnyVal ): AnyVal = getAnyValOption(key).getOrElse(default)
+  }
+  
+  class AnyMap() extends HashMap[String,Any] with AnyMapLike
+  class AnyMapWrapper( wrappedMap: Map[String,Any] ) extends AnyMapLike {
+    def apply(key: String): Any = wrappedMap(key)
+    def contains(key: String): Boolean = wrappedMap.contains(key)
+    def get(key: String): Option[Any] = wrappedMap.get(key)
+  }
+
+  trait StringMapLike extends AnyMapLike {
+    
+    override def apply(key: String): String
+    override def get(key: String): Option[String]
+  
+    override def getBytes(key: String): Array[Byte] = this(key).getBytes // may require some post-processing (Base64 decoding)
+    override def getString(key: String): String = this(key)
+    override def getAnyRef(key: String): AnyRef = this(key)
+    override def getAnyVal(key: String): AnyVal = this(key)
+    
+    override def getBytesOption(key: String): Option[Array[Byte]] = this.get(key).map( _.getBytes )
+    override def getStringOption(key: String): Option[String] = this.get(key)
+    override def getAnyRefOption(key: String): Option[AnyRef] = this.get(key)
+    override def getAnyValOption(key: String): Option[AnyVal] = this.get(key).map( s => new StringOps(s) )
+  }
+  
+  class StringMap() extends HashMap[String,String] with StringMapLike
+  class StringMapWrapper( wrappedMap: Map[String,String] ) extends StringMapLike {
+    def apply(key: String): String = wrappedMap(key)
+    def contains(key: String): Boolean = wrappedMap.contains(key)
+    def get(key: String): Option[String] = wrappedMap.get(key)
+  }
+  
   // TODO: handle date type ??
   object DataType extends Enumeration {
     val NULL = Value("NULL")
@@ -142,9 +326,9 @@ Pattern DOUBLE_PATTERN = Pattern.compile(
       case STRING => {
         try {
           if( dateTimePattern.matcher(str).matches() ) {
-            return newDateTimeFormat().parse(str)
+            return localDateTimeFormat.parse(str)
           } else if( datePattern.matcher(str).matches() ) {
-            return newDateFormat().parse(str)
+            return localDateFormat.parse(str)
           } else {
             return str
           }
