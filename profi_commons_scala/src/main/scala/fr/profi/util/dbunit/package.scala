@@ -27,11 +27,11 @@ package object dbunit {
     xml.XML.withSAXParser(saxParserFactory.newSAXParser)
   }
   
-  def parseDbUnitDataset( datasetLocation: File, lowerCase: Boolean ): Map[String,ArrayBuffer[StringMap]] = {
+  def parseDbUnitDataset( datasetLocation: File, lowerCase: Boolean ): Array[(String,ArrayBuffer[StringMap])] = {
     parseDbUnitDataset( datasetLocation, newXmlLoader(), lowerCase )
   }
   
-  def parseDbUnitDataset( datasetLocation: File, xmlLoader: xml.factory.XMLLoader[xml.Elem], lowerCase: Boolean ): Map[String,ArrayBuffer[StringMap]] = {
+  def parseDbUnitDataset( datasetLocation: File, xmlLoader: xml.factory.XMLLoader[xml.Elem], lowerCase: Boolean ): Array[(String,ArrayBuffer[StringMap])] = {
 
     // Load the dataset
     val xmlDoc = xmlLoader.loadFile( datasetLocation )
@@ -39,11 +39,11 @@ package object dbunit {
     parseDbUnitDataset( xmlDoc, lowerCase )
   }
   
-  def parseDbUnitDataset( datasetStream: InputStream, lowerCase: Boolean ): Map[String,ArrayBuffer[StringMap]] = {
+  def parseDbUnitDataset( datasetStream: InputStream, lowerCase: Boolean ): Array[(String,ArrayBuffer[StringMap])] = {
     parseDbUnitDataset( datasetStream, newXmlLoader(), lowerCase )
   }
   
-  def parseDbUnitDataset( datasetStream: InputStream, xmlLoader: xml.factory.XMLLoader[xml.Elem], lowerCase: Boolean ): Map[String,ArrayBuffer[StringMap]] = {
+  def parseDbUnitDataset( datasetStream: InputStream, xmlLoader: xml.factory.XMLLoader[xml.Elem], lowerCase: Boolean ): Array[(String,ArrayBuffer[StringMap])] = {
 
     // Load the dataset
     val xmlDoc = xmlLoader.load( datasetStream )
@@ -51,9 +51,10 @@ package object dbunit {
     parseDbUnitDataset( xmlDoc, lowerCase )
   }
   
-  def parseDbUnitDataset( datasetAsXML: xml.Elem, lowerCase: Boolean ): Map[String,ArrayBuffer[StringMap]] = {
+  def parseDbUnitDataset( datasetAsXML: xml.Elem, lowerCase: Boolean ): Array[(String,ArrayBuffer[StringMap])] = {
     
     val recordsByTableName = new HashMap[String,ArrayBuffer[StringMap]]
+    val tableNames = new ArrayBuffer[String]()
     
     // Iterate over dataset nodes
     for( xmlNode <- datasetAsXML.child ) {
@@ -65,6 +66,9 @@ package object dbunit {
         
         val tableName = if( lowerCase ) xmlNode.label.toLowerCase()
         else xmlNode.label.toUpperCase()
+        
+        if( recordsByTableName.contains(tableName) == false )
+          tableNames += tableName
         
         val record = new StringMap()
         
@@ -82,7 +86,7 @@ package object dbunit {
       }
     }
     
-    recordsByTableName.toMap
+    tableNames.map( tblName => (tblName -> recordsByTableName(tblName)) ).toArray
   }
 
 }
