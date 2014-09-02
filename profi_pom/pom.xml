@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>ProFI-Pom</artifactId>
+    <groupId>fr.proline</groupId>
+    <version>0.0.4</version> <!-- Snapshot Trunk version -->
+  </parent>
+
+  <groupId>fr.profi</groupId>
+  <artifactId>MSAngel-OM</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>${project.artifactId}</name>
+  <description>Object Model for MSAngel-GUI and its server PWX-MSAngel</description>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <!-- <repositories> TypeSafe <repository> <id>Typesafe Repository</id> 
+    <url>http://repo.typesafe.com/typesafe/releases/</url> </repository> <repository> 
+    <id>Typesafe Snapshots</id> <url>http://repo.typesafe.com/typesafe/snapshots/</url> 
+    </repository> Sonatype OSS Snapshots <repository> <id>Sonatype OSS Snapshots</id> 
+    <url>https://oss.sonatype.org/content/repositories/snapshots</url> </repository> 
+    </repositories> -->
+
+  <dependencies>
+
+    <!-- Scala -->
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
+      <!-- Version inherited from ProFI-Pom ${scala-library.version} -->
+    </dependency>
+
+    <!-- Scala FX -->
+    <dependency>
+      <groupId>org.scalafx</groupId>
+      <artifactId>scalafx_2.10</artifactId>
+      <version>8.0.0-R4</version>
+    </dependency>
+
+    <!-- Joda Time -->
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <!-- Version inherited from ProFI-Pom -->
+    </dependency>
+
+    <!-- Play! JSON -->
+    <dependency>
+      <groupId>com.typesafe.play</groupId>
+      <artifactId>play-json_2.10</artifactId>
+      <version>2.2.3</version>
+    </dependency>
+
+    <!-- Logging -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <!-- Compile scope (Proline-Admin can be used as a stand-alone program) -->
+    </dependency>
+    <dependency>
+      <groupId>com.typesafe</groupId>
+      <artifactId>scalalogging-slf4j_2.10</artifactId>
+      <!-- Version inherited from ProFI-Pom -->
+    </dependency>
+
+    <!-- Tests -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.scalatest</groupId>
+      <artifactId>scalatest_${scala.version}</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>net.alchim31.maven</groupId>
+        <artifactId>scala-maven-plugin</artifactId>
+        <!--<version>3.1.6</version> -->
+      </plugin>
+
+      <!-- Deploy JavaFX-based executable JAR -->
+      <!-- Created in target\jfx\app\ in version 2.0 -->
+      <!-- <plugin> -->
+      <!-- <groupId>com.zenjava</groupId> -->
+      <!-- <artifactId>javafx-maven-plugin</artifactId> -->
+      <!-- <version>2.0</version> -->
+      <!-- <executions> -->
+      <!-- <execution> -->
+      <!-- <id>create-final-jar</id> -->
+      <!-- <phase>package</phase> -->
+      <!-- <goals> -->
+      <!-- <goal>jar</goal> -->
+      <!-- </goals> -->
+      <!-- </execution> -->
+      <!-- </executions> -->
+      <!-- <configuration> -->
+      <!-- <vendor>ProFi</vendor> -->
+      <!-- <mainClass>fr.profi.msangel.om.MsiTask</mainClass> -->
+      <!-- <jfxAppOutputDir>/target</jfxAppOutputDir> -->
+      <!-- <permissions> -->
+      <!-- <permission>all-permissions</permission> -->
+      <!-- </permissions> -->
+      <!-- </configuration> -->
+      <!-- </plugin> -->
+
+
+      <!-- Play! 2 maven plugin <plugin> <groupId>com.google.code.play2-maven-plugin</groupId> 
+        <artifactId>play2-maven-plugin</artifactId> <version>1.0.0-alpha7</version> 
+        <extensions>true</extensions> </plugin> -->
+
+    </plugins>
+  </build>
+
+</project>
