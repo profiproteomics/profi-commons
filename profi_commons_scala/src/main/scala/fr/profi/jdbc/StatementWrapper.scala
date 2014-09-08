@@ -59,9 +59,7 @@ trait StatementWrapper {
   /**
    * Add a String to the current parameter index
    */
-  def addString( value: String ) = addValue( () =>
-    jdbcPrepStmt.setString( _parameterIndex, dialect.escapeString(value) )
-  )
+  def addString( value: String ) = addValue( () => jdbcPrepStmt.setString( _parameterIndex, value ) )
 
   /**
    * Add a Date to the current parameter index. This is done by setTimestamp which
@@ -75,9 +73,7 @@ trait StatementWrapper {
    * Add a Timestamp to the current parameter index. 
    * 
    */
-  def addTimestamp( value: Timestamp ): Unit = addValue( () =>
-    jdbcPrepStmt.setTimestamp(_parameterIndex, value )
-  )
+  def addTimestamp( value: Timestamp ): Unit = addValue( () => jdbcPrepStmt.setTimestamp(_parameterIndex, value ) )
   
   /**
    * Add a Boolean to the current parameter index
