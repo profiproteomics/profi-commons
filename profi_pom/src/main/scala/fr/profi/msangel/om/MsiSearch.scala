@@ -10,6 +10,7 @@ import scalafx.beans.property.ObjectProperty
  * Model for Mass Spectrometry Identification search.
  */
 
+// TODO: extends MongoDbEntity
 case class MsiSearch( //one search <=> one input file
 
   /** Parameters */
@@ -20,11 +21,13 @@ case class MsiSearch( //one search <=> one input file
   var stopTime: Option[DateTime] = None,
   var percentComplete: Int = 0,
   var mascotId: Option[Long] = None, //Mascot(/other) job number when found
+  var serverResponseBody: Option[String] = None, //Mascot(/other) job number when found
 
   val name: String,
   val taskId: String, //mongo id
   val taskName: String,
-  val inputFile: String) {
+  val inputFile: String
+) {
   //extends IMsiObject {
 
   /** Requirements */
