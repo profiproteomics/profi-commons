@@ -20,7 +20,7 @@ case class MsiSearch( //one search <=> one input file
   var startTime: Option[DateTime] = None,
   var stopTime: Option[DateTime] = None,
   var percentComplete: Int = 0,
-  var mascotId: Option[Long] = None, //Mascot(/other) job number when found
+  var mascotId: Option[Long] = None, //TODO : rename into jobId => Mascot(/other) job number when found
   var serverResponseBody: Option[String] = None, //Mascot(/other) job number when found
 
   val name: String,
@@ -39,9 +39,10 @@ case class MsiSearch( //one search <=> one input file
   require(inputFile != null && inputFile.isEmpty() == false, "Input file path must not be null nor empty.")
   //allow task name to be empty. Default task name will be attributed on server side
 
-  /** Utility */
+  /** Utilities */
   def isComplete(): Boolean = (status == MsiSearchStatus.SUCCEEDED || status == MsiSearchStatus.FAILED || status == MsiSearchStatus.KILLED)
 
+  def notYetPending(): Boolean = (status == MsiSearchStatus.CREATED || status == MsiSearchStatus.UPLOADING)
 }
 
 
