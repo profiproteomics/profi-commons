@@ -10,6 +10,7 @@ object MsiTaskStatus extends JsonEnumeration {
 
   val CREATED = Value("created")
 
+  val UPLOADING = Value("uploading")
   val PENDING = Value("pending")
   //  val QUEUED = Value("queued")
 
