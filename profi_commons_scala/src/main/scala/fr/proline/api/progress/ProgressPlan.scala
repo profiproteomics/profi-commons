@@ -80,10 +80,20 @@ case class ProgressStep[S <: IProgressPlanSequence](
   weight: Float = 1
 )(implicit seqTag: ClassTag[S]) {
   
+  private var _number = ProgressPlanSequences.nextStepNumber[S]()
+  
+  // Progress monitoring private vars
   private var _isCompleted = false
   private var _count = 0
   private var _progress = 0f
-  private var _number = ProgressPlanSequences.nextStepNumber[S]()
+  
+  // Execution profiling private vars
+  private var _startingTime = System.currentTimeMillis()
+  private var _endingTime = System.currentTimeMillis()
+  //private var _currentTime = System.currentTimeMillis()
+  //private var _progressSpeeds = new ArrayBuffer[Double]()
+  
+  // Custom actions registries
   private val _onProgressUpdatedActions = new ArrayBuffer[Float => Unit](0)
   private val _onStepCompletedActions = new ArrayBuffer[() => Unit](0)
   
@@ -92,8 +102,17 @@ case class ProgressStep[S <: IProgressPlanSequence](
   def getDescription(implicit tag: ClassTag[S]) = this.identity.stepDescription
   def isCompleted = this._isCompleted
   
+  def resetStartingTime() = { _startingTime = System.currentTimeMillis() }
+  
   def setAsCompleted(): ProgressStep[S] = synchronized {
+    
     this._isCompleted = true
+    this._endingTime = System.currentTimeMillis()
+    
+    // Profile execution time if enabled
+    if( ProgressExecutionProfiling.isEnabled() ) {
+      ProgressExecutionProfiling.addExecutionTime( this.identity, _endingTime - _startingTime )
+    }
     
     // Execute on step updated actions
     for( action <- _onStepCompletedActions ) action()
@@ -143,6 +162,15 @@ case class ProgressStep[S <: IProgressPlanSequence](
   def setProgress( newProgress: Float ) = synchronized {
     require( newProgress >=0 && newProgress <= 1, "progress must be a number between 0 and 1")
     
+    /*if( ProgressExecutionProfiling.isEnabled() ) {
+      val curTime = System.currentTimeMillis()
+      val timeDiff = (curTime - this._currentTime )
+      if( timeDiff != 0 ) {
+        val progressSpeed = 100 * (newProgress - this._progress) / ( timeDiff )
+        this._progressSpeeds += progressSpeed
+      }
+    }*/
+    
     this._progress = if( newProgress > 1 ) 1 else newProgress
     
     // Execute on progress updated actions
@@ -151,6 +179,20 @@ case class ProgressStep[S <: IProgressPlanSequence](
     if( _progress == 1 ) this.setAsCompleted
     
     this
+  }
+  
+  def getExecutionStatistics(): (Double,Double) = {
+    
+    val totalTime = this._endingTime - this._startingTime
+    
+    // TODO: compute SD
+    /*val avgSpeed = if( _progressSpeeds.isEmpty ) 0.0
+    else {
+      val speedSum = _progressSpeeds.sum
+      speedSum / _progressSpeeds.length
+    }*/
+    
+    (totalTime,0)
   }
   
   def setProgressUpdater( progressUpdater: IProgressStepListener ) = {

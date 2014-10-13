@@ -1,7 +1,50 @@
 package fr.proline.api.progress
 
 import scala.collection.mutable.ArrayBuffer
-import scala.collection.immutable.TreeMap
+import scala.collection.mutable.HashMap
+
+/**
+ * The Object singleton ProgressComputingConfig.
+ *
+ * @author David Bouyssie
+ */
+object ProgressExecutionProfiling {
+  
+  private var _profileExecution = false
+  private var _executionTimesByStepIdentity = new HashMap[IProgressStepIdentity,ArrayBuffer[Long] ]()
+  
+  def enable() = synchronized { _profileExecution = true }
+  def disable() = synchronized { _profileExecution = false }
+  def isEnabled() = _profileExecution
+  
+  def addExecutionTime( stepIdentity: IProgressStepIdentity, execTime: Long ) = synchronized {
+    _executionTimesByStepIdentity.getOrElseUpdate(stepIdentity, new ArrayBuffer[Long]() ) += execTime
+  }
+  
+  def getExecutionStatistics(): Map[IProgressStepIdentity,(Long,Long)] = {
+
+    ( for ( (stepIdentity,execTimes) <- _executionTimesByStepIdentity ) yield {
+      val execTimeSum = execTimes.sum
+      val execTimeAvg = execTimeSum / execTimes.length
+      stepIdentity -> (execTimeSum,execTimeAvg)
+    } ) toMap
+  }
+  
+  def logExecutionStatistics( logger: com.typesafe.scalalogging.slf4j.Logger ) {
+    
+    val execStats = this.getExecutionStatistics
+    val sortedStepIdentities = execStats.keys.toList.sortBy(_.stepName)
+    
+    for( stepIdentity <- sortedStepIdentities ) {
+      val (totalExcTime,avgExecTime) = execStats(stepIdentity)
+    
+      logger.debug( s"execution statistics of step ${stepIdentity.stepName} (${stepIdentity.stepDescription}): " )
+      logger.debug( s"- total exec time = $totalExcTime ms" )
+      logger.debug( s"- average exec time = $avgExecTime ms" )
+    }
+  }
+  
+}
 
 /**
  * The Trait ProgressComputing.
@@ -47,15 +90,15 @@ trait ProgressComputing {
    * Sets the current progress step as completed.
    */
   def setCurrentProgressStepAsCompleted(): Unit = {
-    this.progressComputer.getCurrentStep().setAsCompleted()
+    this.progressComputer.setCurrentStepAsCompleted()
   }
   
   /**
    * Sets the progress plan as completed.
    */
-  def setProgressPlanAsCompleted(): Unit = {
+  /*def setProgressPlanAsCompleted(): Unit = {
     this.progressComputer.setAsCompleted()
-  }
+  }*/
   
   /**
    * Gets the updated progress (alias of getUpdatedProgress).
@@ -86,6 +129,6 @@ trait ProgressComputing {
   /**
    * Sets the progress plan as completed (alias of setProgressPlanAsCompleted).
    */
-  def >>|| = this.setProgressPlanAsCompleted()
+  //def >>|| = this.setProgressPlanAsCompleted()
   
 }

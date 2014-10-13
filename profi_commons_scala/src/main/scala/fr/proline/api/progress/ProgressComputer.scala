@@ -53,7 +53,7 @@ class ProgressComputer[S <: IProgressPlanSequence]( private val progressPlan: Pr
     }
   }
   
-  def setAsCompleted(): this.type = synchronized {
+  private def _setAsCompleted(): this.type = synchronized {
     this._progress = 1f
     this._isCompleted = true
     this
@@ -61,9 +61,24 @@ class ProgressComputer[S <: IProgressPlanSequence]( private val progressPlan: Pr
 
   def getSteps(): Seq[ProgressStep[S]] = progressPlan.steps
   
+  // TODO: set current step inside this method to force its usage ???
+  def beginStep( stepIdentity: IProgressStepIdentity ): ProgressStep[S] = {
+    val stepOpt = progressPlan.get(stepIdentity)
+    require( stepOpt.isDefined, "can't find a step in progress plan with identity = " + stepIdentity.stepName )
+    
+    val step = stepOpt.get
+    step.resetStartingTime()
+    
+    step
+  }
+  
   def getCurrentStep(): ProgressStep[S] = {
     val allSteps = this.getSteps
     allSteps.find( _.isCompleted == false ).getOrElse(allSteps.last)
+  }
+  
+  def setCurrentStepAsCompleted(): Unit = {
+    this.getCurrentStep().setAsCompleted()
   }
   
   def getNumberOfCompletedSteps(): Int = { 
@@ -78,6 +93,13 @@ class ProgressComputer[S <: IProgressPlanSequence]( private val progressPlan: Pr
    */
   def getProgress(): Float = {
     this._progress
+  }
+  
+  def logExecutionStatistics( logger: com.typesafe.scalalogging.slf4j.Logger ) {
+    for( step <- this.getSteps() ) {
+      val execStats = step.getExecutionStatistics()
+      logger.debug( s"execution stats in progress plan '${this.progressPlan.name}': " + execStats )
+    }
   }
   
   def getUpdatedProgress(): Float = {
@@ -102,7 +124,7 @@ class ProgressComputer[S <: IProgressPlanSequence]( private val progressPlan: Pr
     val averageProgress = progressSum / weightSum
     
     if( averageProgress >= 1 ) {
-      this.setAsCompleted()
+      this._setAsCompleted()
       this._progress = 1f
     } else
       this._progress = averageProgress
