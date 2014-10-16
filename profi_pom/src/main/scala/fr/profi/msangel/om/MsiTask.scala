@@ -13,6 +13,7 @@ case class MsiTask(
   var status: MsiTaskStatus.Value = MsiTaskStatus.CREATED,
   var searchIds: Option[Array[String]] = None, //mongo ids
   var progression: Int = 0, // nb of searches completed 
+//  var percentComplete: Int = 0,
   var startTime: Option[DateTime] = None, //TODO: make sure it's not over when task is submitted.
   var stopTime: Option[DateTime] = None,
 
@@ -24,7 +25,6 @@ case class MsiTask(
   val scheduleType: String,
   val mergeMsMs: Boolean = false) {
   //extends IMsiObject {
-
 
   /** Requirements */
 
