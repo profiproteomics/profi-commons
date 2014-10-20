@@ -43,10 +43,12 @@ object MsiSearchStatus extends JsonEnumeration {
 /**
  * Enumerates MSI collections.
  */
-object MsiCollection extends Enumeration {
+//TODO: rename fields specifically for msangel ?
+object MongoDbCollection extends Enumeration {
   val TASK_COLLECTION = Value("task_collection")
   val SEARCH_COLLECTION = Value("search_collection")
   val SEARCH_FORM_COLLECTION = Value("search_form_collection")
+  val USER_COLLECTION = Value("user_collection")
 }
 
 /**
