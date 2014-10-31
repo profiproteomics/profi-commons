@@ -93,6 +93,7 @@ trait ProgressComputing {
     this.progressComputer.setCurrentStepAsCompleted()
   }
   
+  /*
   /**
    * Sets the progress plan as completed.
    */
@@ -130,5 +131,6 @@ trait ProgressComputing {
    * Sets the progress plan as completed (alias of setProgressPlanAsCompleted).
    */
   //def >>|| = this.setProgressPlanAsCompleted()
+  */
   
 }

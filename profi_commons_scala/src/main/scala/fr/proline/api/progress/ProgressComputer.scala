@@ -3,26 +3,8 @@ package fr.proline.api.progress
 import scala.collection.mutable.ArrayBuffer
 import scala.reflect.ClassTag
 
-class ProgressComputer[S <: IProgressPlanSequence]( private val progressPlan: ProgressPlan[S] )(implicit seqTag: ClassTag[S]) {
+class ProgressComputer[S <: IProgressPlanSequence]( val progressPlan: ProgressPlan[S] )(implicit seqTag: ClassTag[S]) {
   require( progressPlan != null, "progressPlan is null")
-  
-  def getOnProgressUpdatedListener() = {
-    val progressComputer = this
-    new Object with IProgressUpdatedListener {
-      def listenOnProgressUpdatedAction( action: (IProgressStepIdentity,Float) => Unit ) = {
-        progressComputer.registerOnProgressUpdatedAction(action)
-      }
-    }
-  }
-  
-  def getOnStepCompletedListener() = {
-    val progressComputer = this
-    new Object with IStepCompletedListener {
-      def listenOnStepCompletedAction( action: (IProgressStepIdentity,Float) => Unit ) = {
-        progressComputer.registerOnStepCompletedAction(action)
-      }
-    }
-  }
   
   private var _isCompleted = false
   
@@ -32,22 +14,29 @@ class ProgressComputer[S <: IProgressPlanSequence]( private val progressPlan: Pr
   private val _onStepCompletedActions = new ArrayBuffer[ (IProgressStepIdentity,Float) => Unit](0)
   
   // Watch for progress update and step completion
-  for( step <- this.getSteps() ) {    
+  for( step <- this.getSteps() ) {
+    
     step.registerOnProgressUpdatedAction { newProgress =>
+      
+      // Check if some actions are registered
       if( _onProgressUpdatedActions.isEmpty == false ) {
         this.updateProgress()
         
         // Execute on progress updated registered actions
         for( action <- _onProgressUpdatedActions ) action( step.identity, this._progress)
-      }
-      
+      }      
     }
+    
     step.registerOnStepCompletedAction { () =>
       
+      // Reset starting time of new current step
+      this.getCurrentStep().resetStartingTime()
+      
+      // Check if some actions are registered
       if( _onStepCompletedActions.isEmpty == false ) {
         this.updateProgress()
         
-        // Execute on progress updated registered actions
+        // Execute on step completed registered actions
         for( action <- _onStepCompletedActions ) action(step.identity,this._progress)
       }
     }
@@ -60,17 +49,6 @@ class ProgressComputer[S <: IProgressPlanSequence]( private val progressPlan: Pr
   }
 
   def getSteps(): Seq[ProgressStep[S]] = progressPlan.steps
-  
-  // TODO: set current step inside this method to force its usage ???
-  def beginStep( stepIdentity: IProgressStepIdentity ): ProgressStep[S] = {
-    val stepOpt = progressPlan.get(stepIdentity)
-    require( stepOpt.isDefined, "can't find a step in progress plan with identity = " + stepIdentity.stepName )
-    
-    val step = stepOpt.get
-    step.resetStartingTime()
-    
-    step
-  }
   
   def getCurrentStep(): ProgressStep[S] = {
     val allSteps = this.getSteps
@@ -93,13 +71,6 @@ class ProgressComputer[S <: IProgressPlanSequence]( private val progressPlan: Pr
    */
   def getProgress(): Float = {
     this._progress
-  }
-  
-  def logExecutionStatistics( logger: com.typesafe.scalalogging.slf4j.Logger ) {
-    for( step <- this.getSteps() ) {
-      val execStats = step.getExecutionStatistics()
-      logger.debug( s"execution stats in progress plan '${this.progressPlan.name}': " + execStats )
-    }
   }
   
   def getUpdatedProgress(): Float = {
@@ -131,23 +102,47 @@ class ProgressComputer[S <: IProgressPlanSequence]( private val progressPlan: Pr
     
   }
   
+  def getOnProgressUpdatedListener() = {
+    val progressComputer = this
+    new Object with IProgressUpdatedListener {
+      def listenOnProgressUpdatedAction( action: (IProgressStepIdentity,Float) => Unit ) = {
+        progressComputer.registerOnProgressUpdatedAction(action)
+      }
+    }
+  }
+  
   def registerOnProgressUpdatedAction( action: (IProgressStepIdentity,Float) => Unit ) = {
     _onProgressUpdatedActions += action
+  }
+  
+  def getOnStepCompletedListener() = {
+    val progressComputer = this
+    new Object with IStepCompletedListener {
+      def listenOnStepCompletedAction( action: (IProgressStepIdentity,Float) => Unit ) = {
+        progressComputer.registerOnStepCompletedAction(action)
+      }
+    }
   }
   
   def registerOnStepCompletedAction( action: (IProgressStepIdentity,Float) => Unit ) = {
     _onStepCompletedActions += action
   }
   
-  /*method getProgressAsString() {
-    val nbSteps = this.numOfSteps
-    val nbCompletedSteps = this.getNumOfCompletedSteps
-    val totalProgress = this.getProgress
+  def resetStepStartingTime( stepIdentity: IProgressStepIdentity ): ProgressStep[S] = {
+    val stepOpt = progressPlan.get(stepIdentity)
+    require( stepOpt.isDefined, "can't find a step in progress plan with identity = " + stepIdentity.stepName )
     
-    val status = "nbCompletedSteps/nbSteps completed step(s) for a total progress of ".
-                 sprintf("%.1f",totalProgress*100) .'%'
+    val step = stepOpt.get
+    step.resetStartingTime()
     
-    return status
-  }*/
+    step
+  }
+  
+  def logExecutionStatistics( logger: com.typesafe.scalalogging.slf4j.Logger ) {
+    for( step <- this.getSteps() ) {
+      val execStats = step.getExecutionStatistics()
+      logger.debug( s"execution stats in progress plan '${this.progressPlan.name}': " + execStats )
+    }
+  }
 
 }
