@@ -35,18 +35,18 @@ private class ServiceFake extends ProgressComputing {
   /*this.progressComputer.registerOnProgressUpdatedAction { newProgress =>
     println( "newProgress : "+newProgress )
   }*/
-  >>| // step1 completed
+  setCurrentProgressStepAsCompleted() // step1 completed
   
   val subService = new SubServiceFake()  
   //this.progressPlan(STEP2).setProgressUpdater(subService.progressComputer.getOnStepCompletedListener())
   
   subService.doStuffs
-  >>| // step2 completed
+  setCurrentProgressStepAsCompleted() // step2 completed
   
   //>>|| // all steps completed
   
   // Check we have completed the progress plan
-  assertEquals( "invalid progression at the end of the service", 1.0, >>?, 0.0 )    
+  assertEquals( "invalid progression at the end of the service", 1.0, getUpdatedProgress(), 0.0 )    
 }
 
 private class SubServiceFake extends ProgressComputing {
@@ -75,8 +75,8 @@ private class SubServiceFake extends ProgressComputing {
     this.progressPlan(STEP1).setMaxCount(step1MaxCount)
     this.progressPlan(STEP2).setMaxCount(step2MaxCount)
     
-    for( i1 <- 1 to step1MaxCount ) >>++
-    for( i2 <- 1 to step2MaxCount ) >>++
+    for( i1 <- 1 to step1MaxCount ) incrementCurrentProgressStepCount()
+    for( i2 <- 1 to step2MaxCount ) incrementCurrentProgressStepCount()
   }
 
 }
