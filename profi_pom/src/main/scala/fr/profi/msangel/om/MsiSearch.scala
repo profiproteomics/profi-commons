@@ -1,10 +1,6 @@
 package fr.profi.msangel.om
 
 import org.joda.time.DateTime
-import scalafx.beans.property.ObjectProperty
-//import scalafx.scene.control.Hyperlink
-//import scalafx.Includes.handle
-//import java.net.URI
 
 /**
  * Model for Mass Spectrometry Identification search.
@@ -21,15 +17,16 @@ case class MsiSearch( //one search <=> one input file
   var stopTime: Option[DateTime] = None,
   var percentComplete: Int = 0,
   var mascotId: Option[Long] = None, //TODO : rename into jobId => Mascot(/other) job number when found
-  //  var serverResponseBody: Option[String] = None, //Mascot(/other) job number when found
-  var submissionCallback: Option[String] = None, //Mascot(/other) job number when found
-  var monitorCallback: Option[String] = None, //Mascot(/other) job number when found
+  //  var serverResponseBody: Option[String] = None,
+  var submissionCallback: Option[String] = None, 
+  var monitorCallback: Option[String] = None, 
 
   val name: String,
   val taskId: String, //mongo id
   val taskName: String,
-  val inputFile: String) {
-  //extends IMsiObject {
+  val inputFile: String
+) {
+  //extends IMsiObject { serverResponse
 
   /** Requirements */
 
