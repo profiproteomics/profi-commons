@@ -96,27 +96,6 @@
         <version>1.6</version> <!-- Latest version checked on 13 may 2014 -->
       </dependency>
 
-      <!-- Jerkson
-      <dependency>
-        <groupId>com.codahale</groupId>
-        <artifactId>jerkson_${scala.prev_version}</artifactId>
-        <version>0.6.0-SNAPSHOT</version>
-        <exclusions>
-          <exclusion>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      -->
 
       <!-- Serialization -->
       <dependency>
@@ -131,11 +110,6 @@
         <version>2.2.3</version>
       </dependency> <!-- Latest release is 2.2.3 on 11 dec. 2013 -->
 
-      <!-- <dependency>
-        <groupId>org.msgpack</groupId>
-        <artifactId>msgpack-scala_${scala.version}</artifactId>
-        <version>0.6.8</version>
-      </dependency> Latest release is 0.6.8 on 11 dec. 2013 -->
 
       <!-- JSON-RPC -->
       <dependency>
@@ -185,15 +159,6 @@
       </dependency>
 
       <!-- Scala tests -->
-      <!-- Latest version checked on 9 dec. 2013
-      <dependency>
-        <groupId>org.scala-tools.testing</groupId>
-        <artifactId>specs_${scala.version}</artifactId>
-        <version>1.6.9</version>
-        <scope>test</scope>
-      </dependency>
-      -->
-
       <dependency>
         <groupId>org.scalatest</groupId>
         <artifactId>scalatest_${scala.version}</artifactId>
@@ -342,6 +307,26 @@
           <artifactId>jacoco-maven-plugin</artifactId>
           <version>0.7.1.201405082137</version> <!-- Latest version checked on 13 may 2014 -->
         </plugin>
+
+	  <!--  Maven Release for branches and tags -->
+		<plugin>
+			<artifactId>maven-release-plugin</artifactId>
+			<version>2.5.1</version>
+			<configuration>
+				<providerImplementations>
+					<svn>javasvn</svn>
+				</providerImplementations>
+			</configuration>
+			<dependencies>
+				<dependency>
+					<groupId>com.google.code.maven-scm-provider-svnjava</groupId>
+					<artifactId>maven-scm-provider-svnjava</artifactId>
+					<version>2.1.1</version>
+					<scope>compile</scope>
+				</dependency>
+			</dependencies>
+		</plugin>
+	
 
       </plugins>
     </pluginManagement>
