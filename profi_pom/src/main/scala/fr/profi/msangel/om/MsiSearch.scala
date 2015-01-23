@@ -19,7 +19,7 @@ case class MsiSearch( //one search <=> one input file
   var mascotId: Option[Long] = None, //TODO : rename into jobId => Mascot(/other) job number when found
   //  var serverResponseBody: Option[String] = None,
   var submissionCallback: Option[String] = None, 
-  var monitorCallback: Option[String] = None, 
+  var monitoringCallback: Option[String] = None, 
 
   val name: String,
   val taskId: String, //mongo id
