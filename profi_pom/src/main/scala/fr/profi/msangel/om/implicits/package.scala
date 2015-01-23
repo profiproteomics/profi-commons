@@ -1,7 +1,8 @@
 package fr.profi.msangel.om
 
-import play.api.libs.json._
 import play.api.libs.functional.syntax._
+import play.api.libs.json._
+import fr.profi.msangel.om.workflow._
 
 package object implicits {
 
@@ -45,12 +46,12 @@ package object implicits {
   /**
    * Some Play!2.2 JSON formatters for MS-Angel case classes.
    */
-
+  implicit val fileMonitoringConfigFormat = Json.format[FileMonitoringConfig]
+  implicit val msangelServerConfigFormat = Json.format[MSAngelServerConfig]
+  implicit val workflowFormat = Json.format[Workflow]
+  
   implicit val msiSearchFormFormat = Json.format[MsiSearchForm]
-
   implicit val msiSearchFormat = Json.format[MsiSearch]
-
   implicit val msiTaskFormat = Json.format[MsiTask]
-
 
 }
