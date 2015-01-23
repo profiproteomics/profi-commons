@@ -1,6 +1,7 @@
 package fr.profi.msangel.om
 
 import fr.profi.msangel.om.implicits.JsonEnumeration
+import scala.collection.immutable.HashMap
 
 /**
  * Enumerates accepted statuses for MsiTask objects.
@@ -35,6 +36,8 @@ object MsiSearchStatus extends JsonEnumeration {
   val RUNNING = Value("running")
   val PAUSED = Value("paused")
 
+  //  val IMPORTING = Value("importing") //into Proline. TODO : rename?
+
   val FAILED = Value("failed")
   val SUCCEEDED = Value("succeeded")
   val KILLED = Value("killed")
@@ -49,6 +52,8 @@ object MongoDbCollection extends Enumeration {
   val SEARCH_COLLECTION = Value("search_collection")
   val SEARCH_FORM_COLLECTION = Value("search_form_collection")
   val USER_COLLECTION = Value("user_collection")
+  
+  //val MSANGEL_SERVER_CONFIG_COLLECTION = Value("msangel_server_config_collection")
 }
 
 /**
@@ -59,10 +64,77 @@ object SearchEngine extends JsonEnumeration {
   val OMSSA = Value("OMSSA")
 }
 
+object FileConversionTool extends JsonEnumeration {
+  val MSCONVERT = Value("ProteoWizard msConvert")
+  val EXTRACT_MSN = Value("Thermo ExtractMSn")
+  val RAW2MZDB = Value("ProFI raw2mzDB")
+  val MZDB_ACCESS = Value("ProFI mzdb-access")
+  
+  implicit def enum2string( tool: FileConversionTool.Value ): String = tool.toString()
+}
+
+/**
+ * Enumerates handled file extensions.
+ */
+object DataFileFormat extends JsonEnumeration { //TODO : rename into extension?
+
+  val RAW = Value("RAW")
+  val WIFF = Value("WIFF")
+  val MZDB = Value("MZDB")
+  val MGF = Value("MGF")
+
+  val MZML = Value("MZML")
+  val MZXML = Value("MZXML")
+  val MZ5 = Value("MZ5")
+  val TEXT = Value("TEXT")
+  val MS1 = Value("MS1")
+  val CMS1 = Value("CMS1")
+  val MS2 = Value("MS2")
+  val CMS2 = Value("CMS2")
+
+  val rankedFormats: Seq[(Int, this.Value)] = Seq(
+    (1, this.RAW),
+    (1, this.WIFF),
+    (2, this.MZDB),
+    (3, this.MGF),
+
+    (3, this.MZML),
+    (3, this.MZXML),
+    (3, this.MZ5),
+    (3, this.TEXT),
+    (3, this.MS1),
+    (3, this.CMS1),
+    (3, this.MS2),
+    (3, this.CMS2)
+  )
+
+  private def _getInitRank(initFormat: this.Value): Int = rankedFormats.find(_._2 == initFormat).map(_._1).getOrElse(0)
+
+  def getLowerFormats(initFormat: this.Value) = {
+    val initRank = _getInitRank(initFormat)
+    rankedFormats.filter { f => f._1 <= initRank && f._2 != initFormat }.map(_._2)
+  }
+  def getUpperFormats(initFormat: this.Value) = {
+    val initRank = _getInitRank(initFormat)
+    rankedFormats.filter { f => f._1 >= initRank && f._2 != initFormat }.map(_._2)
+  }
+
+  def getMinRankedFormats() = {
+    rankedFormats.filter(_._1 == 1).map(_._2)
+  }
+  def getMaxRankedFormats() = {
+    val maxRank = rankedFormats.map(_._1).max
+    rankedFormats.filter(_._1 == maxRank).map(_._2)
+  }
+}
 /**
  * Enumerates accepted Mascot search parameters.
  */
 object MascotSearchParam extends Enumeration {
+
+  def printAll() { println(scala.runtime.ScalaRunTime.stringOf(values)) }
+  //  def contains(s: String): Boolean = values.exists(_.toString == s)
+
   val ACCESSION = Value("ACCESSION")
   val CHARGE = Value("CHARGE")
   val CLE = Value("CLE")
@@ -136,4 +208,14 @@ object SearchFormTag extends Enumeration {
   val INPUT_FILE_NAME = Value("<input_file_name>")
   val INPUT_FILE_PATH = Value("<input_file_path>")
   //TODO: add <parameters>, <localhost>, <localuser> and Mascot Security-related tags.
+}
+
+/**
+ * Enumerates MSI tasks' scheduling types
+ */
+object SchedulingType extends JsonEnumeration {
+  val START_NOW = Value("Start now")
+  val REAL_TIME_MONITORING = Value("Real time monitoring")
+  val START_AT = Value("Start at")
+  val ADD_TO_QUEUE = Value("Add to queue")
 }
