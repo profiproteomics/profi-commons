@@ -44,13 +44,30 @@ object MsiSearchStatus extends JsonEnumeration {
 }
 
 /**
+ * Enumerates accepted statuses for WorkflowTask objects.
+ * Values are automatically parsed from/to Json.
+ */
+
+object WorkflowStatus extends JsonEnumeration {
+
+  val CREATED = Value("created")
+  val RUNNING = Value("running")
+  //val PAUSED = Value("paused")
+  //val DELETED = Value("deleted") //TODO: by owner only. Change into "killed"?
+  val FAILED = Value("failed")
+  val SUCCEEDED = Value("succeeded")
+}
+
+
+/**
  * Enumerates MSI collections.
  */
 //TODO: rename fields specifically for msangel ?
 object MongoDbCollection extends Enumeration {
-  val TASK_COLLECTION = Value("task_collection")
-  val SEARCH_COLLECTION = Value("search_collection")
-  val SEARCH_FORM_COLLECTION = Value("search_form_collection")
+  val WORKFLOW_TASK_COLLECTION = Value("workflow_task_collection")
+  val MSI_TASK_COLLECTION = Value("msi_task_collection")
+  val MSI_SEARCH_COLLECTION = Value("msi_search_collection")
+  val MSI_SEARCH_FORM_COLLECTION = Value("msi_search_form_collection")
   val USER_COLLECTION = Value("user_collection")
   
   //val MSANGEL_SERVER_CONFIG_COLLECTION = Value("msangel_server_config_collection")
