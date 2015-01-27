@@ -11,7 +11,8 @@ case class FileMonitoringConfig(
 
   val maxFileCount: Option[Int],
   val maxDate: Option[Date], //because LocalDate has no implicit json format //FIXME
-  val maxIntervalBetweenAcquisition: Option[Date]) {
+  val maxIntervalBetweenAcquisition: Option[Date]
+) {
 
   require(folderPath != null && folderPath != "") //adapt when wild cards are handled
 }

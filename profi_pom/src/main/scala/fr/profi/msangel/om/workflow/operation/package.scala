@@ -71,13 +71,20 @@ package object operation {
   ) extends IWorkflowOperation //MsiSearch
 
   case class ProlineImport(
+    ownerMongoId : String, //mongo ID
     projectId: Long, //uds ID
     instrumentConfigId: Long, //uds ID
     peaklistSoftwareId: Long, //uds ID
     emailNotification: Option[EMailNotification] = None,
     cmdLineExecution: Option[CmdLineExecution] = None,
     webServiceCall: Option[WebServiceCall] = None
-  ) extends IWorkflowOperation //into Proline
+  ) extends IWorkflowOperation {
+
+    require(ownerMongoId != null, "Task's owner mongo ID must not be null") //TODO : hexaDec + size
+    require(projectId > 0, "Invalid project ID for ProlineImport")
+    require(instrumentConfigId > 0, "Invalid instrumentConfig ID for ProlineImport")
+    require(peaklistSoftwareId > 0, "Invalid peaklistSoftware ID for ProlineImport")
+  }
 
   implicit val workflowOperationFormat: Format[IWorkflowOperation] = Variants.format[IWorkflowOperation]("type")
 

@@ -23,18 +23,18 @@ case class WorkflowTask(
   var stopTime: Option[DateTime] = None,
 
   val fileMonitoringConfig: Option[FileMonitoringConfig] = None,
-
   val workflow: Workflow,
   val name: String,
   val scheduleType: SchedulingType.Value,
-  val ownerMongoId: String //mongo ID
+  val ownerMongoId: String, //mongo ID
+  
+  val isFake : Boolean
   ) {
 
   /**
    *  Utilities
    */
   def isComplete: Boolean = (status ==  WorkflowStatus.SUCCEEDED || status == WorkflowStatus.FAILED ) //TODO || status == WorkflowTaskStatus.DELETED)
-  //def isFake: Boolean = searchForm.targetURL matches """.*fake.*"""
 
   /**
    * Requirements
