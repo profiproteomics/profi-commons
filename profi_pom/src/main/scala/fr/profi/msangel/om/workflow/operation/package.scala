@@ -2,13 +2,14 @@ package fr.profi.msangel.om.workflow
 
 import scala.collection.mutable.HashMap
 import fr.profi.msangel.om.MsiSearchForm
+
 package object operation {
 
   import java.io.File
   import play.api.data.validation.ValidationError
   import play.api.libs.json._
   import julienrf.variants.Variants
-  import fr.profi.msangel.om.implicits._
+  import fr.profi.msangel.om._
   import fr.profi.msangel.om.DataFileFormat
   import fr.profi.msangel.om.SearchEngine
 

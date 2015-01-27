@@ -1,12 +1,14 @@
-package fr.profi.msangel.om
+package fr.profi.msangel
+
+import play.api.data.validation.ValidationError
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
+
 import fr.profi.msangel.om.workflow._
 import fr.profi.msangel.om.workflow.operation._
-import play.api.data.validation.ValidationError
 
-package object implicits {
+package object om {
 
   /**
    *  Automatically parse Enumeration values from/to Json.

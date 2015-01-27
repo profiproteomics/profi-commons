@@ -19,7 +19,8 @@ case class WorkflowJob(
   val name: String,
   val workflowTaskId: String, //mongo id
   val workflowTaskName: String, //TODO ? delete me
-  val inputFile: String) {
+  val inputFile: String
+) {
 
   /** Requirements */
   

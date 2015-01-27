@@ -1,6 +1,5 @@
 package fr.profi.msangel.om
 
-import fr.profi.msangel.om.implicits.JsonEnumeration
 import scala.collection.immutable.HashMap
 
 /**
@@ -64,10 +63,13 @@ object WorkflowStatus extends JsonEnumeration {
  */
 //TODO: rename fields specifically for msangel ?
 object MongoDbCollection extends Enumeration {
+  val WORKFLOW_JOB_COLLECTION = Value("workflow_job_collection")
   val WORKFLOW_TASK_COLLECTION = Value("workflow_task_collection")
+  
   val MSI_TASK_COLLECTION = Value("msi_task_collection")
   val MSI_SEARCH_COLLECTION = Value("msi_search_collection")
   val MSI_SEARCH_FORM_COLLECTION = Value("msi_search_form_collection")
+  
   val USER_COLLECTION = Value("user_collection")
   
   //val MSANGEL_SERVER_CONFIG_COLLECTION = Value("msangel_server_config_collection")

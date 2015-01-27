@@ -9,7 +9,7 @@ import play.api.libs.json._
 
 import fr.profi.msangel.om.DataFileFormat
 import fr.profi.msangel.om.FileConversionTool
-import fr.profi.msangel.om.implicits._
+import fr.profi.msangel.om._
 import fr.profi.util.scala.BigDecimalRange
 
 /**
