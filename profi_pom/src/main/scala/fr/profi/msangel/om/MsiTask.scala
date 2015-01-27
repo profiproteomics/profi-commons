@@ -27,11 +27,11 @@ case class MsiTask(
   val searchForm: MsiSearchForm, // TODO : searchForm ID ? (doesn't fit display needs that much)
   val mergeMsMs: Boolean = false, //TDO : delete me? (file conversion option)
 
-  val scheduleType: SchedulingType.Value,
-  val fileMonitoringConfig: Option[FileMonitoringConfig] = None,
+  val scheduleType: SchedulingType.Value, //TODO : DELETE ME
+  val fileMonitoringConfig: Option[FileMonitoringConfig] = None, //TODO : DELETE ME
   //val startAtDate: Option[java.util.Date] = None,
   
-  var workflowId: Option[String] = None, // MongoId //TODO : String
+  var workflowId: Option[String] = None, // MongoId //TODO : no option + rename : parentWI
 
   val ownerMongoId: String, //mongo ID
   

@@ -4,7 +4,6 @@ import org.joda.time.DateTime
 import operation.IWorkflowOperation
 
 case class Workflow(
-  //  val id: String, //MongoId
   //  val properties: HashMap[String, String],
   val operations: Array[IWorkflowOperation],
   val isTemplate: Boolean = false,
@@ -15,9 +14,9 @@ case class Workflow(
   val registTime: Option[DateTime] = None) {
   //  require(properties != null, "Workflow properties must be defined")
 
-  override def toString(): String = {
-    "Workflow :" +
-      "\nops : " + scala.runtime.ScalaRunTime.stringOf(operations) +
-      "\nrest : " + (Seq(isTemplate, name, ownerMongoId, registTime).mkString(" - "))
-  }
+  //  override def toString(): String = {
+  //    "Workflow :" +
+  //      "\nops : " + scala.runtime.ScalaRunTime.stringOf(operations) +
+  //      "\nrest : " + (Seq(isTemplate, name, ownerMongoId, registTime).mkString(" - "))
+  //  }
 }

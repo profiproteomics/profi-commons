@@ -3,6 +3,8 @@ package fr.profi.msangel.om
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import fr.profi.msangel.om.workflow._
+import fr.profi.msangel.om.workflow.operation._
+import play.api.data.validation.ValidationError
 
 package object implicits {
 
@@ -42,16 +44,38 @@ package object implicits {
       Format(enumReads(enum), enumWrites)
     }
   }
+  
+  
+  /**
+   * Reads and writes for basic types, that are not handled by play.api.libs.json
+   */
+
+  /** For Tuple2 */
+  //from https://gist.github.com/alexanderjarvis/4595298
+  implicit def tuple2Reads[A, B](implicit aReads: Reads[A], bReads: Reads[B]): Reads[Tuple2[A, B]] = Reads[Tuple2[A, B]] {
+    case JsArray(arr) if arr.size == 2 => for {
+      a <- aReads.reads(arr(0))
+      b <- bReads.reads(arr(1))
+    } yield (a, b)
+    case _ => JsError(Seq(JsPath() -> Seq(ValidationError("Expected array of two elements"))))
+  }
+
+  implicit def tuple2Writes[A, B](implicit aWrites: Writes[A], bWrites: Writes[B]): Writes[Tuple2[A, B]] = new Writes[Tuple2[A, B]] {
+    def writes(tuple: Tuple2[A, B]) = JsArray(Seq(aWrites.writes(tuple._1), bWrites.writes(tuple._2)))
+  }
 
   /**
    * Some Play!2.2 JSON formatters for MS-Angel case classes.
    */
-  implicit val fileMonitoringConfigFormat = Json.format[FileMonitoringConfig]
   implicit val msangelServerConfigFormat = Json.format[MSAngelServerConfig]
-  implicit val workflowFormat = Json.format[Workflow]
   
   implicit val msiSearchFormFormat = Json.format[MsiSearchForm]
   implicit val msiSearchFormat = Json.format[MsiSearch]
-  implicit val msiTaskFormat = Json.format[MsiTask]
 
+  implicit val workflowFormat = Json.format[Workflow]
+  implicit val workflowJobFormat = Json.format[WorkflowJob]
+  implicit val fileMonitoringConfigFormat = Json.format[FileMonitoringConfig]
+  implicit val workflowTaskFormat = Json.format[WorkflowTask]
+
+  implicit val msiTaskFormat = Json.format[MsiTask]
 }
