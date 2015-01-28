@@ -14,6 +14,24 @@ package object operation {
   import fr.profi.msangel.om.SearchEngine
 
   /**
+   * Reads and writes for basic types, that are not handled by play.api.libs.json
+   */
+
+  /** For Tuple2 */
+  //from https://gist.github.com/alexanderjarvis/4595298
+  implicit def tuple2Reads[A, B](implicit aReads: Reads[A], bReads: Reads[B]): Reads[Tuple2[A, B]] = Reads[Tuple2[A, B]] {
+    case JsArray(arr) if arr.size == 2 => for {
+      a <- aReads.reads(arr(0))
+      b <- bReads.reads(arr(1))
+    } yield (a, b)
+    case _ => JsError(Seq(JsPath() -> Seq(ValidationError("Expected array of two elements"))))
+  }
+
+  implicit def tuple2Writes[A, B](implicit aWrites: Writes[A], bWrites: Writes[B]): Writes[Tuple2[A, B]] = new Writes[Tuple2[A, B]] {
+    def writes(tuple: Tuple2[A, B]) = JsArray(Seq(aWrites.writes(tuple._1), bWrites.writes(tuple._2)))
+  }
+
+  /**
    * Formats for case classes (related to workflow)
    */
   //  implicit val macroBooleanParamFormat = Json.format[MacroBooleanParam]
@@ -67,18 +85,16 @@ package object operation {
     // searchForms: Array[MsiSearchForm],
     emailNotification: Option[EMailNotification] = None,
     cmdLineExecution: Option[CmdLineExecution] = None,
-    webServiceCall: Option[WebServiceCall] = None
-  ) extends IWorkflowOperation //MsiSearch
+    webServiceCall: Option[WebServiceCall] = None) extends IWorkflowOperation //MsiSearch
 
   case class ProlineImport(
-    ownerMongoId : String, //mongo ID
+    ownerMongoId: String, //mongo ID
     projectId: Long, //uds ID
     instrumentConfigId: Long, //uds ID
     peaklistSoftwareId: Long, //uds ID
     emailNotification: Option[EMailNotification] = None,
     cmdLineExecution: Option[CmdLineExecution] = None,
-    webServiceCall: Option[WebServiceCall] = None
-  ) extends IWorkflowOperation {
+    webServiceCall: Option[WebServiceCall] = None) extends IWorkflowOperation {
 
     require(ownerMongoId != null, "Task's owner mongo ID must not be null") //TODO : hexaDec + size
     require(projectId > 0, "Invalid project ID for ProlineImport")
