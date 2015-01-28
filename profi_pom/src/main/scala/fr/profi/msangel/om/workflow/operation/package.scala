@@ -64,7 +64,7 @@ package object operation {
 
   case class PeaklistIdentification(
     searchEngines: Array[SearchEngine.Value],
-    searchForms: Array[MsiSearchForm],
+    // searchForms: Array[MsiSearchForm],
     emailNotification: Option[EMailNotification] = None,
     cmdLineExecution: Option[CmdLineExecution] = None,
     webServiceCall: Option[WebServiceCall] = None
