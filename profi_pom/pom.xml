@@ -14,6 +14,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <scala.version>2.10</scala.version> <!-- Scala major version -->
     <scala-library.version>2.10.3</scala-library.version> <!-- Scala library version -->
+    <jackson.version>2.5.0</jackson.version> <!-- Latest release is 2.5.0 on 28 jan. 2015 -->
   </properties>
 
   <dependencyManagement>
@@ -96,21 +97,22 @@
         <version>1.6</version> <!-- Latest version checked on 13 may 2014 -->
       </dependency>
 
-
       <!-- Serialization -->
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.module</groupId>
         <artifactId>jackson-module-scala_${scala.version}</artifactId>
-        <version>2.5.0</version>
+        <version>${jackson.version}</version>
       </dependency> <!-- Latest release is 2.5.0 on 28 jan. 2015 -->
-
-      <!--
-      <dependency>
-        <groupId>com.lambdaworks</groupId>
-        <artifactId>jacks_${scala.version}</artifactId>
-        <version>2.2.3</version>
-      </dependency>
-      -->
 
       <!-- JSON-RPC -->
       <dependency>
