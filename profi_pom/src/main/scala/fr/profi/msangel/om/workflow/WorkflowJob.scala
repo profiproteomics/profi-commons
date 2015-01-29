@@ -1,7 +1,7 @@
 package fr.profi.msangel.om.workflow
 
-import fr.profi.msangel.om.WorkflowStatus
 import org.joda.time.DateTime
+import fr.profi.msangel.om.WorkflowJobStatus
 
 /**
  * Model for Workflow job: execution of the workflow on one file.
@@ -10,13 +10,13 @@ case class WorkflowJob(
 
   /** Parameters */
 
-  var status: WorkflowStatus.Value = WorkflowStatus.CREATED,
+  var status: WorkflowJobStatus.Value = WorkflowJobStatus.CREATED,
   var startTime: Option[DateTime] = None,
   var stopTime: Option[DateTime] = None,
-  var progression: Int = 0, //number of operations completed
+  var progression: Int = 0, // % = #operations done / #operations in workflow
   var monitoringCallback: Option[String] = None,
 
-  val name: String,
+  val name: String, //remove me?
   val workflowTaskId: String, //mongo id
   val workflowTaskName: String, //TODO ? delete me
   val inputFile: String
@@ -31,7 +31,7 @@ case class WorkflowJob(
 
   /** Utilities */
   
-  def isComplete(): Boolean = (status == WorkflowStatus.SUCCEEDED || status == WorkflowStatus.FAILED) //TODO || status == MsiSearchStatus.KILLED)
+  def isComplete(): Boolean = (status == WorkflowJobStatus.SUCCEEDED || status == WorkflowJobStatus.FAILED) //TODO || status == MsiSearchStatus.KILLED)
 
   //  def notYetPending(): Boolean = (status == WorkflowStatus.CREATED || status == WorkflowStatus.UPLOADING)
 }

@@ -17,7 +17,7 @@ case class MsiTask(
   var inputFiles: Array[String] = Array(),
   var searchIds: Array[String] = Array(), //mongo ids
 
-  var status: MsiTaskStatus.Value = MsiTaskStatus.CREATED,
+  var status: TaskStatus.Value = TaskStatus.CREATED, //MsiTaskStatus.CREATED
   var progression: Int = 0, // nb of searches completed 
   //var percentComplete: Int = 0,
   var startTime: Option[DateTime] = None, //TODO: make sure it's not over when task is submitted.
@@ -41,7 +41,7 @@ case class MsiTask(
   /**
    *  Utilities
    */
-  def isComplete: Boolean = (status == MsiTaskStatus.SUCCEEDED || status == MsiTaskStatus.FAILED || status == MsiTaskStatus.DELETED)
+  def isComplete: Boolean = (status == TaskStatus.SUCCEEDED || status == TaskStatus.FAILED || status == TaskStatus.DELETED)
   def isFake: Boolean = searchForm.targetURL matches """.*fake.*"""
 
   /**

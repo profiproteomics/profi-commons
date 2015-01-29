@@ -3,10 +3,10 @@ package fr.profi.msangel.om
 import scala.collection.immutable.HashMap
 
 /**
- * Enumerates accepted statuses for MsiTask objects.
+ * Enumerates accepted statuses for WorkflowTask and MsiTask objects.
  * Values are automatically parsed from/to Json.
  */
-object MsiTaskStatus extends JsonEnumeration {
+object TaskStatus extends JsonEnumeration {
 
   val CREATED = Value("created")
 
@@ -20,6 +20,58 @@ object MsiTaskStatus extends JsonEnumeration {
   val DELETED = Value("deleted") //TODO: by owner only. Change into "killed"?
   val FAILED = Value("failed")
   val SUCCEEDED = Value("succeeded")
+}
+
+/*
+trait TaskStatus extends JsonEnumeration {
+  //  val CREATED = Value("created")
+  //  val RUNNING = Value("running")
+  //  val FAILED = Value("failed")
+  //  val SUCCEEDED = Value("succeeded")
+}
+
+/**
+ * Enumerates accepted statuses for WorkflowTask objects.
+ * Values are automatically parsed from/to Json.
+ */
+object WorkflowStatus extends TaskStatus {
+  //  val CREATED = Value("created")
+  //  val RUNNING = Value("running")
+  //  val FAILED = Value("failed")
+  //  val SUCCEEDED = Value("succeeded")
+}
+
+/**
+ * Enumerates accepted statuses for MsiTask objects.
+ * Values are automatically parsed from/to Json.
+ */
+object MsiTaskStatus extends TaskStatus {
+
+  //  val CREATED = Value("created")
+
+  val UPLOADING = Value("uploading")
+  val PENDING = Value("pending")
+  //  val QUEUED = Value("queued")
+
+  //  val RUNNING = Value("running")
+  val PAUSED = Value("paused")
+
+  val DELETED = Value("deleted") //TODO: by owner only. Change into "killed"?
+  //  val FAILED = Value("failed")
+  //  val SUCCEEDED = Value("succeeded")
+}
+*/
+
+/**
+ * Enumerates accepted statuses for WorkflowJob objects.
+ * Values are automatically parsed from/to Json.
+ */
+object WorkflowJobStatus extends JsonEnumeration {
+    val CREATED = Value("created")
+    val RUNNING = Value("running")
+    
+    val FAILED = Value("failed")
+    val SUCCEEDED = Value("succeeded")
 }
 
 /**
@@ -43,35 +95,19 @@ object MsiSearchStatus extends JsonEnumeration {
 }
 
 /**
- * Enumerates accepted statuses for WorkflowTask objects.
- * Values are automatically parsed from/to Json.
- */
-
-object WorkflowStatus extends JsonEnumeration {
-
-  val CREATED = Value("created")
-  val RUNNING = Value("running")
-  //val PAUSED = Value("paused")
-  //val DELETED = Value("deleted") //TODO: by owner only. Change into "killed"?
-  val FAILED = Value("failed")
-  val SUCCEEDED = Value("succeeded")
-}
-
-
-/**
- * Enumerates MSI collections.
+ * Enumerates Mongo collections used in MSAngel.
  */
 //TODO: rename fields specifically for msangel ?
 object MongoDbCollection extends Enumeration {
   val WORKFLOW_JOB_COLLECTION = Value("workflow_job_collection")
   val WORKFLOW_TASK_COLLECTION = Value("workflow_task_collection")
-  
+
   val MSI_TASK_COLLECTION = Value("msi_task_collection")
   val MSI_SEARCH_COLLECTION = Value("msi_search_collection")
   val MSI_SEARCH_FORM_COLLECTION = Value("msi_search_form_collection")
-  
+
   val USER_COLLECTION = Value("user_collection")
-  
+
   //val MSANGEL_SERVER_CONFIG_COLLECTION = Value("msangel_server_config_collection")
 }
 
@@ -88,8 +124,8 @@ object FileConversionTool extends JsonEnumeration {
   val EXTRACT_MSN = Value("Thermo ExtractMSn")
   val RAW2MZDB = Value("ProFI raw2mzDB")
   val MZDB_ACCESS = Value("ProFI mzdb-access")
-  
-  implicit def enum2string( tool: FileConversionTool.Value ): String = tool.toString()
+
+  implicit def enum2string(tool: FileConversionTool.Value): String = tool.toString()
 }
 
 /**
