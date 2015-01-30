@@ -49,7 +49,7 @@ package object serialization {
   */
   trait ProfiJsonSerialization extends ProfiSerialization[String] with ObjectMapperContainer {
     
-    def getObjectMapper(): ObjectMapper = new ObjectMapper() with ScalaObjectMapper
+    def getObjectMapper() = new ObjectMapper() with ScalaObjectMapper
     
     // Configure object mapper used for serialization
     private lazy val objectMapper = this._configureObjectMapper( this.getObjectMapper() )
@@ -61,11 +61,8 @@ package object serialization {
     module.addDeserializer(classOf[ObjectId], new ObjectIdDeserializer)
     objectMapper.registerModule(module)
     */
-    
-    // Configure Jacks object mapper (used for deserialization)
-    //_configureObjectMapper(JacksMapper.mapper)
   
-    private def _configureObjectMapper( mapper: ObjectMapper ): ObjectMapper = {
+    private def _configureObjectMapper( mapper: ObjectMapper with ScalaObjectMapper ): ObjectMapper with ScalaObjectMapper = {
       // Configure the property naming strategy with the Proline convention
       //println("mapper conf called")
       mapper.setPropertyNamingStrategy(
@@ -99,38 +96,38 @@ package object serialization {
       objectMapper.writeValue(writer, value)
     }
     
-  
-    // Code snippet used for Jackson Scala Module deserialization
-    
-    //import scala.reflect.api._
-    import scala.reflect.classTag
-    
-    import scala.reflect.runtime.universe.typeOf
-    import scala.reflect.runtime.universe.typeTag
-    def deserialize[T:Manifest](value: String ) : T  = {
-      objectMapper.readValue(value, typeReference[T])
+    //def deserialize[T](value: String )(implicit m: Manifest[T]): T = {
+    def deserialize[T: Manifest](value: String ): T = {
+      //objectMapper.readValue(value, typeReference[T])
+      objectMapper.readValue(value, objectMapper.constructType[T] )
     }
+
+    //import scala.reflect.api._
+    //import scala.reflect.classTag
+    //import scala.reflect.runtime.universe.typeOf
+    //import scala.reflect.runtime.universe.typeTag
     
-  
-    private [this] def typeReference[T: Manifest] = new TypeReference[T] {
+    // Old code snippet used for Jackson Scala Module deserialization (prior 2.4.0 version)
+    /*private [this] def typeReference[T: Manifest] = new TypeReference[T] {
       override def getType = typeFromManifest(manifest[T])
     }
     
     private [this] def typeFromManifest(m: Manifest[_]): Type = {
-      val runtimeClass = m.runtimeClass 
+      val runtimeClass = m.runtimeClass
       if (m.typeArguments.isEmpty || runtimeClass.isArray() ) { runtimeClass } // was m.erasure in Scala 2.9
       else new ParameterizedType {
         def getRawType = runtimeClass  // was m.erasure in Scala 2.9
         def getActualTypeArguments = m.typeArguments.map(typeFromManifest).toArray
         def getOwnerType = null
       }
-    }
+    }*/
     
   }
   
   trait ProfiJSMSerialization extends ProfiJsonSerialization {
     
-    private val jsmObjectMapper = super.getObjectMapper().registerModule(DefaultScalaModule)
+    private val jsmObjectMapper = super.getObjectMapper()
+    jsmObjectMapper.registerModule(DefaultScalaModule)
     
     override def getObjectMapper() = jsmObjectMapper
   }
