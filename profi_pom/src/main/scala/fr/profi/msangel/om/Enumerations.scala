@@ -99,8 +99,10 @@ object MsiSearchStatus extends JsonEnumeration {
  */
 //TODO: rename fields specifically for msangel ?
 object MongoDbCollection extends Enumeration {
-  val WORKFLOW_JOB_COLLECTION = Value("workflow_job_collection")
+  
   val WORKFLOW_TASK_COLLECTION = Value("workflow_task_collection")
+  val WORKFLOW_JOB_COLLECTION = Value("workflow_job_collection")
+  val WORKFLOW_COLLECTION = Value("workflow_collection")
 
   val MSI_TASK_COLLECTION = Value("msi_task_collection")
   val MSI_SEARCH_COLLECTION = Value("msi_search_collection")
