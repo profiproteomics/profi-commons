@@ -25,9 +25,9 @@ case class MsiTask(
 
   val name: String,
   val searchForm: MsiSearchForm, // TODO : searchForm ID ? (doesn't fit display needs that much)
-  val mergeMsMs: Boolean = false, //TODO : delete me? (file conversion option)
   val ownerMongoId: String //mongo ID
   
+  //val mergeMsMs: Boolean = false, //TODO : delete me? (file conversion option)
   //val workflowId: String, // MongoId 
   //val scheduleType: SchedulingType.Value, //TODO : DELETE ME
   //val fileMonitoringConfig: Option[FileMonitoringConfig] = None, //TODO : DELETE ME
