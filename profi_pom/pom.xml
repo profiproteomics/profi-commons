@@ -56,12 +56,12 @@
       <version>1.0.1</version>
     </dependency>
 
-    <!-- Play! WS -->
-    <dependency>
-      <groupId>com.typesafe.play</groupId>
-      <artifactId>play-ws_2.10</artifactId>
-      <version>2.3.1</version>
-    </dependency>
+  <!-- Play! WS -->
+  <!-- <dependency> -->
+  <!-- <groupId>com.typesafe.play</groupId> -->
+  <!-- <artifactId>play-ws_2.10</artifactId> -->
+  <!-- <version>2.3.1</version> -->
+  <!-- </dependency> -->
 
     <!-- Logging -->
     <dependency>
