@@ -56,6 +56,8 @@ package object operation {
     val emailNotification: Option[EMailNotification]
     val cmdLineExecution: Option[CmdLineExecution]
     val webServiceCall: Option[WebServiceCall]
+    
+    def cloneMe(): IWorkflowOperation
   }
 
   case class FileConversion(
@@ -65,12 +67,15 @@ package object operation {
     outputDirectory: String,
     emailNotification: Option[EMailNotification] = None,
     cmdLineExecution: Option[CmdLineExecution] = None,
-    webServiceCall: Option[WebServiceCall] = None) extends IWorkflowOperation {
+    webServiceCall: Option[WebServiceCall] = None
+  ) extends IWorkflowOperation {
 
     require(inputFileFormat != null, "Initial format must be specified")
     require(outputFileFormat != null, "Target format must be specified")
     require(config != null, "Conversion tool config must be specified")
     require(outputDirectory != null && outputDirectory.isEmpty() == false, "Output directory must be specified")
+    
+    def cloneMe() = this.copy()
   }
 
   case class FileTransfer(
@@ -78,14 +83,20 @@ package object operation {
     targetFolder: String,
     emailNotification: Option[EMailNotification] = None,
     cmdLineExecution: Option[CmdLineExecution] = None,
-    webServiceCall: Option[WebServiceCall] = None) extends IWorkflowOperation
+    webServiceCall: Option[WebServiceCall] = None
+  ) extends IWorkflowOperation {
+    def cloneMe() = this.copy()
+  }
 
   case class PeaklistIdentification(
     searchEngines: Array[SearchEngine.Value],
     // searchForms: Array[MsiSearchForm],
     emailNotification: Option[EMailNotification] = None,
     cmdLineExecution: Option[CmdLineExecution] = None,
-    webServiceCall: Option[WebServiceCall] = None) extends IWorkflowOperation //MsiSearch
+    webServiceCall: Option[WebServiceCall] = None
+  ) extends IWorkflowOperation {
+    def cloneMe() = this.copy()
+  }
 
   case class ProlineImport(
     ownerMongoId: String, //mongo ID
@@ -94,12 +105,15 @@ package object operation {
     peaklistSoftwareId: Long, //uds ID
     emailNotification: Option[EMailNotification] = None,
     cmdLineExecution: Option[CmdLineExecution] = None,
-    webServiceCall: Option[WebServiceCall] = None) extends IWorkflowOperation {
+    webServiceCall: Option[WebServiceCall] = None
+  ) extends IWorkflowOperation {
 
     require(ownerMongoId != null, "Task's owner mongo ID must not be null") //TODO : hexaDec + size
     require(projectId > 0, "Invalid project ID for ProlineImport")
     require(instrumentConfigId > 0, "Invalid instrumentConfig ID for ProlineImport")
     require(peaklistSoftwareId > 0, "Invalid peaklistSoftware ID for ProlineImport")
+
+    def cloneMe() = this.copy()
   }
 
   implicit val workflowOperationFormat: Format[IWorkflowOperation] = Variants.format[IWorkflowOperation]("type")
