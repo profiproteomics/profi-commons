@@ -33,7 +33,11 @@ package object stat {
         else ( valueExtractor(highestEntity) - minVal ) / nbins
       } + b // small hack in order to be sure all values are included in the histogram range
       
-      def binIndex( v: Double ): Int = { floor((v - minVal) / (binSize) ).toInt }
+      def binIndex( v: Double ): Int = {
+        val tmpBinIdx = floor((v - minVal) / (binSize) ).toInt
+        scala.math.min(tmpBinIdx,nbins-1)
+      }
+      
       def bin( idx: Int): Bin = {
         val lowerBound = minVal + ( idx * (binSize) )
         Bin(
