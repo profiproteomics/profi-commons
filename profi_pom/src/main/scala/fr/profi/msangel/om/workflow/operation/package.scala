@@ -1,7 +1,7 @@
 package fr.profi.msangel.om.workflow
 
 import scala.collection.mutable.HashMap
-import fr.profi.msangel.om.MsiSearchForm
+import fr.profi.msangel.om.msi.MsiSearchForm
 
 package object operation {
 

@@ -1,7 +1,8 @@
-package fr.profi.msangel.om
+package fr.profi.msangel.om.msi
 
 import org.joda.time.DateTime
-import fr.profi.msangel.om.workflow.FileMonitoringConfig
+
+import fr.profi.msangel.om.TaskStatus
 
 /**
  * Model for Mass Spectrometry Identification task.

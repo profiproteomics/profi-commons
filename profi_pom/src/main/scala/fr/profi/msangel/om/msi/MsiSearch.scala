@@ -1,6 +1,7 @@
-package fr.profi.msangel.om
+package fr.profi.msangel.om.msi
 
 import org.joda.time.DateTime
+import fr.profi.msangel.om.MsiSearchStatus
 
 /**
  * Model for Mass Spectrometry Identification search.

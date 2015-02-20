@@ -1,8 +1,14 @@
-package fr.profi.msangel.om
+package fr.profi.msangel.om.msi
+
+import org.joda.time.DateTime
+
+
 
 import play.api.libs.json.JsObject
 import play.api.libs.json.Json
-import org.joda.time.DateTime
+
+import fr.profi.msangel.om.MascotSearchParam
+import fr.profi.msangel.om.SearchEngine
 
 /**
  * Model for Mass Spectrometry Identification search form

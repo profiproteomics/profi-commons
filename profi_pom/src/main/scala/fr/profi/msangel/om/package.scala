@@ -5,6 +5,7 @@ import play.api.data.validation.ValidationError
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
+import fr.profi.msangel.om.msi._
 import fr.profi.msangel.om.workflow._
 import fr.profi.msangel.om.workflow.operation._
 
