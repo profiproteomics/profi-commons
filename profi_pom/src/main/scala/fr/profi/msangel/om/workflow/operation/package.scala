@@ -99,7 +99,7 @@ package object operation {
   }
 
   case class ProlineImport(
-    ownerMongoId: String, //mongo ID
+    //ownerMongoId: String, //mongo ID
     //projectId: Long, //uds ID
     instrumentConfigId: Long, //uds ID
     peaklistSoftwareId: Long, //uds ID
@@ -108,7 +108,7 @@ package object operation {
     webServiceCall: Option[WebServiceCall] = None
   ) extends IWorkflowOperation {
 
-    require(ownerMongoId != null, "Task's owner mongo ID must not be null") //TODO : hexaDec + size
+    //require(ownerMongoId != null, "Task's owner mongo ID must not be null") //TODO : hexaDec + size
     //require(projectId > 0, "Invalid project ID for ProlineImport")
     require(instrumentConfigId > 0, "Invalid instrumentConfig ID for ProlineImport")
     require(peaklistSoftwareId > 0, "Invalid peaklistSoftware ID for ProlineImport")
