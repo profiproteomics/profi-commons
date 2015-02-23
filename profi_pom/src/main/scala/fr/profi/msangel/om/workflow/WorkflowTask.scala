@@ -27,6 +27,7 @@ case class WorkflowTask(
   val name: String,
   val scheduleType: SchedulingType.Value,
   val ownerMongoId: String, //mongo ID
+  val projectId : Option[Long] = None, //uds ID
   
   val isFake : Boolean
   ) {
