@@ -7,6 +7,8 @@ import scala.collection.mutable.ArrayBuffer
 import java.io.File
 
 object MsConvert extends IFileConversionTool {
+  
+  def getName(): FileConversionTool.Value = FileConversionTool.MSCONVERT
 
   /**
    * List all output formats handled by MsConvert, linked to their command flag
@@ -38,10 +40,8 @@ object MsConvert extends IFileConversionTool {
     val i32 = new MacroChoiceParamItem("32 bits", "--inten32")
 
     new ConversionToolConfig(
-      tool = FileConversionTool.MSCONVERT,
+      tool = this.getName(),
       //path = """C:\Program Files\ProteoWizard 3.0.7076\msconvert.exe""", //TODO : move, get from GUI
-
-      formatMappings = cmdFlagByOutputFormat.keySet.map((RAW, _)).toArray,
 
       params = Array(
         //MacroStringParam(name = "Output format", isRequired = true, cmdFlag = ""),
@@ -54,7 +54,7 @@ object MsConvert extends IFileConversionTool {
         MacroBooleanParam(name = "Omit index (mzML)", cmdFlag = "--noindex", default = Some(false)),
         MacroBooleanParam(name = "Use zlib compression", cmdFlag = "--zlib", default = Some(true)),
         MacroBooleanParam(name = "Package in gzip", cmdFlag = "--gzip", default = Some(false)),
-        //TODO: MacroBooleanParam(name = "TPP compatibility", cmdFlag = "", default = Some(true)),
+        MacroBooleanParam(name = "TPP compatibility", cmdFlag = "", default = Some(false)),
 
         MacroBooleanParam(name = "Merge MS/MS", cmdFlag = "--merge", default = Some(false)),
         MacroBooleanParam(name = "Write ion monitoring as spectra", cmdFlag = "--simAsSpectra", default = Some(false)),
@@ -66,6 +66,10 @@ object MsConvert extends IFileConversionTool {
       */
     )
 
+  }
+  
+  def getFormatMappings(): Array[(DataFileFormat.Value, DataFileFormat.Value)] = {
+    cmdFlagByOutputFormat.keySet.map((RAW, _)).toArray
   }
 
   /**
@@ -94,40 +98,52 @@ object MsConvert extends IFileConversionTool {
 
     val cmdLineBuffer = new ArrayBuffer[String]()
 
-    /** Executable */
+    /** Executable **/
     cmdLineBuffer += s""""${conversionToolPath}"""" //msconvert.exe path
 
-    /** RAW input file */
+    /** RAW input file **/
     require(filePath matches """(?i).+\.raw""", "MSConvert only accepts RAW input files") //move?
     cmdLineBuffer += s""""$filePath"""" //input file path
 
-    /** Output directory and format */
+    /** Output directory and format **/
     cmdLineBuffer += s"""-o "${fileConversion.outputDirectory}""""
     cmdLineBuffer += s""""${_getOutputFormatCmdFlag(fileConversion.outputFileFormat)}""""
 
-    /** Additional conversion parameters */
+    /** Additional conversion parameters **/
     fileConversion.config.params.withFilter(_.value.isDefined).foreach { param =>
       param match {
 
-        /** Boolean */
+        /** Boolean **/
         case boolean: MacroBooleanParam => {
           if (boolean.value.get == true) cmdLineBuffer += boolean.cmdFlag
         }
 
-        /** Choice */
+        /** Choice **/
         case choice: MacroChoiceParam => {
           cmdLineBuffer += choice.value.get.cmdFlag
         }
 
-        /** Other */
+        /** Other **/
         case _ => {
           cmdLineBuffer += param.cmdFlag
           cmdLineBuffer += s""""${param.toString()}"""
         }
       }
     }
+    
+    // Here is the ExtractMSn TITLE convention
+    //cmdLineBuffer += """--filter "titleMaker <RunId>.<ScanNumber>.<ScanNumber>.<ChargeState>.dta" """
+    
+    /** Add custom TITLE maker filter using unknown convention **/
+    cmdLineBuffer += """--filter "titleMaker File:\"<RunId>\", scan=<ScanNumber>" """ // File:"OE.raw", scan=1
+    // TODO: check that apply_spec_title_parsing_rule WS returns something like :
+    // {"last_scan":"1","first_scan":"1","raw_file_name":"OE.raw"}
+    // WS URL = http://hostname:8080/proline/admin/util/apply_spec_title_parsing_rule
+    // WS request body = { "rule_id": 10, "spectrum_title": "File:\"OE.raw\", scan=1" }
 
-    /** Build and return final command string */
+    println("MsConvert cmdLineBuffer: " + cmdLineBuffer.mkString(" "))
+
+    /** Build and return final command string **/
     cmdLineBuffer.mkString(" ")
   }
 

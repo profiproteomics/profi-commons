@@ -5,6 +5,8 @@ import fr.profi.msangel.om.workflow.operation._
 import scala.collection.mutable.ArrayBuffer
 
 object ExtractMSn extends IFileConversionTool {
+  
+  def getName(): FileConversionTool.Value = FileConversionTool.EXTRACT_MSN
 
   /**
    * Get ExtractMSn configuration template
@@ -14,9 +16,8 @@ object ExtractMSn extends IFileConversionTool {
     val precCharges = Seq("All") ++ (1 to 8).map(n => s"$n+ only")
 
     new ConversionToolConfig(
-      tool = FileConversionTool.EXTRACT_MSN,
+      tool = this.getName(),
       //path = "fake/path/raw2mgf",
-      formatMappings = Array((DataFileFormat.RAW, DataFileFormat.MGF)),
 
       params = Array(
         MacroNumericParam(name = "First scan", isRequired = false, cmdFlag = ""),
@@ -33,6 +34,10 @@ object ExtractMSn extends IFileConversionTool {
         MacroNumericParam(name = "Min. major peaks", isRequired = true, default = Some(5), cmdFlag = "")
       )
     )
+  }
+  
+  def getFormatMappings(): Array[(DataFileFormat.Value, DataFileFormat.Value)] = {
+    Array((DataFileFormat.RAW, DataFileFormat.MGF))
   }
 
   /**
