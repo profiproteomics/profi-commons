@@ -31,6 +31,35 @@ package object operation {
     def writes(tuple: Tuple2[A, B]) = JsArray(Seq(aWrites.writes(tuple._1), bWrites.writes(tuple._2)))
   }
 
+  /** For String HashMaps */
+  implicit val objectMapFormat = new Format[HashMap[String, String]] {
+
+    def writes(hashMap: HashMap[String, String]): JsValue = {
+      //OPT 1 : Json.toJson(hashMap.toMap)
+      //OPT 2 : val fields = hashMap.filter(_._2.nonEmpty).map(t => (t._1.toString(), Json.toJson(t._2))).toSeq
+      //        JsObject(fields)
+
+      val strTuples = for( (k,v) <- hashMap.toSeq ) yield k -> JsString(v)
+
+      JsObject(strTuples)
+    }
+
+    // From http://stackoverflow.com/questions/19974014/how-to-deserialize-a-map-of-map-with-play
+    def reads(jsValue: JsValue): JsResult[HashMap[String, String]] = {
+      //JsSuccess(HashMap("val1" -> (jv \ "val1").as[String], "val2" -> (jv \ "val2").as[String]))
+      val hashMap = HashMap[String, String]()
+      
+      jsValue.as[Map[String, JsValue]].foreach{ case (k, v) =>
+        k -> (v match {
+          case s: JsString => hashMap += k -> s.as[String]
+          case _ => throw new Exception("can only read HashMap[String, String]")
+        })
+      }
+      
+      JsSuccess(hashMap)
+    }
+  }
+
   /**
    * Formats for case classes (related to workflow)
    */
