@@ -21,8 +21,9 @@ case class MsiTask(
   var status: TaskStatus.Value = TaskStatus.CREATED, //MsiTaskStatus.CREATED
   var progression: Int = 0, // nb of searches completed 
   //var percentComplete: Int = 0,
-  var startTime: Option[DateTime] = None, //TODO: make sure it's not over when task is submitted.
-  var stopTime: Option[DateTime] = None,
+  var startDate: Option[DateTime] = None, //TODO: make sure it's not over when task is submitted.
+  var stopDate: Option[DateTime] = None,
+  var creationDate: Option[DateTime] = None,
 
   val name: String,
   val searchForm: MsiSearchForm, // TODO : searchForm ID ? (doesn't fit display needs that much)

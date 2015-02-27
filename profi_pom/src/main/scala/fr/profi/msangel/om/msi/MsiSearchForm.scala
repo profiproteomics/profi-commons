@@ -25,7 +25,7 @@ case class MsiSearchForm(
   /** For templates only */
   val name: Option[String] = None,
   val ownerMongoId: Option[String] = None,
-  val registTime: Option[DateTime] = None
+  val creationDate: Option[DateTime] = None
   ) {
   //extends IMsiObject {
 

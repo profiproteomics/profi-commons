@@ -67,11 +67,11 @@ object MsiTaskStatus extends TaskStatus {
  * Values are automatically parsed from/to Json.
  */
 object WorkflowJobStatus extends JsonEnumeration {
-    val CREATED = Value("created")
-    val RUNNING = Value("running")
-    
-    val FAILED = Value("failed")
-    val SUCCEEDED = Value("succeeded")
+  val CREATED = Value("created")
+  val RUNNING = Value("running")
+
+  val FAILED = Value("failed")
+  val SUCCEEDED = Value("succeeded")
 }
 
 /**
@@ -99,7 +99,7 @@ object MsiSearchStatus extends JsonEnumeration {
  */
 //TODO: rename fields specifically for msangel ?
 object MongoDbCollection extends Enumeration {
-  
+
   val WORKFLOW_TASK_COLLECTION = Value("workflow_task_collection")
   val WORKFLOW_JOB_COLLECTION = Value("workflow_job_collection")
   val WORKFLOW_COLLECTION = Value("workflow_collection")
@@ -275,4 +275,36 @@ object SchedulingType extends JsonEnumeration {
   val REAL_TIME_MONITORING = Value("Real time monitoring")
   val START_AT = Value("Start at")
   val ADD_TO_QUEUE = Value("Add to queue")
+}
+
+/**
+ *  Enumerates WorkflowJob executionVariables' map keys
+ */
+object ExecutionVariable extends JsonEnumeration {
+  val RAW_FILE_PATH = Value("raw_file_path")
+  val MZDB_FILE_PATH = Value("mzdb_file_path")
+  val PEAKLIST_FILE_PATH = Value("peaklist_file_path")
+
+  val MASCOT_IDENTIFICATION_FILE_PATH = Value("mascot_identification_file_path")
+  val OMSSA_IDENTIFICATION_FILE_PATH = Value("omssa_identification_file_path")
+
+  def apply(fileFormat: DataFileFormat.Value): this.Value = {
+    import DataFileFormat._
+    fileFormat match {
+      case RAW   => RAW_FILE_PATH
+      case MZDB  => MZDB_FILE_PATH
+      case MGF   => PEAKLIST_FILE_PATH
+     /* case WIFF  =>
+      case MZML  =>
+      case MZXML =>
+      case MZ5   =>
+      case TEXT  =>
+      case MS1   =>
+      case CMS1  =>
+      case MS2   =>
+      case CMS2  =>
+      */
+      case _ => throw new Exception("File extension not handled")
+    }
+  }
 }

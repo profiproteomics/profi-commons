@@ -14,12 +14,13 @@ case class MsiSearch( //one search <=> one input file
 
   var status: MsiSearchStatus.Value = MsiSearchStatus.CREATED,
   var resultFile: Option[String] = None,
-  var startTime: Option[DateTime] = None,
-  var stopTime: Option[DateTime] = None,
+  var startDate: Option[DateTime] = None,
+  var stopDate: Option[DateTime] = None,
+  var creationDate: Option[DateTime] = None,
   var percentComplete: Int = 0,
   var mascotId: Option[Long] = None, //TODO : rename into jobId => Mascot(/other) job number when found
   //  var serverResponseBody: Option[String] = None,
-  var submissionCallback: Option[String] = None, 
+  var submissionCallback: Option[String] = None,
   var monitoringCallback: Option[String] = None, 
 
   val name: String,

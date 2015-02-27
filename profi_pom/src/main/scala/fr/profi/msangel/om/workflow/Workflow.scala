@@ -11,7 +11,7 @@ case class Workflow(
   /** For templates only */
   val name: Option[String] = None,
   val ownerMongoId: Option[String] = None,
-  val registTime: Option[DateTime] = None) {
+  val creationDate: Option[DateTime] = None) {
   //  require(properties != null, "Workflow properties must be defined")
 
   //  override def toString(): String = {

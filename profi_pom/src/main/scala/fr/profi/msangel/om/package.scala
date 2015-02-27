@@ -10,7 +10,7 @@ import fr.profi.msangel.om.workflow._
 import fr.profi.msangel.om.workflow.operation._
 
 package object om {
-  
+
   /**
    *  Automatically parse Enumeration values from/to Json.
    */
@@ -47,7 +47,6 @@ package object om {
       Format(enumReads(enum), enumWrites)
     }
   }
-  
 
   /**
    * Some Play!2.2 JSON formatters for MS-Angel case classes.
@@ -56,11 +55,12 @@ package object om {
   
   implicit val msiSearchFormFormat = Json.format[MsiSearchForm]
   implicit val msiSearchFormat = Json.format[MsiSearch]
-
+  
   implicit val workflowFormat = Json.format[Workflow]
-  implicit val workflowJobFormat = Json.format[WorkflowJob]
-  implicit val fileMonitoringConfigFormat = Json.format[FileMonitoringConfig]
-  implicit val workflowTaskFormat = Json.format[WorkflowTask]
+  implicit val workflowJobFormat = Json.format[WorkflowJob]  
 
+  implicit val fileMonitoringConfigFormat = Json.format[FileMonitoringConfig]
+
+  implicit val workflowTaskFormat = Json.format[WorkflowTask]
   implicit val msiTaskFormat = Json.format[MsiTask]
 }

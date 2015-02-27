@@ -2,15 +2,13 @@ package fr.profi.msangel.om.workflow.operation
 
 import scala.BigDecimal
 import scala.collection.mutable.ArrayBuffer
-
 import com.typesafe.scalalogging.slf4j.Logging
-
 import play.api.libs.json._
-
 import fr.profi.msangel.om.DataFileFormat
 import fr.profi.msangel.om.FileConversionTool
 import fr.profi.msangel.om._
 import fr.profi.util.scala.BigDecimalRange
+import scala.collection.mutable.HashMap
 
 /**
  * Describes file conversion tools
@@ -19,25 +17,49 @@ import fr.profi.util.scala.BigDecimalRange
 
 trait IFileConversionTool {
   
-  def getConfigTemplate( ): ConversionToolConfig
+  def getName(): FileConversionTool.Value
+
+  def getConfigTemplate(): ConversionToolConfig
   
-  def checkExePath (conversionToolPath : String ) : Boolean
-  
+  def getFormatMappings(): Array[(DataFileFormat.Value, DataFileFormat.Value)]
+
+  def checkExePath(conversionToolPath: String): Boolean
+
   def generateCmdLine(filePath: String, conversionToolPath: String, fileConversion: FileConversion): String
+}
+
+object FileConversionToolRegistry {
+
+  private val toolHashMap = new HashMap[FileConversionTool.Value, IFileConversionTool]()
+  
+  // Register default conversion tool configs
+  this.registerFileConversionTool(conversion.ExtractMSn)
+  this.registerFileConversionTool(conversion.MsConvert)
+  this.registerFileConversionTool(conversion.MzdbAccess)
+  this.registerFileConversionTool(conversion.Raw2mzDB)
+
+  def registerFileConversionTool(tool: IFileConversionTool): Unit = {
+    toolHashMap += tool.getName -> tool
+  }
+
+  def getConversionToolConfig(toolName: FileConversionTool.Value): Option[IFileConversionTool] = {
+    toolHashMap.get(toolName)
+  }
+
 }
 
 case class ConversionToolConfig(
   //  val id: String, //Mongo id
-  val tool: FileConversionTool.Value,
-  val formatMappings: Array[(DataFileFormat.Value, DataFileFormat.Value)],
+  val tool: FileConversionTool.Value, // TODO: rename into toolName
   //  val inputFileFormat: DataFileFormat.Value, 
   //  val outputFileFormat: DataFileFormat.Value,
   val params: Array[MacroParam] = Array(),
   val filters: Array[MacroFilterParam] = Array()
 ) {
+  
+  def getTool(): IFileConversionTool = FileConversionToolRegistry.getConversionToolConfig(tool).get
+  def getFormatMappings(): Array[(DataFileFormat.Value, DataFileFormat.Value)] = this.getTool().getFormatMappings
 
-  require(formatMappings != null && formatMappings.length >= 1, "Macro must have at least one IO formats couple.")
-  require(formatMappings.forall { case (i, o) => i != o }, "Macro input and output formats must be different.")
   //  require(inputFileFormat != null, "Macro initFileFormat must be specified.")
   //  require(outputFileFormat != null, "Macro finalFileFormat must be specified.")
   //  require(inputFileFormat != outputFileFormat, "Initial and final file formats can't be the same")
@@ -227,8 +249,7 @@ case class MacroBooleanParam(
   val name: String,
   val cmdFlag: String,
   var value: Option[Boolean] = None,
-  val default: Option[Boolean] = Some(false)
-) extends MacroParam {
+  val default: Option[Boolean] = Some(false)) extends MacroParam {
 
   val isRequired = false
   val paramType = MacroParamType.BOOLEAN

@@ -18,9 +18,10 @@ case class WorkflowTask(
   var msiTasksIds : Array[String] = Array(),
 
   var status: TaskStatus.Value = TaskStatus.CREATED,
-  var progression: Int = 0, // nb of steps completed 
-  var startTime: Option[DateTime] = None, //TODO: make sure it's not over when task is submitted.
-  var stopTime: Option[DateTime] = None,
+  var progression: Int = 0, // nb of steps completed
+  var creationDate: Option[DateTime] = None,
+  var startDate: Option[DateTime] = None, //TODO: make sure it's not over when task is submitted.
+  var stopDate: Option[DateTime] = None,
 
   val fileMonitoringConfig: Option[FileMonitoringConfig] = None,
   val workflow: Workflow,
