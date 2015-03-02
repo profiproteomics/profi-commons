@@ -26,6 +26,8 @@ trait IFileConversionTool {
   def checkExePath(conversionToolPath: String): Boolean
 
   def generateCmdLine(filePath: String, conversionToolPath: String, fileConversion: FileConversion): String
+  
+  def getOutputFileFromSTDOUT( stdOut : String ) : Option[String]
 }
 
 object FileConversionToolRegistry {

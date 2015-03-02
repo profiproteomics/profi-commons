@@ -141,10 +141,19 @@ object MsConvert extends IFileConversionTool {
     // WS URL = http://hostname:8080/proline/admin/util/apply_spec_title_parsing_rule
     // WS request body = { "rule_id": 10, "spectrum_title": "File:\"OE.raw\", scan=1" }
 
-    println("MsConvert cmdLineBuffer: " + cmdLineBuffer.mkString(" "))
-
     /** Build and return final command string **/
     cmdLineBuffer.mkString(" ")
+  }
+
+  /**
+   * Retrieve output file path from console STDOUT
+   */
+  def getOutputFileFromSTDOUT(stdOut: String): Option[String] = {
+    val pattern = """(?s).*writing output file: (.+mgf).*"""
+    if (stdOut matches pattern) {
+      val pattern.r(outputFile) = stdOut
+      Some(outputFile)
+    } else None
   }
 
   

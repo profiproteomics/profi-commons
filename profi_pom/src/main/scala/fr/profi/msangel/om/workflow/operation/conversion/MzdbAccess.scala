@@ -34,4 +34,9 @@ object MzdbAccess extends IFileConversionTool {
   //TODO
   def generateCmdLine(filePath: String, conversionToolPath: String, fileConversion: FileConversion): String = ""
 
+   /**
+   * Retrieve output file path from console STDOUT
+   */
+  //TODO
+  def getOutputFileFromSTDOUT(stdOut: String): Option[String] = { None }
 }

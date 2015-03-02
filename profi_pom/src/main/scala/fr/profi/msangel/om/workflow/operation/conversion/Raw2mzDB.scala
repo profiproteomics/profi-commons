@@ -4,7 +4,7 @@ import fr.profi.msangel.om._
 import fr.profi.msangel.om.workflow.operation._
 
 object Raw2mzDB extends IFileConversionTool {
-  
+
   def getName(): FileConversionTool.Value = FileConversionTool.RAW2MZDB
 
   /**
@@ -12,10 +12,10 @@ object Raw2mzDB extends IFileConversionTool {
    */
   def getConfigTemplate() = new ConversionToolConfig(
     tool = this.getName
-    //path = "fake/path/raw2mzdb",
+  //path = "fake/path/raw2mzdb",
   //TODO : finish (params, filters)
   )
-  
+
   def getFormatMappings(): Array[(DataFileFormat.Value, DataFileFormat.Value)] = {
     Array((DataFileFormat.RAW, DataFileFormat.MZDB))
   }
@@ -33,4 +33,10 @@ object Raw2mzDB extends IFileConversionTool {
    */
   //TODO
   def generateCmdLine(filePath: String, conversionToolPath: String, fileConversion: FileConversion): String = ""
+
+  /**
+   * Retrieve output file path from console STDOUT
+   */
+  //TODO
+  def getOutputFileFromSTDOUT(stdOut: String): Option[String] = { None }
 }

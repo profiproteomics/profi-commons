@@ -17,6 +17,21 @@ package object om {
   trait JsonEnumeration extends Enumeration {
     implicit val enumReads: Reads[this.Value] = EnumUtils.enumReads(this)
     implicit def enumWrites: Writes[this.Value] = EnumUtils.enumWrites
+
+    /** Compute if enumeration contains given key */
+    //TODO : at Enumeration level
+    def contains(test: String): Boolean = {
+      try {
+        this.withName(test)
+        true
+      } catch {
+        case t: Throwable => false
+      }
+    }
+    
+    def contains(key: this.Value): Boolean = {
+      this.values.contains(key)
+    }
   }
 
   /**

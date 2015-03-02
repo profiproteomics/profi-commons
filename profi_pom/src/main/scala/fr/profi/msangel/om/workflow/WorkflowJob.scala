@@ -5,6 +5,8 @@ import fr.profi.msangel.om.WorkflowJobStatus
 import scala.collection.mutable.HashMap
 import play.api.libs.json.JsObject
 import play.api.libs.json.Json
+import fr.profi.msangel.om.DataFileFormat
+import fr.profi.msangel.om.ExecutionVariable
 
 /**
  * Model for Workflow job: execution of the workflow on one file.
@@ -35,8 +37,13 @@ case class WorkflowJob(
   require(inputFile != null && inputFile.isEmpty() == false, "Input file path must not be null nor empty.")
 
   /** Utilities */
-  
   def isComplete(): Boolean = (status == WorkflowJobStatus.SUCCEEDED || status == WorkflowJobStatus.FAILED) //TODO || status == MsiSearchStatus.KILLED)
-
   //  def notYetPending(): Boolean = (status == WorkflowStatus.CREATED || status == WorkflowStatus.UPLOADING)
+
+  def getExecutionVariableForFormat(keyAsFormat: DataFileFormat.Value): String = {
+    this.executionVariables(ExecutionVariable.getFormatKeyAsString(keyAsFormat))
+  }
+  def setExecutionVariableForFormat(keyAsFormat: DataFileFormat.Value, value: String): Unit = {
+    this.executionVariables(ExecutionVariable.getFormatKeyAsString(keyAsFormat)) = value
+  }
 }

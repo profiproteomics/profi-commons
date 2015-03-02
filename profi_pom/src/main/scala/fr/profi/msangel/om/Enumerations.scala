@@ -99,7 +99,7 @@ object MsiSearchStatus extends JsonEnumeration {
  */
 //TODO: rename fields specifically for msangel ?
 object MongoDbCollection extends Enumeration {
-
+  
   val WORKFLOW_TASK_COLLECTION = Value("workflow_task_collection")
   val WORKFLOW_JOB_COLLECTION = Value("workflow_job_collection")
   val WORKFLOW_COLLECTION = Value("workflow_collection")
@@ -190,7 +190,6 @@ object DataFileFormat extends JsonEnumeration { //TODO : rename into extension?
 object MascotSearchParam extends Enumeration {
 
   def printAll() { println(scala.runtime.ScalaRunTime.stringOf(values)) }
-  //  def contains(s: String): Boolean = values.exists(_.toString == s)
 
   val ACCESSION = Value("ACCESSION")
   val CHARGE = Value("CHARGE")
@@ -288,7 +287,8 @@ object ExecutionVariable extends JsonEnumeration {
   val MASCOT_IDENTIFICATION_FILE_PATH = Value("mascot_identification_file_path")
   val OMSSA_IDENTIFICATION_FILE_PATH = Value("omssa_identification_file_path")
 
-  def apply(fileFormat: DataFileFormat.Value): this.Value = {
+  // TODO : move to dedicated place (WorkflowJob ? )
+  def getFormatKey(fileFormat: DataFileFormat.Value): this.Value = {
     import DataFileFormat._
     fileFormat match {
       case RAW   => RAW_FILE_PATH
@@ -306,5 +306,9 @@ object ExecutionVariable extends JsonEnumeration {
       */
       case _ => throw new Exception("File extension not handled")
     }
+  }
+  
+  def getFormatKeyAsString (fileFormat: DataFileFormat.Value): String = {
+    this.getFormatKey(fileFormat).toString()
   }
 }
