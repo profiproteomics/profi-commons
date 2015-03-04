@@ -1,13 +1,12 @@
 package fr.profi.msangel
 
 import play.api.data.validation.ValidationError
-
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-
 import fr.profi.msangel.om.msi._
 import fr.profi.msangel.om.workflow._
 import fr.profi.msangel.om.workflow.operation._
+import org.joda.time.DateTime
 
 package object om {
 
@@ -62,6 +61,11 @@ package object om {
       Format(enumReads(enum), enumWrites)
     }
   }
+  
+  /**
+   * Sort joda.DateTime
+   */
+  implicit def dateTimeOrdering: Ordering[DateTime] = Ordering.fromLessThan(_ isBefore _)
 
   /**
    * Some Play!2.2 JSON formatters for MS-Angel case classes.

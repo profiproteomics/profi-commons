@@ -1,8 +1,12 @@
 package fr.profi.msangel.om.workflow
 
-import fr.profi.msangel.om.SchedulingType
 import org.joda.time.DateTime
+
+import fr.profi.msangel.om.SchedulingType
 import fr.profi.msangel.om.TaskStatus
+
+import operation.IWorkflowOperation
+import operation.PeaklistIdentification
 
 /**
  *
@@ -34,11 +38,6 @@ case class WorkflowTask(
   ) {
 
   /**
-   *  Utilities
-   */
-  def isComplete: Boolean = (status ==  TaskStatus.SUCCEEDED || status == TaskStatus.FAILED ) //TODO || status == WorkflowTaskStatus.DELETED)
-
-  /**
    * Requirements
    */
   require(status != null, "Task status must not be null.")
@@ -48,4 +47,24 @@ case class WorkflowTask(
   require(workflow != null, "workflow must not be null") //TODO : hexaDec + size
   require(name != null && !name.isEmpty(), "name must not be null nor empty")
   require(ownerMongoId != null, "Task's owner mongo ID must not be null") //TODO : hexaDec + size
+  
+  /**
+   *  Utilities
+   */
+  def isComplete: Boolean = (status ==  TaskStatus.SUCCEEDED || status == TaskStatus.FAILED ) //TODO || status == WorkflowTaskStatus.DELETED)
+
+  /** Compute if selected workflow operation is of type PeaklistIedntification */
+  def isOpeartionOfTypePeaklistIdentification(operation: IWorkflowOperation): Boolean = {
+    operation match {
+      case pi: PeaklistIdentification => true
+      case _                          => false
+    }
+  }
+  
+  def isOperationOfTypePeaklistIdentification(operationRank: Int): Boolean = {
+    val operation = this.workflow.operations(operationRank)
+    this.isOpeartionOfTypePeaklistIdentification(operation)
+  }
+
+  
 }
