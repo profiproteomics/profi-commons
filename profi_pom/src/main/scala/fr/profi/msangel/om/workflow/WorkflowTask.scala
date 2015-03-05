@@ -66,5 +66,31 @@ case class WorkflowTask(
     this.isOpeartionOfTypePeaklistIdentification(operation)
   }
 
+  /** If scheduling type is real-time monitoring, compute if ending conditions are reached */
+  def areRtmEndingConditionsReached(): Boolean = {
+    require(scheduleType == SchedulingType.REAL_TIME_MONITORING, "Workflow task's scheduling mode is not of type 'Real-time monitoring'.")
+    require(fileMonitoringConfig.isDefined, "File monitoring configuration is not defined.")
+
+    val config = fileMonitoringConfig.get
+
+    // Return true if ANY OF ending conditions is reached
+    import fr.profi.msangel.om.dateTimeOrdering
+
+    // Max date has passed
+    if (config.maxDate.isDefined
+      && DateTime.now().isAfter(config.maxDate.get)
+    ) return true
+
+    // Max file count is reached
+    if (
+      config.maxFileCount.isDefined
+      && inputFiles.length >= config.maxFileCount.get
+    ) return true
+    
+    //Max interval between acquisitions overheaded
+    //TODO
+    
+    false
+  }
   
 }
