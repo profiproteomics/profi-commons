@@ -51,7 +51,23 @@ case class WorkflowTask(
   /**
    *  Utilities
    */
-  def isComplete: Boolean = (status ==  TaskStatus.SUCCEEDED || status == TaskStatus.FAILED ) //TODO || status == WorkflowTaskStatus.DELETED)
+  def isComplete: Boolean = {
+    val successOrFail = status ==  TaskStatus.SUCCEEDED || status == TaskStatus.FAILED //TODO || status == WorkflowTaskStatus.DELETED)
+
+    // If task is in RTM mode, it may not be finished though its status is SUCCEEDED or FAILED
+    if (this.isInRealTimeMonitoringMode()) {
+      if (this.areRtmEndingConditionsReached() == false) false
+      else successOrFail
+
+    } else {
+      successOrFail
+    }
+  }
+  
+  /** Get workflow operation at given index */
+  def getOperation( index: Int): IWorkflowOperation = {
+    this.workflow.operations(index)
+  }
 
   /** Compute if selected workflow operation is of type PeaklistIedntification */
   def isOpeartionOfTypePeaklistIdentification(operation: IWorkflowOperation): Boolean = {
@@ -61,14 +77,16 @@ case class WorkflowTask(
     }
   }
   
-  def isOperationOfTypePeaklistIdentification(operationRank: Int): Boolean = {
-    val operation = this.workflow.operations(operationRank)
+  def isOperationOfTypePeaklistIdentification(operationIndex: Int): Boolean = {
+    val operation = this.getOperation(operationIndex)
     this.isOpeartionOfTypePeaklistIdentification(operation)
   }
+  
+  def isInRealTimeMonitoringMode(): Boolean = scheduleType == SchedulingType.REAL_TIME_MONITORING
 
   /** If scheduling type is real-time monitoring, compute if ending conditions are reached */
   def areRtmEndingConditionsReached(): Boolean = {
-    require(scheduleType == SchedulingType.REAL_TIME_MONITORING, "Workflow task's scheduling mode is not of type 'Real-time monitoring'.")
+    require(isInRealTimeMonitoringMode(), "Workflow task's scheduling mode is not of type 'Real-time monitoring'.")
     require(fileMonitoringConfig.isDefined, "File monitoring configuration is not defined.")
 
     val config = fileMonitoringConfig.get
