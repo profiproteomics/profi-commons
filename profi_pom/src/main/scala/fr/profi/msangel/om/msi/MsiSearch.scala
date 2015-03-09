@@ -24,8 +24,9 @@ case class MsiSearch( //one search <=> one input file
   var monitoringCallback: Option[String] = None, 
 
   val name: String,
-  val taskId: String, //mongo id
-  val taskName: String,
+  val msiTaskId: String, //mongo id
+  val msiTaskName: String,
+  val workflowJobId: String,
   val inputFile: String
 ) {
   //extends IMsiObject { serverResponse
@@ -34,8 +35,9 @@ case class MsiSearch( //one search <=> one input file
 
   require(status != null, "Search status must not be null.")
   require(percentComplete >= 0 && percentComplete <= 100, "Progression must be 0-100 %. ")
-  require(taskId matches "^[0-9a-f]+$", "invalid taskId")
-  require(taskName != null && taskName.isEmpty() == false, "taskName must not be null nor empty.")
+  require(workflowJobId matches "^[0-9a-f]+$", "invalid workflowJobId")
+  require(msiTaskId matches "^[0-9a-f]+$", "invalid taskId")
+  require(msiTaskName != null && msiTaskName.isEmpty() == false, "taskName must not be null nor empty.")
   require(inputFile != null && inputFile.isEmpty() == false, "Input file path must not be null nor empty.")
   //allow task name to be empty. Default task name will be attributed on server side
 

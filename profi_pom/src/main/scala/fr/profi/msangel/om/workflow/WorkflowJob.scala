@@ -23,8 +23,9 @@ case class WorkflowJob(
   var monitoringCallback: Option[String] = None,
 
   val name: String, //remove me?
-  val workflowTaskId: String, //mongo id
   val workflowTaskName: String, //TODO ? delete me
+  val workflowTaskId: String, //mongo id
+  val msiSearchIds: HashMap[String, String] = HashMap(), //searchEngine -> msiSearchId
   val inputFile: String,
   val executionVariables: HashMap[String, String] = HashMap()
 ) {
