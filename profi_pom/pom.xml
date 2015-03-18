@@ -41,6 +41,13 @@
       <artifactId>joda-time</artifactId>
       <!-- Version inherited from ProFI-Pom -->
     </dependency>
+    
+    <!-- Reactivemongo BSON -->
+    <dependency>
+      <groupId>org.reactivemongo</groupId>
+      <artifactId>reactivemongo-bson_2.10</artifactId>
+      <version>0.10.0</version>
+    </dependency>
 
     <!-- Play! JSON -->
     <dependency>

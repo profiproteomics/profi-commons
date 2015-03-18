@@ -1,14 +1,34 @@
 package fr.profi.msangel
 
-import play.api.data.validation.ValidationError
+import scala.util.Try
+import org.joda.time.DateTime
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import fr.profi.msangel.om.msi._
 import fr.profi.msangel.om.workflow._
 import fr.profi.msangel.om.workflow.operation._
-import org.joda.time.DateTime
+import fr.profi.pwx.util.json.PWXJson
+import reactivemongo.bson.BSONObjectID
+import reactivemongo.bson.BSONValue
 
 package object om {
+
+  /** 
+   *  Implicit object handling the serialization/deserialization of BSONObjectID
+   **/
+  implicit object BSONObjectIDFormat extends Format[BSONObjectID] {
+
+    def writes(objectId: BSONObjectID): JsValue = {
+      Json.obj("$oid" -> objectId.stringify)
+    }
+
+    def reads(json: JsValue): JsResult[BSONObjectID] = {
+      val oidOpt = (json \ "$oid").asOpt[String]
+
+      if (oidOpt.isDefined) JsSuccess(BSONObjectID(oidOpt.get))
+      else JsSuccess(null)
+    }
+  }
 
   /**
    *  Automatically parse Enumeration values from/to Json.
@@ -27,7 +47,7 @@ package object om {
         case t: Throwable => false
       }
     }
-    
+
     def contains(key: this.Value): Boolean = {
       this.values.contains(key)
     }
@@ -61,7 +81,7 @@ package object om {
       Format(enumReads(enum), enumWrites)
     }
   }
-  
+
   /**
    * Sort joda.DateTime
    */
@@ -71,15 +91,15 @@ package object om {
    * Some Play!2.2 JSON formatters for MS-Angel case classes.
    */
   implicit val msangelServerConfigFormat = Json.format[MSAngelServerConfig]
-  
-  implicit val msiSearchFormFormat = Json.format[MsiSearchForm]
-  implicit val msiSearchFormat = Json.format[MsiSearch]
-  
-  implicit val workflowFormat = Json.format[Workflow]
-  implicit val workflowJobFormat = Json.format[WorkflowJob]  
+
+  implicit val msiSearchFormFormat = PWXJson.entityFormat(Json.format[MsiSearchForm])
+  implicit val msiSearchFormat = PWXJson.entityFormat(Json.format[MsiSearch])
+
+  implicit val workflowFormat = PWXJson.entityFormat(Json.format[Workflow])
+  implicit val workflowJobFormat = PWXJson.entityFormat(Json.format[WorkflowJob])
 
   implicit val fileMonitoringConfigFormat = Json.format[FileMonitoringConfig]
 
-  implicit val workflowTaskFormat = Json.format[WorkflowTask]
-  implicit val msiTaskFormat = Json.format[MsiTask]
+  implicit val workflowTaskFormat = PWXJson.entityFormat(Json.format[WorkflowTask])
+  implicit val msiTaskFormat = PWXJson.entityFormat(Json.format[MsiTask])
 }

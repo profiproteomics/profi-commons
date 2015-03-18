@@ -3,6 +3,9 @@ package fr.profi.msangel.om.msi
 import org.joda.time.DateTime
 
 import fr.profi.msangel.om.TaskStatus
+import fr.profi.pwx.util.mongodb.IMongoDbEntity
+
+import reactivemongo.bson.BSONObjectID
 
 /**
  * Model for Mass Spectrometry Identification task.
@@ -13,8 +16,7 @@ case class MsiTask(
   /**
    *  Parameters
    */
-  //var id: Option[String] = None, //TODO: extend MongoDbEntity
-
+  var id: Option[BSONObjectID] = None,
   var inputFiles: Array[String] = Array(),
   var searchIds: Array[String] = Array(), //mongo ids
 
@@ -38,7 +40,7 @@ case class MsiTask(
   //val projectId: Option[Long], //uds ID //TODO : DELETE ME
   //val instrumentConfigId: Option[Long], //uds ID //TODO : DELETE ME
   //val peaklistSoftwareId: Option[Long] //uds ID //TODO : DELETE ME
-  ) {
+) extends IMongoDbEntity {
   //extends IMsiObject {
 
   /**

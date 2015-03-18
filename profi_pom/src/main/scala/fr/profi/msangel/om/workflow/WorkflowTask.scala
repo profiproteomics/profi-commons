@@ -4,12 +4,13 @@ import org.joda.time.DateTime
 
 import fr.profi.msangel.om.SchedulingType
 import fr.profi.msangel.om.TaskStatus
+import fr.profi.pwx.util.mongodb.IMongoDbEntity
 
 import operation.IWorkflowOperation
 import operation.PeaklistIdentification
+import reactivemongo.bson.BSONObjectID
 
 /**
- *
  * Model for a worklfow task.
  */
 case class WorkflowTask(
@@ -17,9 +18,10 @@ case class WorkflowTask(
   /**
    *  Parameters
    */
+  var id: Option[BSONObjectID] = None,
   var inputFiles: Array[String] = Array(),
   var workflowJobIds : Array[String] = Array(),
-  var msiTasksIds : Array[String] = Array(),
+  var msiTaskIds : Array[String] = Array(),
 
   var status: TaskStatus.Value = TaskStatus.CREATED,
   var progression: Int = 0, // nb of steps completed
@@ -34,9 +36,39 @@ case class WorkflowTask(
   val ownerMongoId: String, //mongo ID
   val projectId : Option[Long] = None, //uds ID
   
-  val isFake : Boolean
-  ) {
+  val isFake : Boolean = false
+) extends IMongoDbEntity {
 
+//  override def toString() = s"""
+//WorkflowTask(
+//  $id,
+//  ${scala.runtime.ScalaRunTime.stringOf(inputFiles)}, 
+//  ${scala.runtime.ScalaRunTime.stringOf(workflowJobIds)}, 
+//  ${scala.runtime.ScalaRunTime.stringOf(msiTasksIds)},
+//  $status,
+//  $progression,
+//  $creationDate,
+//  $startDate,
+//  $stopDate,
+//  $fileMonitoringConfig,
+//  Workflow(
+//    None,
+//    Array(),
+//    ${workflow.isTemplate},
+//    ${workflow.name},
+//    ${workflow.ownerMongoId},
+//    ${workflow.creationDate}
+//  ),
+//  $name,
+//  $scheduleType,
+//  $ownerMongoId,
+//  $projectId,
+//  $isFake
+//)
+//
+//"""
+  
+  
   /**
    * Requirements
    */

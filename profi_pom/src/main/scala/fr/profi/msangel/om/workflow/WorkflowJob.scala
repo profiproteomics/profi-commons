@@ -1,12 +1,15 @@
 package fr.profi.msangel.om.workflow
 
-import org.joda.time.DateTime
-import fr.profi.msangel.om.WorkflowJobStatus
 import scala.collection.mutable.HashMap
-import play.api.libs.json.JsObject
-import play.api.libs.json.Json
+
+import org.joda.time.DateTime
+
 import fr.profi.msangel.om.DataFileFormat
 import fr.profi.msangel.om.ExecutionVariable
+import fr.profi.msangel.om.WorkflowJobStatus
+import fr.profi.pwx.util.mongodb.IMongoDbEntity
+
+import reactivemongo.bson.BSONObjectID
 
 /**
  * Model for Workflow job: execution of the workflow on one file.
@@ -14,13 +17,13 @@ import fr.profi.msangel.om.ExecutionVariable
 case class WorkflowJob(
 
   /** Parameters */
-
+  var id: Option[BSONObjectID] = None,
   var status: WorkflowJobStatus.Value = WorkflowJobStatus.CREATED,
   var startDate: Option[DateTime] = None,
   var stopDate: Option[DateTime] = None,
   var creationDate: Option[DateTime] = None,
   var progression: Int = 0, // % = #operations done / #operations in workflow
-  var monitoringCallback: Option[String] = None,
+  var monitoringTrace: Option[String] = None,
 
   val name: String, //remove me?
   val workflowTaskName: String, //TODO ? delete me
@@ -28,7 +31,7 @@ case class WorkflowJob(
   val msiSearchIds: HashMap[String, String] = HashMap(), //searchEngine -> msiSearchId
   val inputFile: String,
   val executionVariables: HashMap[String, String] = HashMap()
-) {
+) extends IMongoDbEntity {
 
   /** Requirements */
   
@@ -46,5 +49,11 @@ case class WorkflowJob(
   }
   def setExecutionVariableForFormat(keyAsFormat: DataFileFormat.Value, value: String): Unit = {
     this.executionVariables(ExecutionVariable.getFormatKeyAsString(keyAsFormat)) = value
+  }
+
+  def addToMonitoringTrace(trace: String): Unit = {
+    val currentTrace = this.monitoringTrace.getOrElse("") //shouldn't be None
+    val updatedTrace = currentTrace + s"""\n[${DateTime.now().toString("dd/MM/yy, HH:mm:ss")}] - $trace"""
+    this.monitoringTrace = Some(updatedTrace)
   }
 }

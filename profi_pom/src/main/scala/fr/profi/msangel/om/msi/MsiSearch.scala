@@ -1,7 +1,11 @@
 package fr.profi.msangel.om.msi
 
 import org.joda.time.DateTime
+
 import fr.profi.msangel.om.MsiSearchStatus
+import fr.profi.pwx.util.mongodb.IMongoDbEntity
+
+import reactivemongo.bson.BSONObjectID
 
 /**
  * Model for Mass Spectrometry Identification search.
@@ -11,7 +15,7 @@ import fr.profi.msangel.om.MsiSearchStatus
 case class MsiSearch( //one search <=> one input file
 
   /** Parameters */
-
+  var id: Option[BSONObjectID] = None,
   var status: MsiSearchStatus.Value = MsiSearchStatus.CREATED,
   var resultFile: Option[String] = None,
   var startDate: Option[DateTime] = None,
@@ -28,11 +32,10 @@ case class MsiSearch( //one search <=> one input file
   val msiTaskName: String,
   val workflowJobId: String,
   val inputFile: String
-) {
+) extends IMongoDbEntity {
   //extends IMsiObject { serverResponse
 
   /** Requirements */
-
   require(status != null, "Search status must not be null.")
   require(percentComplete >= 0 && percentComplete <= 100, "Progression must be 0-100 %. ")
   require(workflowJobId matches "^[0-9a-f]+$", "invalid workflowJobId")

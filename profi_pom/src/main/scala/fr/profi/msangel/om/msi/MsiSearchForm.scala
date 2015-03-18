@@ -2,13 +2,14 @@ package fr.profi.msangel.om.msi
 
 import org.joda.time.DateTime
 
-
-
 import play.api.libs.json.JsObject
 import play.api.libs.json.Json
 
 import fr.profi.msangel.om.MascotSearchParam
 import fr.profi.msangel.om.SearchEngine
+import fr.profi.pwx.util.mongodb.IMongoDbEntity
+
+import reactivemongo.bson.BSONObjectID
 
 /**
  * Model for Mass Spectrometry Identification search form
@@ -17,6 +18,7 @@ import fr.profi.msangel.om.SearchEngine
 case class MsiSearchForm(
 
   /** Parameters */
+  var id: Option[BSONObjectID] = None,
   val targetURL: String, //TODO: move to MsiTask? (replace by isFake)
   val searchEngine: SearchEngine.Value,
   val paramMap: JsObject,
@@ -26,7 +28,7 @@ case class MsiSearchForm(
   val name: Option[String] = None,
   val ownerMongoId: Option[String] = None,
   val creationDate: Option[DateTime] = None
-  ) {
+) extends IMongoDbEntity {
   //extends IMsiObject {
 
   /** Requirements */
