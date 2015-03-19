@@ -28,7 +28,7 @@ case class WorkflowJob(
   val name: String, //remove me?
   val workflowTaskName: String, //TODO ? delete me
   val workflowTaskId: String, //mongo id
-  val msiSearchIds: HashMap[String, String] = HashMap(), //searchEngine -> msiSearchId
+  val msiSearchIdBySearchEngine: HashMap[String, String] = HashMap(), //searchEngine -> msiSearchId
   val inputFile: String,
   val executionVariables: HashMap[String, String] = HashMap()
 ) extends IMongoDbEntity {
