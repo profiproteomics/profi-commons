@@ -24,8 +24,8 @@ case class MsiSearch( //one search <=> one input file
   var percentComplete: Int = 0,
   var mascotId: Option[Long] = None, //TODO : rename into jobId => Mascot(/other) job number when found
   //  var serverResponseBody: Option[String] = None,
-  var submissionCallback: Option[String] = None,
-  var monitoringCallback: Option[String] = None, 
+  var submissionTrace: Option[String] = None,
+  var monitoringTrace: Option[String] = None, 
 
   val name: String,
   val msiTaskId: String, //mongo id
