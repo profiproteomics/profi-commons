@@ -6,12 +6,12 @@ import fr.profi.msangel.om.workflow.operation.conversion.MsConvert
 
 case class MSAngelServerConfig(
 
-      var id: Option[BSONObjectID] = None,
+  var id: Option[BSONObjectID] = None,
   var msconvertPath: String = "",
   var extractmsnPath: String = "",
   var raw2mzdbPath: String = "",
   var mzdbaccessPath: String = ""
-    
+  
 ) extends IMongoDbEntity {
 
     require(msconvertPath != null, "msconvertPath must not be null")
