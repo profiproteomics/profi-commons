@@ -17,6 +17,10 @@
     <jackson.version>2.3.5</jackson.version> <!-- Latest release is 2.5.0 on 28 jan. 2015 -->
   </properties>
 
+	<scm>
+	  <connection>scm:svn:https://bioproj.extra.cea.fr/svn/proline/ProFI-Pom/trunk</connection>
+	</scm>
+
   <dependencyManagement>
     <dependencies>
 
