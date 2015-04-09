@@ -4,7 +4,7 @@
 
   <groupId>fr.proline</groupId>
   <artifactId>ProFI-Pom</artifactId>
-  <version>0.0.6-SNAPSHOT</version>
+  <version>0.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>${project.artifactId}</name>
