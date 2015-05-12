@@ -1,10 +1,11 @@
 package fr.profi.msangel.om.workflow.operation.conversion
 
-import fr.profi.msangel.om._
-import fr.profi.msangel.om.workflow.operation._
-import fr.profi.msangel.om.DataFileFormat
-import scala.collection.mutable.ArrayBuffer
 import java.io.File
+import scala.collection.mutable.ArrayBuffer
+
+import fr.profi.msangel.om._
+import fr.profi.msangel.om.DataFileFormat
+import fr.profi.msangel.om.workflow.operation._
 
 object MsConvert extends IFileConversionTool {
   
@@ -107,7 +108,7 @@ object MsConvert extends IFileConversionTool {
 
     /** Output directory and format **/
     cmdLineBuffer += s"""-o "${fileConversion.outputDirectory}""""
-    cmdLineBuffer += s""""${_getOutputFormatCmdFlag(fileConversion.outputFileFormat)}""""
+    cmdLineBuffer += s"""${_getOutputFormatCmdFlag(fileConversion.outputFileFormat)}"""
 
     /** Additional conversion parameters **/
     fileConversion.config.params.withFilter(_.value.isDefined).foreach { param =>
@@ -130,13 +131,16 @@ object MsConvert extends IFileConversionTool {
         }
       }
     }
-    
+
     // Here is the ExtractMSn TITLE convention
     //cmdLineBuffer += """--filter "titleMaker <RunId>.<ScanNumber>.<ScanNumber>.<ChargeState>.dta" """
-    
+
     /** Add custom TITLE maker filter using unknown convention **/
-    cmdLineBuffer += """--filter "titleMaker File:\"<RunId>\", scan=<ScanNumber>" """ // File:"OE.raw", scan=1
-    // TODO: check that apply_spec_title_parsing_rule WS returns something like :
+    val fileName = new File(filePath).getName
+    val rawFileNameOpt = if (fileName.endsWith(".raw") || fileName.endsWith(".RAW")) s"raw_file_name:${fileName};" else ""
+    cmdLineBuffer += s"""--filter "titleMaker first_scan:<ScanNumber>;last_scan:<ScanNumber>;first_time:<ScanStartTimeInMinutes>;last_time:<ScanStartTimeInMinutes>;raw_precursor_moz:<SelectedIonMz>;${rawFileNameOpt}""""
+
+      // TODO: check that apply_spec_title_parsing_rule WS returns something like :
     // {"last_scan":"1","first_scan":"1","raw_file_name":"OE.raw"}
     // WS URL = http://hostname:8080/proline/admin/util/apply_spec_title_parsing_rule
     // WS request body = { "rule_id": 10, "spectrum_title": "File:\"OE.raw\", scan=1" }
