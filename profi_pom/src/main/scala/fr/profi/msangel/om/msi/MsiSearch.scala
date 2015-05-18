@@ -48,6 +48,17 @@ case class MsiSearch( //one search <=> one input file
   def isComplete(): Boolean = (status == MsiSearchStatus.SUCCEEDED || status == MsiSearchStatus.FAILED || status == MsiSearchStatus.KILLED)
 
   def notYetPending(): Boolean = (status == MsiSearchStatus.CREATED || status == MsiSearchStatus.UPLOADING)
+
+  def addToSubmissionTrace(trace: String): Unit = {
+    val currentTrace = this.submissionTrace.getOrElse("") //shouldn't be None
+    this.submissionTrace = Some(currentTrace + trace)
+  }
+
+  def addToMonitoringTrace(trace: String): Unit = {
+    val currentTrace = this.monitoringTrace.getOrElse("") //shouldn't be None
+    val updatedTrace = currentTrace + s"""\n[${DateTime.now().toString("dd/MM/yy, HH:mm:ss")}] - $trace"""
+    this.monitoringTrace = Some(updatedTrace)
+  }
 }
 
 
