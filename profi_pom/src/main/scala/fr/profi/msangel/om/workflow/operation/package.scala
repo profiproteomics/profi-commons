@@ -63,6 +63,7 @@ package object operation {
   /**
    * Formats for case classes (related to workflow)
    */
+
   //  implicit val macroBooleanParamFormat = Json.format[MacroBooleanParam]
   //  implicit val macroStringParamFormat = Json.format[MacroStringParam]
   //  implicit val macroNumericParamFormat = Json.format[MacroNumericParam]
@@ -118,18 +119,16 @@ package object operation {
   }
 
   case class PeaklistIdentification(
-    searchEngines: Array[SearchEngine.Value],
-    // searchForms: Array[MsiSearchForm],
+    searchEnginesWithFormIds: Array[(SearchEngine.Value, Option[String])],
     emailNotification: Option[EMailNotification] = None,
     cmdLineExecution: Option[CmdLineExecution] = None,
     webServiceCall: Option[WebServiceCall] = None
   ) extends IWorkflowOperation {
     def cloneMe() = this.copy()
+    def someSearchWithoutTemplate() = ! this.searchEnginesWithFormIds.map(_._2).forall(_.isDefined)
   }
-
+  
   case class ProlineImport(
-    //ownerMongoId: String, //mongo ID
-    //projectId: Long, //uds ID
     instrumentConfigId: Long, //uds ID
     peaklistSoftwareId: Long, //uds ID
     emailNotification: Option[EMailNotification] = None,
@@ -137,14 +136,13 @@ package object operation {
     webServiceCall: Option[WebServiceCall] = None
   ) extends IWorkflowOperation {
 
-    //require(ownerMongoId != null, "Task's owner mongo ID must not be null") //TODO : hexaDec + size
-    //require(projectId > 0, "Invalid project ID for ProlineImport")
     require(instrumentConfigId > 0, "Invalid instrumentConfig ID for ProlineImport")
     require(peaklistSoftwareId > 0, "Invalid peaklistSoftware ID for ProlineImport")
 
     def cloneMe() = this.copy()
   }
 
+  
   implicit val workflowOperationFormat: Format[IWorkflowOperation] = Variants.format[IWorkflowOperation]("type")
 
 }
