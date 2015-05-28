@@ -119,7 +119,7 @@ package object operation {
   }
 
   case class PeaklistIdentification(
-    searchEnginesWithFormIds: Array[(SearchEngine.Value, Option[String])],
+    var searchEnginesWithFormIds: Array[(SearchEngine.Value, Option[String])],
     emailNotification: Option[EMailNotification] = None,
     cmdLineExecution: Option[CmdLineExecution] = None,
     webServiceCall: Option[WebServiceCall] = None
