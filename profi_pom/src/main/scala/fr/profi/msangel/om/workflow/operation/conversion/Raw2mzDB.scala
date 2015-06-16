@@ -1,11 +1,16 @@
 package fr.profi.msangel.om.workflow.operation.conversion
 
 import fr.profi.msangel.om._
+import fr.profi.msangel.om.workflow.DefaultPeaklistSoftware
 import fr.profi.msangel.om.workflow.operation._
 
 object Raw2mzDB extends IFileConversionTool {
 
   def getName(): FileConversionTool.Value = FileConversionTool.RAW2MZDB
+  val successExitValue = 0
+  val canExecuteProlineParsingRule = false
+  val associatedPeaklistSoftware = DefaultPeaklistSoftware.PROTEO_WIZARD_3_0
+
 
   /**
    * Get raw2mzDB configuration
@@ -16,9 +21,10 @@ object Raw2mzDB extends IFileConversionTool {
   //TODO : finish (params, filters)
   )
 
-  def getFormatMappings(): Array[(DataFileFormat.Value, DataFileFormat.Value)] = {
-    Array((DataFileFormat.RAW, DataFileFormat.MZDB))
-  }
+  /**
+   * Generate all input/output formats associations handled by MsConvert
+   */
+  def getFormatMappings(): Array[(DataFileExtension.Value, DataFileExtension.Value)] = Array()
 
   /**
    *  Check tool path conformity
@@ -33,10 +39,4 @@ object Raw2mzDB extends IFileConversionTool {
    */
   //TODO
   def generateCmdLine(filePath: String, conversionToolPath: String, fileConversion: FileConversion): String = ""
-
-  /**
-   * Retrieve output file path from console STDOUT
-   */
-  //TODO
-  def getOutputFileFromSTDOUT(stdOut: String): Option[String] = { None }
 }

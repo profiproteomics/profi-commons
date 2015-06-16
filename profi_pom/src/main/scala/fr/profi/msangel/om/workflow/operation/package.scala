@@ -2,6 +2,7 @@ package fr.profi.msangel.om.workflow
 
 import scala.collection.mutable.HashMap
 import fr.profi.msangel.om.msi.MsiSearchForm
+import fr.profi.msangel.om.workflow.operation.conversion.MsDataConverter
 
 package object operation {
 
@@ -10,7 +11,7 @@ package object operation {
   import play.api.libs.json._
   import julienrf.variants.Variants
   import fr.profi.msangel.om._
-  import fr.profi.msangel.om.DataFileFormat
+  import fr.profi.msangel.om.DataFileExtension
   import fr.profi.msangel.om.SearchEngine
 
   /**
@@ -91,10 +92,12 @@ package object operation {
   }
 
   case class FileConversion(
-    inputFileFormat: DataFileFormat.Value,
-    outputFileFormat: DataFileFormat.Value,
-    config: ConversionToolConfig, // TODO: replace by conversionToolId
+    inputFileFormat: DataFileExtension.Value,
+    outputFileFormat: DataFileExtension.Value,
+    config: ConversionToolConfig,
+    useProlineRule: Boolean = false, //TODO: move to config?
     outputDirectory: String,
+    overwriteOutputFile: Boolean = true,
     emailNotification: Option[EMailNotification] = None,
     cmdLineExecution: Option[CmdLineExecution] = None,
     webServiceCall: Option[WebServiceCall] = None
@@ -106,6 +109,19 @@ package object operation {
     require(outputDirectory != null && outputDirectory.isEmpty() == false, "Output directory must be specified")
     
     def cloneMe() = this.copy()
+
+    //TODO: move to right place
+    def someProfilePeakPicking(): Boolean = {
+      for (
+        p <- this.config.params;
+        //if p.isInstanceOf[MacroSelectionParam];
+        if p.name == MsDataConverter.ParamName.PEAK_PICKING
+      ) {
+        if (p.value == Some(MsDataConverter.profile)) return true
+        else return false
+      }
+      false
+    }
   }
 
   case class FileTransfer(
@@ -125,12 +141,17 @@ package object operation {
     webServiceCall: Option[WebServiceCall] = None
   ) extends IWorkflowOperation {
     def cloneMe() = this.copy()
-    def someSearchWithoutTemplate() = ! this.searchEnginesWithFormIds.map(_._2).forall(_.isDefined)
+    def someSearchWithoutTemplate() = !this.searchEnginesWithFormIds.map(_._2).forall(_.isDefined)
   }
-  
+
   case class ProlineImport(
     instrumentConfigId: Long, //uds ID
     peaklistSoftwareId: Long, //uds ID
+    decoyStrategy: DecoyStrategy.Value = DecoyStrategy.SOFTWARE,
+    format: ProlineDataFileFormat.Value = ProlineDataFileFormat.MASCOT,
+    protMatchDecoyRuleId: Option[Long] = None, //uds ID
+    importerProperties: HashMap[String, String] = HashMap(),
+
     emailNotification: Option[EMailNotification] = None,
     cmdLineExecution: Option[CmdLineExecution] = None,
     webServiceCall: Option[WebServiceCall] = None
@@ -141,8 +162,21 @@ package object operation {
 
     def cloneMe() = this.copy()
   }
+  
+//    case class ProlineImport2(
+//    instrumentConfigId: Long, //uds ID
+//    peaklistSoftwareId: Long, //uds ID
+//    emailNotification: Option[EMailNotification] = None,
+//    cmdLineExecution: Option[CmdLineExecution] = None,
+//    webServiceCall: Option[WebServiceCall] = None
+//  ) extends IWorkflowOperation {
+//
+//    require(instrumentConfigId > 0, "Invalid instrumentConfig ID for ProlineImport")
+//    require(peaklistSoftwareId > 0, "Invalid peaklistSoftware ID for ProlineImport")
+//
+//    def cloneMe() = this.copy()
+//  }
 
   
   implicit val workflowOperationFormat: Format[IWorkflowOperation] = Variants.format[IWorkflowOperation]("type")
-
 }

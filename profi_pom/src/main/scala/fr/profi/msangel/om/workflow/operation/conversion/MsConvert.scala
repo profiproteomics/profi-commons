@@ -1,22 +1,28 @@
 package fr.profi.msangel.om.workflow.operation.conversion
 
 import java.io.File
+
 import scala.collection.mutable.ArrayBuffer
 
 import fr.profi.msangel.om._
-import fr.profi.msangel.om.DataFileFormat
+import fr.profi.msangel.om.DataFileExtension
+import fr.profi.msangel.om.DataFileExtension._
+import fr.profi.msangel.om.workflow.DefaultPeaklistSoftware
 import fr.profi.msangel.om.workflow.operation._
 
 object MsConvert extends IFileConversionTool {
-  
-  def getName(): FileConversionTool.Value = FileConversionTool.MSCONVERT
 
+  def getName(): FileConversionTool.Value = FileConversionTool.MSCONVERT
+  val successExitValue = 0
+  val canExecuteProlineParsingRule = true
+  val associatedPeaklistSoftware = DefaultPeaklistSoftware.PROTEO_WIZARD_3_0
+
+  
   /**
    * List all output formats handled by MsConvert, linked to their command flag
    */
-  import DataFileFormat._
 
-  private val cmdFlagByOutputFormat = Map[DataFileFormat.Value, String](
+  private val cmdFlagByOutputFormat = Map[DataFileExtension.Value, String](
     MZML -> "--mzML",
     MZXML -> "--mzXML",
     MZ5 -> "--mz5",
@@ -69,9 +75,10 @@ object MsConvert extends IFileConversionTool {
 
   }
   
-  def getFormatMappings(): Array[(DataFileFormat.Value, DataFileFormat.Value)] = {
-    cmdFlagByOutputFormat.keySet.map((RAW, _)).toArray
-  }
+  /**
+   * Generate all input/output formats associations handled by MsConvert
+   */
+  def getFormatMappings(): Array[(DataFileExtension.Value, DataFileExtension.Value)] = cmdFlagByOutputFormat.keySet.map((RAW, _)).toArray
 
   /**
    *  Check tool path conformity
@@ -92,39 +99,39 @@ object MsConvert extends IFileConversionTool {
    *  Command line generator
    */
   def generateCmdLine(
-    filePath: String,
+    inputFilePath: String,
     conversionToolPath : String,
     fileConversion: FileConversion
   ): String = {
 
     val cmdLineBuffer = new ArrayBuffer[String]()
 
-    /** Executable **/
+    /* Executable **/
     cmdLineBuffer += s""""${conversionToolPath}"""" //msconvert.exe path
 
-    /** RAW input file **/
-    require(filePath matches """(?i).+\.raw""", "MSConvert only accepts RAW input files") //move?
-    cmdLineBuffer += s""""$filePath"""" //input file path
+    /* RAW input file **/
+    require(inputFilePath matches """(?i).+\.raw""", "MSConvert only accepts RAW input files") //move?
+    cmdLineBuffer += s""""$inputFilePath"""" //input file path
 
-    /** Output directory and format **/
+    /* Output directory and format **/
     cmdLineBuffer += s"""-o "${fileConversion.outputDirectory}""""
     cmdLineBuffer += s"""${_getOutputFormatCmdFlag(fileConversion.outputFileFormat)}"""
+    
+    /* Force output file name: "inputFilePath.outputFormat" */
+    cmdLineBuffer += s"""--outfile "$inputFilePath.${DataFileExtension.getPrettyName(fileConversion.outputFileFormat)}""""
 
-    /** Additional conversion parameters **/
+    /* Additional conversion parameters **/
     fileConversion.config.params.withFilter(_.value.isDefined).foreach { param =>
       param match {
 
-        /** Boolean **/
         case boolean: MacroBooleanParam => {
           if (boolean.value.get == true) cmdLineBuffer += boolean.cmdFlag
         }
-
-        /** Choice **/
+        
         case choice: MacroChoiceParam => {
-          cmdLineBuffer += choice.value.get.cmdFlag
+          cmdLineBuffer += choice.cmdFlag
         }
 
-        /** Other **/
         case _ => {
           cmdLineBuffer += param.cmdFlag
           cmdLineBuffer += s""""${param.toString()}"""
@@ -135,35 +142,34 @@ object MsConvert extends IFileConversionTool {
     // Here is the ExtractMSn TITLE convention
     //cmdLineBuffer += """--filter "titleMaker <RunId>.<ScanNumber>.<ScanNumber>.<ChargeState>.dta" """
 
-    /** Add custom TITLE maker filter using unknown convention **/
-    val fileName = new File(filePath).getName
-    val rawFileNameOpt = if (fileName.endsWith(".raw") || fileName.endsWith(".RAW")) s"raw_file_name:${fileName};" else ""
-    cmdLineBuffer += s"""--filter "titleMaker first_scan:<ScanNumber>;last_scan:<ScanNumber>;first_time:<ScanStartTimeInMinutes>;last_time:<ScanStartTimeInMinutes>;raw_precursor_moz:<SelectedIonMz>;${rawFileNameOpt}""""
+    /* Add custom TITLE maker filter using Proline convention **/
+    if (fileConversion.useProlineRule) {
+      //require(this.canExecuteProlineParsingRule, "Proline parsing rule can't be used with MsConvert.")
+      
+      val fileName = new File(inputFilePath).getName
+      val rawFileIdentifierOpt = if (fileName.endsWith(".raw") || fileName.endsWith(".RAW")) s"raw_file_identifier:${fileName};" else ""
 
-      // TODO: check that apply_spec_title_parsing_rule WS returns something like :
-    // {"last_scan":"1","first_scan":"1","raw_file_name":"OE.raw"}
-    // WS URL = http://hostname:8080/proline/admin/util/apply_spec_title_parsing_rule
-    // WS request body = { "rule_id": 10, "spectrum_title": "File:\"OE.raw\", scan=1" }
+      cmdLineBuffer += s"""--filter "titleMaker first_scan:<ScanNumber>;last_scan:<ScanNumber>;first_time:<ScanStartTimeInMinutes>;last_time:<ScanStartTimeInMinutes>;raw_precursor_moz:<SelectedIonMz>;${rawFileIdentifierOpt}""""
+    }
 
-    /** Build and return final command string **/
+    /* Build and return final command string **/
     cmdLineBuffer.mkString(" ")
   }
 
-  /**
-   * Retrieve output file path from console STDOUT
-   */
-  def getOutputFileFromSTDOUT(stdOut: String): Option[String] = {
-    val pattern = """(?s).*writing output file: (.+mgf).*"""
-    if (stdOut matches pattern) {
-      val pattern.r(outputFile) = stdOut
-      Some(outputFile)
-    } else None
-  }
+  //  /**
+  //   * Retrieve output file path from console STDOUT
+  //   */
+  //  def getOutputFileFromSTDOUT(stdOut: String): Option[String] = {
+  //    val pattern = """(?s).*writing output file: (.+mgf).*"""
+  //    if (stdOut matches pattern) {
+  //      val pattern.r(outputFile) = stdOut
+  //      Some(outputFile)
+  //    } else None
+  //  }
 
-  
-  /** 
+  /**
    *  Get command flag corresponding to output format
    */
-  private def _getOutputFormatCmdFlag(format: DataFileFormat.Value): String = cmdFlagByOutputFormat(format)
+  private def _getOutputFormatCmdFlag(format: DataFileExtension.Value): String = cmdFlagByOutputFormat(format)
   
 }

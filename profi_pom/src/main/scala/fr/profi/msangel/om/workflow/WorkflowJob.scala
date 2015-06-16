@@ -4,7 +4,7 @@ import scala.collection.mutable.HashMap
 
 import org.joda.time.DateTime
 
-import fr.profi.msangel.om.DataFileFormat
+import fr.profi.msangel.om.DataFileExtension
 import fr.profi.msangel.om.ExecutionVariable
 import fr.profi.msangel.om.WorkflowJobStatus
 import fr.profi.pwx.util.mongodb.IMongoDbEntity
@@ -44,10 +44,10 @@ case class WorkflowJob(
   def isComplete(): Boolean = (status == WorkflowJobStatus.SUCCEEDED || status == WorkflowJobStatus.FAILED) //TODO || status == MsiSearchStatus.KILLED)
   //  def notYetPending(): Boolean = (status == WorkflowStatus.CREATED || status == WorkflowStatus.UPLOADING)
 
-  def getExecutionVariableForFormat(keyAsFormat: DataFileFormat.Value): String = {
+  def getExecutionVariableForFormat(keyAsFormat: DataFileExtension.Value): String = {
     this.executionVariables(ExecutionVariable.getFormatKeyAsString(keyAsFormat))
   }
-  def setExecutionVariableForFormat(keyAsFormat: DataFileFormat.Value, value: String): Unit = {
+  def setExecutionVariableForFormat(keyAsFormat: DataFileExtension.Value, value: String): Unit = {
     this.executionVariables(ExecutionVariable.getFormatKeyAsString(keyAsFormat)) = value
   }
 

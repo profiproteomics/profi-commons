@@ -51,6 +51,8 @@ package object om {
     def contains(key: this.Value): Boolean = {
       this.values.contains(key)
     }
+    
+    implicit def enum2string(enumValue: this.Value): String = enumValue.toString()
   }
 
   /**
@@ -90,7 +92,7 @@ package object om {
   /**
    * Some Play!2.2 JSON formatters for MS-Angel case classes.
    */
-  implicit val msangelServerConfigFormat = Json.format[MSAngelServerConfig]
+  implicit val msangelServerConfigFormat = PWXJson.entityFormat(Json.format[MSAngelServerConfig])
 
   implicit val msiSearchFormFormat = PWXJson.entityFormat(Json.format[MsiSearchForm])
   implicit val msiSearchFormat = PWXJson.entityFormat(Json.format[MsiSearch])
@@ -98,7 +100,7 @@ package object om {
   implicit val workflowFormat = PWXJson.entityFormat(Json.format[Workflow])
   implicit val workflowJobFormat = PWXJson.entityFormat(Json.format[WorkflowJob])
 
-  implicit val fileMonitoringConfigFormat = Json.format[FileMonitoringConfig]
+  implicit val fileMonitoringConfigFormat = Json.format[FileMonitoringConfig] //not extending IMongoDbEntity because embedded doc
 
   implicit val workflowTaskFormat = PWXJson.entityFormat(Json.format[WorkflowTask])
   implicit val msiTaskFormat = PWXJson.entityFormat(Json.format[MsiTask])

@@ -109,6 +109,7 @@ object MongoDbCollection extends Enumeration {
   val MSI_SEARCH_FORM_COLLECTION = Value("msi_search_form_collection")
 
   val USER_COLLECTION = Value("user_collection")
+  val SERVER_CONFIG_COLLECTION = Value("server_config_collection")
 
   //val MSANGEL_SERVER_CONFIG_COLLECTION = Value("msangel_server_config_collection")
 }
@@ -121,22 +122,43 @@ object SearchEngine extends JsonEnumeration {
   val OMSSA = Value("OMSSA")
 }
 
+/**
+ * Enumerates decoy strategies
+ */
+object DecoyStrategy extends JsonEnumeration {
+  val NO_DECOY = Value("No Decoy Database")
+  val CONCATENATED = Value("Concatenated Decoy Database")
+  val SOFTWARE = Value("Software Decoy")
+}
+
+/**
+ * Enumerates data file formats as defined in Proline (for import purposes)
+ */
+object ProlineDataFileFormat extends JsonEnumeration {
+  val MASCOT = Value("mascot.dat")
+  val OMSSA = Value("omssa.omx")
+}
+
+
+/**
+ * Enumerates file conversion tools
+ */
 object FileConversionTool extends JsonEnumeration {
   val MSCONVERT = Value("ProteoWizard msConvert")
+  val MS_DATA_CONVERTER = Value("AB SCIEX MS Data Converter")
   val EXTRACT_MSN = Value("Thermo ExtractMSn")
   val RAW2MZDB = Value("ProFI raw2mzDB")
   val MZDB_ACCESS = Value("ProFI mzdb-access")
-
-  implicit def enum2string(tool: FileConversionTool.Value): String = tool.toString()
 }
 
 /**
  * Enumerates handled file extensions.
  */
-object DataFileFormat extends JsonEnumeration { //TODO : rename into extension?
+object DataFileExtension extends JsonEnumeration {
 
   val RAW = Value("RAW")
   val WIFF = Value("WIFF")
+  val TOFTOF = Value("TOFTOF")
   val MZDB = Value("MZDB")
   val MGF = Value("MGF")
 
@@ -149,7 +171,7 @@ object DataFileFormat extends JsonEnumeration { //TODO : rename into extension?
   val MS2 = Value("MS2")
   val CMS2 = Value("CMS2")
 
-  val rankedFormats: Seq[(Int, this.Value)] = Seq(
+  val rankedExtensions: Seq[(Int, this.Value)] = Seq(
     (1, this.RAW),
     (1, this.WIFF),
     (2, this.MZDB),
@@ -165,23 +187,42 @@ object DataFileFormat extends JsonEnumeration { //TODO : rename into extension?
     (3, this.CMS2)
   )
 
-  private def _getInitRank(initFormat: this.Value): Int = rankedFormats.find(_._2 == initFormat).map(_._1).getOrElse(0)
+  private def _getInitRank(initExt: this.Value): Int = rankedExtensions.find(_._2 == initExt).map(_._1).getOrElse(0)
 
-  def getLowerFormats(initFormat: this.Value) = {
-    val initRank = _getInitRank(initFormat)
-    rankedFormats.filter { f => f._1 <= initRank && f._2 != initFormat }.map(_._2)
+  def getLowerExtensions(initExt: this.Value) = {
+    val initRank = _getInitRank(initExt)
+    rankedExtensions.filter { f => f._1 <= initRank && f._2 != initExt }.map(_._2)
   }
-  def getUpperFormats(initFormat: this.Value) = {
-    val initRank = _getInitRank(initFormat)
-    rankedFormats.filter { f => f._1 >= initRank && f._2 != initFormat }.map(_._2)
+  def getUpperExtensions(initExt: this.Value) = {
+    val initRank = _getInitRank(initExt)
+    rankedExtensions.filter { f => f._1 >= initRank && f._2 != initExt }.map(_._2)
   }
 
-  def getMinRankedFormats() = {
-    rankedFormats.filter(_._1 == 1).map(_._2)
+  def getMinRankedExtensions() = {
+    rankedExtensions.filter(_._1 == 1).map(_._2)
   }
-  def getMaxRankedFormats() = {
-    val maxRank = rankedFormats.map(_._1).max
-    rankedFormats.filter(_._1 == maxRank).map(_._2)
+  def getMaxRankedExtensions() = {
+    val maxRank = rankedExtensions.map(_._1).max
+    rankedExtensions.filter(_._1 == maxRank).map(_._2)
+  }
+  
+  def getPrettyName(value: DataFileExtension.Value): String = {
+    value match {     
+      case RAW => "raw"
+      case WIFF => "wiff"
+      case TOFTOF => "toftof" // ???
+      case MZDB => "mzDB"
+      case MGF => "mgf"
+        
+      case MZML => "mzML"
+      case MZXML => "mzXML"      
+      case MZ5 => "mz5"
+      case TEXT => "txt"
+      case MS1 => "ms1"
+      case CMS1 => "cms1"
+      case MS2 => "ms2"
+      case CMS2 => "cms2"
+    }
   }
 }
 /**
@@ -281,22 +322,24 @@ object SchedulingType extends JsonEnumeration {
  */
 object ExecutionVariable extends JsonEnumeration {
   val RAW_FILE_PATH = Value("raw_file_path")
+  val WIFF_FILE_PATH = Value("wiff_file_path")
   val MZDB_FILE_PATH = Value("mzdb_file_path")
+  val MZML_FILE_PATH = Value("mzml_file_path")
   val PEAKLIST_FILE_PATH = Value("peaklist_file_path")
 
   val MASCOT_IDENTIFICATION_FILE_PATH = Value("mascot_identification_file_path")
   val OMSSA_IDENTIFICATION_FILE_PATH = Value("omssa_identification_file_path")
 
   // TODO : move to dedicated place (WorkflowJob ? )
-  def getFormatKey(fileFormat: DataFileFormat.Value): this.Value = {
-    import DataFileFormat._
+  def getFormatKey(fileFormat: DataFileExtension.Value): this.Value = {
+    import DataFileExtension._
     fileFormat match {
-      case RAW   => RAW_FILE_PATH
-      case MZDB  => MZDB_FILE_PATH
-      case MGF   => PEAKLIST_FILE_PATH
-     /* case WIFF  =>
-      case MZML  =>
-      case MZXML =>
+      case RAW  => RAW_FILE_PATH
+      case WIFF => WIFF_FILE_PATH
+      case MZDB => MZDB_FILE_PATH
+      case MZML => MZML_FILE_PATH
+      case MGF  => PEAKLIST_FILE_PATH
+     /* case MZXML =>
       case MZ5   =>
       case TEXT  =>
       case MS1   =>
@@ -308,7 +351,7 @@ object ExecutionVariable extends JsonEnumeration {
     }
   }
   
-  def getFormatKeyAsString (fileFormat: DataFileFormat.Value): String = {
+  def getFormatKeyAsString (fileFormat: DataFileExtension.Value): String = {
     this.getFormatKey(fileFormat).toString()
   }
 }

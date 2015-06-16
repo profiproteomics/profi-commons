@@ -1,12 +1,15 @@
 package fr.profi.msangel.om.workflow.operation.conversion
 
 import fr.profi.msangel.om._
+import fr.profi.msangel.om.workflow.DefaultPeaklistSoftware
 import fr.profi.msangel.om.workflow.operation._
-import scala.collection.mutable.ArrayBuffer
 
 object ExtractMSn extends IFileConversionTool {
-  
+
   def getName(): FileConversionTool.Value = FileConversionTool.EXTRACT_MSN
+  val successExitValue = 0
+  val canExecuteProlineParsingRule = false
+  val associatedPeaklistSoftware = DefaultPeaklistSoftware.EXTRACT_MSN
 
   /**
    * Get ExtractMSn configuration template
@@ -35,10 +38,11 @@ object ExtractMSn extends IFileConversionTool {
       )
     )
   }
-  
-  def getFormatMappings(): Array[(DataFileFormat.Value, DataFileFormat.Value)] = {
-    Array((DataFileFormat.RAW, DataFileFormat.MGF))
-  }
+
+  /**
+   * Generate all input/output formats associations handled by MsConvert
+   */
+  def getFormatMappings(): Array[(DataFileExtension.Value, DataFileExtension.Value)] = Array()
 
   /**
    *  Check tool path conformity
@@ -47,17 +51,11 @@ object ExtractMSn extends IFileConversionTool {
     //TODO
     false
   }
-  
+
   /**
    *  Generate command line
    */
   //TODO
   def generateCmdLine(filePath: String, conversionToolPath: String, fileConversion: FileConversion): String = ""
-
-  /**
-   * Retrieve output file path from console STDOUT
-   */
-  //TODO
-  def getOutputFileFromSTDOUT(stdOut: String): Option[String] = { None }
 
 }

@@ -1,14 +1,18 @@
 package fr.profi.msangel.om.workflow.operation
 
+import com.typesafe.scalalogging.slf4j.Logging
+
+import play.api.libs.json._
+
 import scala.BigDecimal
 import scala.collection.mutable.ArrayBuffer
-import com.typesafe.scalalogging.slf4j.Logging
-import play.api.libs.json._
-import fr.profi.msangel.om.DataFileFormat
-import fr.profi.msangel.om.FileConversionTool
-import fr.profi.msangel.om._
-import fr.profi.util.scala.BigDecimalRange
 import scala.collection.mutable.HashMap
+
+import fr.profi.msangel.om._
+import fr.profi.msangel.om.DataFileExtension
+import fr.profi.msangel.om.FileConversionTool
+import fr.profi.msangel.om.workflow.PeaklistSoftware
+import fr.profi.util.scala.BigDecimalRange
 
 /**
  * Describes file conversion tools
@@ -18,18 +22,28 @@ import scala.collection.mutable.HashMap
 trait IFileConversionTool {
   
   def getName(): FileConversionTool.Value
-
+  
   def getConfigTemplate(): ConversionToolConfig
   
-  def getFormatMappings(): Array[(DataFileFormat.Value, DataFileFormat.Value)]
+  def getFormatMappings(): Array[(DataFileExtension.Value, DataFileExtension.Value)]
 
   def checkExePath(conversionToolPath: String): Boolean
 
   def generateCmdLine(filePath: String, conversionToolPath: String, fileConversion: FileConversion): String
+
+  def successExitValue: Int
+
+  def canExecuteProlineParsingRule: Boolean
+
+  def associatedPeaklistSoftware: PeaklistSoftware
   
-  def getOutputFileFromSTDOUT( stdOut : String ) : Option[String]
+  //  def getOutputFileFromSTDOUT( stdOut : String ) : Option[String]
+  //  def checkForm(): Boolean
 }
 
+/**
+ *  Register all file conversion tool (default configurations)
+ */
 object FileConversionToolRegistry {
 
   private val toolHashMap = new HashMap[FileConversionTool.Value, IFileConversionTool]()
@@ -37,6 +51,7 @@ object FileConversionToolRegistry {
   // Register default conversion tool configs
   this.registerFileConversionTool(conversion.ExtractMSn)
   this.registerFileConversionTool(conversion.MsConvert)
+  this.registerFileConversionTool(conversion.MsDataConverter)
   this.registerFileConversionTool(conversion.MzdbAccess)
   this.registerFileConversionTool(conversion.Raw2mzDB)
 
@@ -50,21 +65,17 @@ object FileConversionToolRegistry {
 
 }
 
+/**
+ * Define a conversion tool's configuration
+ */
 case class ConversionToolConfig(
-  //  val id: String, //Mongo id
   val tool: FileConversionTool.Value, // TODO: rename into toolName
-  //  val inputFileFormat: DataFileFormat.Value, 
-  //  val outputFileFormat: DataFileFormat.Value,
   val params: Array[MacroParam] = Array(),
   val filters: Array[MacroFilterParam] = Array()
 ) {
   
   def getTool(): IFileConversionTool = FileConversionToolRegistry.getConversionToolConfig(tool).get
-  def getFormatMappings(): Array[(DataFileFormat.Value, DataFileFormat.Value)] = this.getTool().getFormatMappings
-
-  //  require(inputFileFormat != null, "Macro initFileFormat must be specified.")
-  //  require(outputFileFormat != null, "Macro finalFileFormat must be specified.")
-  //  require(inputFileFormat != outputFileFormat, "Initial and final file formats can't be the same")
+  def getFormatMappings(): Array[(DataFileExtension.Value, DataFileExtension.Value)] = this.getTool().getFormatMappings
 
   override def toString(): String = this.tool
   //  override def toString: String = scala.runtime.ScalaRunTime.stringOf(params) + "\n"
@@ -73,10 +84,7 @@ case class ConversionToolConfig(
   //    params.map { param => (param.name, param.value.getOrElse("").toString()) }.toMap
   //  }
 
-  /**
-   * Filters utilities
-   */
-
+  /** Filters utilities **/
   def hasFilters: Boolean = !filters.isEmpty
 
   /** User defined filters as Strings (cmd) */
@@ -84,6 +92,7 @@ case class ConversionToolConfig(
   def addFilter(filterAsStr: String) { definedFilters += filterAsStr }
   def getFiltersAsStrings() = definedFilters.result()
 
+  /** Clone this object **/
   def cloneMe(): ConversionToolConfig = {
 
     val paramsClone = params.clone()
@@ -109,6 +118,7 @@ object MacroParamType extends JsonEnumeration {
   val NUMERIC = Value("NUMERIC")
   val RANGE = Value("RANGE")
   val CHOICE = Value("CHOICE")
+  val SELECTION = Value("SELECTION")
   val FILTER = Value("FILTER")
 }
 
@@ -124,7 +134,8 @@ object MacroParam {
     cmdFlag: String,
     value: Option[JsValue],
     default: Option[JsValue],
-    options: Option[JsArray]): MacroParam = {
+    options: Option[JsArray]
+  ): MacroParam = {
 
     val paramType = MacroParamType.withName(paramTypeAsStr)
 
@@ -144,6 +155,9 @@ object MacroParam {
       }
       case MacroParamType.CHOICE => {
         new MacroChoiceParam(name, value.map(_.as[MacroChoiceParamItem]), default.map(_.as[MacroChoiceParamItem]), options.map(_.as[Seq[MacroChoiceParamItem]]))
+      }
+      case MacroParamType.SELECTION => {
+        new MacroSelectionParam(name, value.map(_.as[MacroChoiceParamItem]), default.map(_.as[MacroChoiceParamItem]), options.map(_.as[Seq[MacroChoiceParamItem]]))
       }
       //      case MacroParamType.FILTER => {
       //        new MacroFilterParam(name, default.map(_.as[Seq[MacroParam]]), options.map(_.as[Seq[MacroParam]]))
@@ -209,6 +223,16 @@ object MacroParam {
         p.options.map(Json.toJson(_).as[JsArray])
       )
 
+      case p: MacroSelectionParam => (
+        p.name,
+        p.paramType.toString,
+        p.isRequired,
+        "",
+        p.value.map(Json.toJson(_)),
+        p.default.map(Json.toJson(_)),
+        p.options.map(Json.toJson(_).as[JsArray])
+      )
+
       case _ => throw new Exception("Exception in MacroParam unapply")
     }
 
@@ -231,7 +255,7 @@ sealed trait MacroParam { //extends Cloneable
   /** For all implementations */
   require(name != null, "Parameter name must be provided")
 
-  override def toString(): String = this.name
+  override def toString(): String = this.name //+ "-" + this.paramType
 
   def getOptionsAsStrings() = options.map(_.map(_.toString)).getOrElse(Seq())
   //  def getOptionsAsBigDecimals() = options.map(_.map(_.asInstanceOf[BigDecimal])).getOrElse(Seq())
@@ -251,7 +275,8 @@ case class MacroBooleanParam(
   val name: String,
   val cmdFlag: String,
   var value: Option[Boolean] = None,
-  val default: Option[Boolean] = Some(false)) extends MacroParam {
+  val default: Option[Boolean] = Some(false)
+) extends MacroParam {
 
   val isRequired = false
   val paramType = MacroParamType.BOOLEAN
@@ -280,7 +305,8 @@ case class MacroStringParam(
   val cmdFlag: String,
   var value: Option[String] = None,
   val default: Option[String] = None,
-  val options: Option[Seq[String]] = None) extends MacroParam {
+  val options: Option[Seq[String]] = None
+) extends MacroParam {
 
   val paramType = MacroParamType.STRING
 
@@ -299,7 +325,8 @@ case class MacroNumericParam(
   val cmdFlag: String,
   var value: Option[BigDecimal] = None,
   val default: Option[BigDecimal] = None,
-  val options: Option[Seq[BigDecimal]] = None) extends MacroParam {
+  val options: Option[Seq[BigDecimal]] = None
+) extends MacroParam {
 
   val paramType = MacroParamType.NUMERIC
 
@@ -319,7 +346,8 @@ case class MacroRangeParam(
   //  var value: Option[Range] = None,
   //  val default: Option[Range] = None
   var value: Option[BigDecimalRange] = None,
-  val default: Option[BigDecimalRange] = None) extends MacroParam with Logging {
+  val default: Option[BigDecimalRange] = None
+) extends MacroParam with Logging {
 
   val paramType = MacroParamType.RANGE
   val options = None
@@ -347,13 +375,15 @@ case class MacroRangeParam(
 case class MacroChoiceParamItem(name: String, cmdFlag: String) {
   override def toString(): String = this.name
 }
+
 case class MacroChoiceParam(
   val name: String,
   var value: Option[MacroChoiceParamItem] = None,
   val default: Option[MacroChoiceParamItem] = None,
-  val options: Option[Seq[MacroChoiceParamItem]]) extends MacroParam with Logging {
+  val options: Option[Seq[MacroChoiceParamItem]]
+) extends MacroParam with Logging {
 
-  val paramType = MacroParamType.CHOICE
+  val paramType = MacroParamType.CHOICE //only used for filters
   val isRequired: Boolean = false
 
   require(options.isDefined && options.get.isEmpty == false, "Choice options MUST be defined")
@@ -367,9 +397,38 @@ case class MacroChoiceParam(
 
   def cmdFlag: String = this.value.map(_.cmdFlag).getOrElse("")
 
-  /** WARNING : strings defining macro range MUST be of type "val1#val2" */
-  def setValue(valueAsStr: String) {
+  def setValue(valueAsStr: String) { }
 
+  def setValue(value: MacroChoiceParamItem) {
+    this.value = Some(value)
+  }
+
+  def cloneMe() = this.copy()
+}
+
+case class MacroSelectionParam(
+  val name: String,
+  var value: Option[MacroChoiceParamItem] = None,
+  val default: Option[MacroChoiceParamItem] = None,
+  val options: Option[Seq[MacroChoiceParamItem]]
+) extends MacroParam with Logging {
+
+  val paramType = MacroParamType.SELECTION //only used for filters
+  val isRequired: Boolean = false
+
+  require(options.isDefined && options.get.isEmpty == false, "Selection options MUST be defined")
+
+  if (value.isEmpty) {
+    if (default.isDefined) {
+      require(options.get.contains(default.get), "default item must be a member of options")
+      value = default
+    } else value = options.get.headOption
+  }
+
+  def cmdFlag: String = this.value.map(_.cmdFlag).getOrElse("")
+
+  def setValue(valueAsStr: String) {
+    
   }
 
   def setValue(value: MacroChoiceParamItem) {
@@ -378,6 +437,7 @@ case class MacroChoiceParam(
 
   def cloneMe() = this.copy()
 }
+
 
 /** Filter parameter */
 case class MacroFilterParam(
