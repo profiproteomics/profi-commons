@@ -144,12 +144,12 @@ object MsConvert extends IFileConversionTool {
 
     /* Add custom TITLE maker filter using Proline convention **/
     if (fileConversion.useProlineRule) {
-      //require(this.canExecuteProlineParsingRule, "Proline parsing rule can't be used with MsConvert.")
-      
-      val fileName = new File(inputFilePath).getName
-      val rawFileIdentifierOpt = if (fileName.endsWith(".raw") || fileName.endsWith(".RAW")) s"raw_file_identifier:${fileName};" else ""
 
-      cmdLineBuffer += s"""--filter "titleMaker first_scan:<ScanNumber>;last_scan:<ScanNumber>;first_time:<ScanStartTimeInMinutes>;last_time:<ScanStartTimeInMinutes>;raw_precursor_moz:<SelectedIonMz>;${rawFileIdentifierOpt}""""
+      val splittedInputFileName = new File(inputFilePath).getName.split(".")
+      require(splittedInputFileName.length == 2, "incorrect input file name: "+new File(inputFilePath).getName)
+      val rawFileIdentifier = s"raw_file_identifier:${splittedInputFileName.head};"
+
+      cmdLineBuffer += s"""--filter "titleMaker first_scan:<ScanNumber>;last_scan:<ScanNumber>;first_time:<ScanStartTimeInMinutes>;last_time:<ScanStartTimeInMinutes>;raw_precursor_moz:<SelectedIonMz>;${rawFileIdentifier}""""
     }
 
     /* Build and return final command string **/
