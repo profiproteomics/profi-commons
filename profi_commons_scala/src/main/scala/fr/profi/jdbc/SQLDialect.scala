@@ -16,12 +16,14 @@ import org.joda.time.format.ISODateTimeFormat
  * SQL specific classes like Nullable, NullComparable and Identifier.
  * See their documentation for more info on how to use them.
  */
-abstract class AbstractSQLDialect( val timeStampFormatter: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSSS"),
-                                   val booleanFormatter: IBooleanFormatter = DefaultBooleanFormatter,
-                                   val typeMapper: ITypeMapper = DefaultTypeMapper,
-                                   val generateKeyParam: Any = 1,
-                                   val inExpressionCountLimit: Int = 50000
-                                   ) {
+abstract class AbstractSQLDialect(
+  val timeStampFormatter: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSSS"),
+  val booleanFormatter: IBooleanFormatter = DefaultBooleanFormatter,
+  val typeMapper: ITypeMapper = DefaultTypeMapper,
+  val generateKeyParam: Any = 1,
+  val inExpressionCountLimit: Int = 50000,
+  val fetchSize: Option[Int] = None
+) {
   
   var quotingChar ='\''
 

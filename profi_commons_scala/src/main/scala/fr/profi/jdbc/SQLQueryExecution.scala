@@ -300,8 +300,10 @@ trait SQLQueryExecution {
     }
   }
 
-  def prepareStatementWrapper( sql: String,
-                               generateKeys: Boolean = false ): PreparedStatementWrapper = {
+  def prepareStatementWrapper(
+    sql: String,
+    generateKeys: Boolean = false
+  ): PreparedStatementWrapper = {
     
     val keysOption = if (generateKeys) RETURN_GENERATED_KEYS else NO_GENERATED_KEYS
     new PreparedStatementWrapper( connection.prepareStatement(sql, keysOption), dialect )
@@ -326,13 +328,14 @@ trait SQLQueryExecution {
   }
   
   def executeInBatch[T](sql: String)(block: (BatchStatementWrapper) => T): Array[Int] = {
-    this._usingBatch(sql)(block)    
+    this._usingBatch(sql)(block)
   }
 
   private def _selectIntoBuffer[T](
-                buffer: Option[ArrayBuffer[T]],
-                sql: String, params: Array[ISQLFormattable],
-                maxRecords: Int = 0 ) (block: (ResultSetRow) => T): Unit = {
+    buffer: Option[ArrayBuffer[T]],
+    sql: String, params: Array[ISQLFormattable],
+    maxRecords: Int = 0
+  ) (block: (ResultSetRow) => T): Unit = {
     
     this._usingStatement { statement =>
       val rs = statement.executeQuery(dialect.formatSeq(sql, params))
@@ -352,6 +355,11 @@ trait SQLQueryExecution {
   private def _usingStatement[T](block: (Statement) => T): T = {
     
     val statement = connection.createStatement
+    
+    // Set the fetch size if the dialect contains a defined value
+    for( fetchSize <- dialect.fetchSize ) {
+      statement.setFetchSize(fetchSize)
+    }
 
     try {
       block(statement)
