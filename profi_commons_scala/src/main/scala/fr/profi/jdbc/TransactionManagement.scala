@@ -25,16 +25,17 @@ trait TransactionManagement extends Logging {
 
     // Change the connection config to be ready for a new transaction
     this.connection.setAutoCommit(false)
-    // this.connection.setTransactionIsolation( this.txIsolationLevel.id )
 
     val oldTransactionIsolation = connection.getTransactionIsolation
     val newTransactionIsolation = txIsolationLevel.id
 
     if (oldTransactionIsolation != newTransactionIsolation) {
       logger.warn("Current TransactionIsolation level: " + oldTransactionIsolation + "  Unable to change to: " + newTransactionIsolation)
+      // txIsolationLevel is handled by the DatabaseConnectionContext
+      // TODO: find a way ton handle this here when a DatabaseConnectionContext is not used
+      // this.connection.setTransactionIsolation( this.txIsolationLevel.id )
     }
 
-    //this.inTransaction = true
     ()
   }
 
@@ -47,6 +48,7 @@ trait TransactionManagement extends Logging {
   def rollbackTransaction(): Unit = {
     this.connection.rollback()
     //this.inTransaction = false
+    this.connection.setAutoCommit(true)
   }
   def rollback() = rollbackTransaction()
 
@@ -58,7 +60,6 @@ trait TransactionManagement extends Logging {
   @throws(classOf[java.sql.SQLException])
   def commitTransaction(): Unit = {
     this.connection.commit()
-    //this.inTransaction = false
     this.connection.setAutoCommit(true)
   }
   def commit() = commitTransaction()

@@ -111,7 +111,7 @@ trait SQLQueryExecution {
    * @param block is a function converting the row to something else
    */
   def selectHeadOption[T](sql: String, params: ISQLFormattable*)(block: ResultSetRow => T): Option[T] = {
-    this._usingStatement { statement =>
+    this._usingSelectStatement { statement =>
       val rs = statement.executeQuery(dialect.formatSeq(sql, params.toArray))
       if( rs.next ) Some(block(ResultSetRow(rs)))
       else None
@@ -285,6 +285,60 @@ trait SQLQueryExecution {
   def selectDuration(sql: String, params: ISQLFormattable*): Duration = {
     selectHead(sql, params.toArray: _*)(row2Duration)
   }
+  
+  private def _selectIntoBuffer[T](
+    buffer: Option[ArrayBuffer[T]],
+    sql: String, params: Array[ISQLFormattable],
+    maxRecords: Int = 0
+  ) (block: (ResultSetRow) => T): Unit = {
+    
+    this._usingSelectStatement { statement =>
+      val rs = statement.executeQuery(dialect.formatSeq(sql, params))
+      val append = buffer.isDefined
+      
+      while (rs.next) {
+        val value = block(ResultSetRow(rs))
+        if (append) buffer.get.append(value)
+      }
+    }
+  }
+  
+  /**
+   * Creates a new statement executes the given block with it.
+   * The statement is automatically closed once the block has finished.
+   */
+  private def _usingSelectStatement[T](block: (Statement) => T): T = {
+    
+    // Save the current auto-commit status
+    val oldAutoCommit = connection.getAutoCommit()
+    
+    // Disable auto-commit if the fetchSize is specified
+    if( dialect.fetchSize.isDefined ) {
+      connection.setAutoCommit(false)
+    }
+    
+    // Create the JDBC statement
+    val statement = connection.createStatement
+    
+    // Set the fetch size if the dialect contains a defined value
+    for( fetchSize <- dialect.fetchSize ) {
+      statement.setFetchSize(fetchSize)
+      statement.getResultSetType()
+    }
+
+    // Try to execute the block with this statement
+    try {
+      block(statement)
+    } finally {
+      // Close the statement (this also closes the resultset)
+      statement.close()
+      
+      // Reset auto-commit to its previous status if the fetchSize is specified
+      if( dialect.fetchSize.isDefined && connection.getAutoCommit() != oldAutoCommit ) {
+        connection.setAutoCommit(oldAutoCommit)
+      }
+    }
+  }
 
   /**
    * Executes the given query and returns the number of affected records
@@ -294,9 +348,15 @@ trait SQLQueryExecution {
    * @return the number of affected records
    */
   def execute(sql: String, params: ISQLFormattable*): Int = {
-    this._usingStatement { statement =>
+    
+    val statement = connection.createStatement
+
+    try {
       val sqlString = dialect.formatSeq(sql, params.toArray)
       statement.executeUpdate( sqlString )
+    } finally {
+      // This also closes the resultset
+      statement.close()
     }
   }
 
@@ -331,50 +391,14 @@ trait SQLQueryExecution {
     this._usingBatch(sql)(block)
   }
 
-  private def _selectIntoBuffer[T](
-    buffer: Option[ArrayBuffer[T]],
-    sql: String, params: Array[ISQLFormattable],
-    maxRecords: Int = 0
-  ) (block: (ResultSetRow) => T): Unit = {
-    
-    this._usingStatement { statement =>
-      val rs = statement.executeQuery(dialect.formatSeq(sql, params))
-      val append = buffer.isDefined
-      
-      while (rs.next) {
-        val value = block(ResultSetRow(rs))
-        if (append) buffer.get.append(value)
-      }
-    }
-  }
-  
-  /**
-   * Creates a new statement executes the given block with it.
-   * The statement is automatically closed once the block has finished.
-   */
-  private def _usingStatement[T](block: (Statement) => T): T = {
-    
-    val statement = connection.createStatement
-    
-    // Set the fetch size if the dialect contains a defined value
-    for( fetchSize <- dialect.fetchSize ) {
-      statement.setFetchSize(fetchSize)
-    }
-
-    try {
-      block(statement)
-    } finally {
-      // This also closes the resultset
-      statement.close()
-    }
-  }
-
   /**
    * Prepares the sql query and executes the given block with it.
    * The statement is automatically closed once the block has finished.
    */
-  private def _usingPreparedStatement[T]( sql: String,
-                                          generateKeys: Boolean = false ) (block: (PreparedStatementWrapper) => T): T = {
+  private def _usingPreparedStatement[T](
+    sql: String,
+    generateKeys: Boolean = false
+  ) (block: (PreparedStatementWrapper) => T): T = {
     
     val statement = this.prepareStatementWrapper(sql,generateKeys)
     
