@@ -168,14 +168,6 @@ class ResultSetRow(val rs: ResultSet) extends IValueContainer {
     else value
   }
   
-  private def getObject[T](f: (Int) => T, defaultValue: T): T = {
-    _incrementPosition
-    
-    val value = f(_position)
-    
-    if (rs.wasNull) defaultValue
-    else value
-  }
 }
 
 object ResultSetRow {
