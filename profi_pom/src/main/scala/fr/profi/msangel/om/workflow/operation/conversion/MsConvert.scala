@@ -145,8 +145,8 @@ object MsConvert extends IFileConversionTool {
     /* Add custom TITLE maker filter using Proline convention **/
     if (fileConversion.useProlineRule) {
 
-      val splittedInputFileName = new File(inputFilePath).getName.split(".")
-      require(splittedInputFileName.length == 2, "incorrect input file name: "+new File(inputFilePath).getName)
+      val splittedInputFileName = new File(inputFilePath).getName.split("""\.""")
+      //require(splittedInputFileName.length == 2, "incorrect input file name: "+new File(inputFilePath).getName)
       val rawFileIdentifier = s"raw_file_identifier:${splittedInputFileName.head};"
 
       cmdLineBuffer += s"""--filter "titleMaker first_scan:<ScanNumber>;last_scan:<ScanNumber>;first_time:<ScanStartTimeInMinutes>;last_time:<ScanStartTimeInMinutes>;raw_precursor_moz:<SelectedIonMz>;${rawFileIdentifier}""""
