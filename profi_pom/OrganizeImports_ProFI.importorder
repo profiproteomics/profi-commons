@@ -1,11 +1,13 @@
 #Organize Import Order
-#Thu Jul 23 11:23:44 CEST 2015
-8=application
-7=fr
-6=com
-5=org
-4=reactivemongo
-3=play
-2=scala
-1=javax
+#Fri Jul 24 17:32:06 CEST 2015
+9=fr
+8=play
+7=reactivemongo
+6=org
+5=com
+4=scalafx
+3=scala
+2=javax
+10=application
+1=javafx
 0=java
