@@ -1,10 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <artifactId>ProFI-Pom</artifactId>
     <groupId>fr.proline</groupId>
-        <version>0.0.6</version>  <!-- Snapshot Trunk version -->
+    <version>0.0.6</version>  <!-- Snapshot Trunk version -->
   </parent>
 
   <groupId>fr.proline.util</groupId>
@@ -16,10 +17,9 @@
     <version.path>${basedir}/src/main/scala/fr/proline/util</version.path>
   </properties>
 
-	<scm>
-	  <connection>scm:svn:https://bioproj.extra.cea.fr/svn/proline/Common-Libs/ProFI-Commons-Scala/trunk</connection>
-	</scm>
-
+  <scm>
+    <connection>scm:svn:https://bioproj.extra.cea.fr/svn/proline/Common-Libs/ProFI-Commons-Scala/trunk</connection>
+  </scm>
 
   <dependencies>
 
@@ -74,7 +74,8 @@
       <groupId>com.lambdaworks</groupId>
       <artifactId>jacks_${scala.version}</artifactId>
       Version inherited from ProFI-Pom
-    </dependency> -->
+    </dependency>
+    -->
 
     <!-- ProFi Commons (Java) -->
     <dependency>
@@ -152,8 +153,8 @@
                   </pluginExecutionFilter>
                   <action>
                     <execute>
-                       <runOnIncremental>false</runOnIncremental>
-                     </execute>
+                      <runOnIncremental>false</runOnIncremental>
+                    </execute>
                   </action>
                 </pluginExecution>
 
@@ -178,30 +179,30 @@
         <executions>
           <execution>
             <phase>generate-sources</phase>
-              <goals>
-                <goal>replace</goal>
-              </goals>
-           </execution>
-         </executions>
+            <goals>
+              <goal>replace</goal>
+            </goals>
+          </execution>
+        </executions>
 
-         <configuration>
-           <file>${version.path}/ScalaVersion.scala.template</file>
-           <outputFile>${version.path}/ScalaVersion.scala</outputFile>
-           <replacements>
-             <replacement>
-               <token>@moduleName@</token>
-               <value>${project.artifactId}</value>
-             </replacement>
-             <replacement>
-               <token>@version@</token>
-               <value>${project.version}_${maven.build.timestamp}_${user.name}</value>
-             </replacement>
-           </replacements>
-         </configuration>
+        <configuration>
+          <file>${version.path}/ScalaVersion.scala.template</file>
+          <outputFile>${version.path}/ScalaVersion.scala</outputFile>
+          <replacements>
+            <replacement>
+              <token>@moduleName@</token>
+              <value>${project.artifactId}</value>
+            </replacement>
+            <replacement>
+              <token>@version@</token>
+              <value>${project.version}_${maven.build.timestamp}_${user.name}</value>
+            </replacement>
+          </replacements>
+        </configuration>
 
       </plugin>
 
-  <!-- Maven Release for branches and tags -->
+      <!-- Maven Release for branches and tags -->
       <plugin>
         <artifactId>maven-release-plugin</artifactId>
         <!-- Version inherited from parent POM -->
