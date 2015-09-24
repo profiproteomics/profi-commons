@@ -24,7 +24,7 @@
   </prerequisites>
 
   <scm>
-    <connection>scm:svn:https://bioproj.extra.cea.fr/svn/proline/ProFI-Pom/branches/0.1.0.a_Java8_Scala2.11</connection>
+    <connection>scm:svn:https://bioproj.extra.cea.fr/svn/proline/ProFI-Pom/trunk</connection>
   </scm>
 
   <dependencyManagement>
