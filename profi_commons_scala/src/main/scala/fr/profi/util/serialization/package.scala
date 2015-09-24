@@ -11,14 +11,13 @@ import com.fasterxml.jackson.core.Version
 import com.fasterxml.jackson.databind._
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer
-import com.fasterxml.jackson.databind.ser.std.ArraySerializerBase
 import com.fasterxml.jackson.databind.ser.std.NonTypedScalarSerializerBase
+import com.fasterxml.jackson.databind.ser.std.StdArraySerializers
 import com.fasterxml.jackson.databind.ser.ContainerSerializer
 import com.fasterxml.jackson.databind.`type`.TypeFactory
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.JsonScalaEnumeration
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
-
 
 package object serialization {
   
@@ -212,7 +211,16 @@ package object serialization {
   
   }
   
-  private[this] class CustomArrayOfDoubleSerializer() extends ArraySerializerBase[Array[Double]](classOf[Array[Double]], null) {
+  private[this] class CustomArrayOfDoubleSerializer() extends StdArraySerializers.DoubleArraySerializer {
+    override def serializeContents( values: Array[Double], jgen: JsonGenerator, provider: SerializerProvider ) {
+      for ( value <- values ) {
+        CustomDoubleSerializer.instance.serialize(value,jgen,provider)
+      }
+    }
+  }
+  
+  // Previous version (for jackson <= 2.3.5)
+  /*private[this] class CustomArrayOfDoubleSerializer() extends ArraySerializerBase[Array[Double]](classOf[Array[Double]], null) {
     
     override def _withValueTypeSerializer( vts: TypeSerializer): ContainerSerializer[_] = {
       this.asInstanceOf[ContainerSerializer[_]]
@@ -244,6 +252,6 @@ package object serialization {
       node
     }
     
-  }
+  }*/
 
 }

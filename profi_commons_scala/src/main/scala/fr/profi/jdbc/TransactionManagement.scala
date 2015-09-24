@@ -1,6 +1,6 @@
 package fr.profi.jdbc
 
-import com.typesafe.scalalogging.slf4j.Logging
+import com.typesafe.scalalogging.LazyLogging
 
 object TxIsolationLevels extends Enumeration {
   val NONE = Value(java.sql.Connection.TRANSACTION_NONE)
@@ -10,7 +10,7 @@ object TxIsolationLevels extends Enumeration {
   val SERIALIZABLE = Value(java.sql.Connection.TRANSACTION_SERIALIZABLE)
 }
 
-trait TransactionManagement extends Logging {
+trait TransactionManagement extends LazyLogging {
 
   protected val connection: java.sql.Connection
   protected val txIsolationLevel: TxIsolationLevels.Value

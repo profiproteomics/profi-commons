@@ -5,7 +5,7 @@
   <parent>
     <artifactId>ProFI-Pom</artifactId>
     <groupId>fr.proline</groupId>
-    <version>0.0.6</version>  <!-- Snapshot Trunk version -->
+    <version>0.1.0-SNAPSHOT</version>  <!-- Snapshot Trunk version -->
   </parent>
 
   <groupId>fr.proline.util</groupId>
@@ -22,6 +22,13 @@
   </scm>
 
   <dependencies>
+  
+    <!-- ProFi Commons (Java) -->
+    <dependency>
+      <groupId>fr.proline.util</groupId>
+      <artifactId>ProFI-Commons-Java</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
+    </dependency>
 
     <!-- Scala -->
     <dependency>
@@ -29,6 +36,13 @@
       <artifactId>scala-library</artifactId>
       <!-- Version inherited from ProFI-Pom -->
     </dependency>
+
+      <dependency>
+		<groupId>org.scala-lang.modules</groupId>
+  		<artifactId>scala-xml_${scala.version}</artifactId>
+        <!-- Version inherited from ProFI-Pom -->
+	 </dependency>
+
 
     <!-- Logging -->
     <dependency>
@@ -38,11 +52,12 @@
     </dependency>
 
     <dependency>
-      <groupId>com.typesafe</groupId>
-      <artifactId>scalalogging-slf4j_${scala.version}</artifactId>
-      <!-- Version inherited from ProFI-Pom -->
+      <groupId>com.typesafe.scala-logging</groupId>
+      <artifactId>scala-logging_${scala.version}</artifactId>
+      <!-- Version inherited from ProFI-Pom ${scala.version} -->
     </dependency>
 
+    <!-- Date and Time -->
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
@@ -56,7 +71,17 @@
       <!-- Version inherited from ProFI-Pom -->
     </dependency>
 
-    <!-- Serialization -->
+    <!-- JSON Serialization -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <!-- Version inherited from ProFI-Pom -->
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <!-- Version inherited from ProFI-Pom -->
+    </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.module</groupId>
       <artifactId>jackson-module-scala_${scala.version}</artifactId>
@@ -67,21 +92,7 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-math3</artifactId>
-      <version>3.4.1</version>
-    </dependency>
-    <!--
-    <dependency>
-      <groupId>com.lambdaworks</groupId>
-      <artifactId>jacks_${scala.version}</artifactId>
-      Version inherited from ProFI-Pom
-    </dependency>
-    -->
-
-    <!-- ProFi Commons (Java) -->
-    <dependency>
-      <groupId>fr.proline.util</groupId>
-      <artifactId>ProFI-Commons-Java</artifactId>
-      <version>0.1.0</version>
+      <!-- Version inherited from ProFI-Pom -->
     </dependency>
 
     <!-- Test -->
@@ -107,22 +118,22 @@
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <scope>test</scope>
       <!-- Version inherited from ProFI-Pom -->
+      <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
-      <scope>test</scope>
       <!-- Version inherited from ProFI-Pom -->
+      <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
       <!-- Version inherited from ProFI-Pom -->
+      <scope>test</scope>
     </dependency>
 
   </dependencies>
@@ -131,95 +142,39 @@
     <sourceDirectory>src/main/scala</sourceDirectory>
     <testSourceDirectory>src/test/scala</testSourceDirectory>
 
-    <pluginManagement>
-      <plugins>
-        <!-- For Eclipse build -->
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>com.google.code.maven-replacer-plugin</groupId>
-                    <artifactId>replacer</artifactId>
-                    <versionRange>[1.5.2,)</versionRange>
-                    <goals>
-                      <goal>replace</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <execute>
-                      <runOnIncremental>false</runOnIncremental>
-                    </execute>
-                  </action>
-                </pluginExecution>
-
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-
     <plugins>
+    
+      <!-- Scala build -->
       <plugin>
         <groupId>net.alchim31.maven</groupId>
         <artifactId>scala-maven-plugin</artifactId>
-        <!-- Version inherited from ProFI-Pom -->
+        <!-- Version and configuration inherited from ProFI-Pom -->
       </plugin>
 
+      <!-- Used to replace strings in text files (generate Version.java and Version.scala from templates) -->
       <plugin>
         <groupId>com.google.code.maven-replacer-plugin</groupId>
         <artifactId>replacer</artifactId>
+        <!-- Version inherited from ProFI-Pom -->
 
         <executions>
           <execution>
+            <id>scala-version-generation</id>
             <phase>generate-sources</phase>
-            <goals>
-              <goal>replace</goal>
-            </goals>
+            <!-- Execution and configuration inherited from ProFI-Pom -->
+            <configuration>
+              <skip>false</skip>
+            </configuration>
           </execution>
         </executions>
-
-        <configuration>
-          <file>${version.path}/ScalaVersion.scala.template</file>
-          <outputFile>${version.path}/ScalaVersion.scala</outputFile>
-          <replacements>
-            <replacement>
-              <token>@moduleName@</token>
-              <value>${project.artifactId}</value>
-            </replacement>
-            <replacement>
-              <token>@version@</token>
-              <value>${project.version}_${maven.build.timestamp}_${user.name}</value>
-            </replacement>
-          </replacements>
-        </configuration>
-
       </plugin>
 
       <!-- Maven Release for branches and tags -->
       <plugin>
         <artifactId>maven-release-plugin</artifactId>
-        <!-- Version inherited from parent POM -->
-        <configuration>
-          <providerImplementations>
-            <svn>javasvn</svn>
-          </providerImplementations>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>com.google.code.maven-scm-provider-svnjava</groupId>
-            <artifactId>maven-scm-provider-svnjava</artifactId>
-            <version>2.1.1</version>
-            <scope>compile</scope>
-          </dependency>
-        </dependencies>
+        <!-- Version and configuration inherited from parent POM -->
       </plugin>
+      
     </plugins>
   </build>
 

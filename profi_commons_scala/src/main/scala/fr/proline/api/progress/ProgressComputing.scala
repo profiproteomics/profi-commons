@@ -30,7 +30,7 @@ object ProgressExecutionProfiling {
     } ) toMap
   }
   
-  def logExecutionStatistics( logger: com.typesafe.scalalogging.slf4j.Logger ) {
+  def logExecutionStatistics( logger: com.typesafe.scalalogging.Logger ) {
     
     val execStats = this.getExecutionStatistics
     val sortedStepIdentities = execStats.keys.toList.sortBy(_.stepName)

@@ -138,7 +138,7 @@ class ProgressComputer[S <: IProgressPlanSequence]( val progressPlan: ProgressPl
     step
   }
   
-  def logExecutionStatistics( logger: com.typesafe.scalalogging.slf4j.Logger ) {
+  def logExecutionStatistics( logger: com.typesafe.scalalogging.Logger ) {
     for( step <- this.getSteps() ) {
       val execStats = step.getExecutionStatistics()
       logger.debug( s"execution stats in progress plan '${this.progressPlan.name}': " + execStats )

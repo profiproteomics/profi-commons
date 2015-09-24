@@ -2,15 +2,17 @@ package fr.proline.api.service
 
 import scala.collection.mutable.ArrayBuffer
 
-import com.typesafe.scalalogging.slf4j.Logging
+import com.typesafe.scalalogging.LazyLogging
 
 import fr.profi.util.ThreadLogger
 
-trait IService extends Runnable with HasProgress with Logging {
+trait IService extends Runnable with HasProgress with LazyLogging {
+  
+  var wasRun = false
 
   protected def beforeInterruption() = {}
 
-  def runService(): Boolean
+  protected def runService(): Boolean
 
   // Define a run method which implements the Thread interruption policy
   def run() {
@@ -38,7 +40,8 @@ trait IService extends Runnable with HasProgress with Logging {
       })
 
       try {
-        runService()
+        if( wasRun == false )
+          runService()
       } catch {
 
         case ie: InterruptedException => {
@@ -50,6 +53,8 @@ trait IService extends Runnable with HasProgress with Logging {
           throw ie
         }
 
+      } finally {
+        wasRun = true
       }
 
     } // End if (current thread not interrupted)
@@ -58,7 +63,7 @@ trait IService extends Runnable with HasProgress with Logging {
 
 }
 
-trait HasProgress extends Logging {
+trait HasProgress extends LazyLogging {
 
   case class Step()
 

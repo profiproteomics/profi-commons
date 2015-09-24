@@ -290,7 +290,6 @@ Pattern DOUBLE_PATTERN = Pattern.compile(
     override def getBytes(key: String): Array[Byte] = this(key).getBytes // may require some post-processing (Base64 decoding)
     override def getString(key: String): String = this(key)
     override def getAnyRef(key: String): AnyRef = this(key)
-    override def getAnyVal(key: String): AnyVal = this(key)
     
     override def getBytesOption(key: String): Option[Array[Byte]] = this.get(key).map( _.getBytes )
     override def getStringOption(key: String): Option[String] = this.get(key)

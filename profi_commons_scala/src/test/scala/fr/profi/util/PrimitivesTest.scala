@@ -65,11 +65,11 @@ class PrimitivesTest {
     assertEquals("Java Double Wrapper to AnyVal to Scala Double", dblValue, valToDouble(java.lang.Double.valueOf(dblValue)), JavaMathUtils.EPSILON_HIGH_PRECISION)
   }
 
-  def valToFloat(value: AnyVal): Float = {
+  def valToFloat(value: Any): Float = {
     toFloat(value)
   }
 
-  def valToDouble(value: AnyVal): Double = {
+  def valToDouble(value: Any): Double = {
     toDouble(value)
   }
   
