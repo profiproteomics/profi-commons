@@ -461,7 +461,7 @@
         <plugin>
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
-          <version>0.7.5.201505241946</version> <!-- Latest version checked on 28 July 2015 -->
+          <version>0.7.4.201502262128</version> <!-- Latest version checked on 28 July 2015. Do not use 0.7.5, not compatible with Jenkins Jacoco plugin -->
         </plugin>
 
       </plugins>
