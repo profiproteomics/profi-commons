@@ -89,6 +89,7 @@ package object operation {
     val webServiceCall: Option[WebServiceCall]
     
     def cloneMe(): IWorkflowOperation
+    
   }
 
   case class FileConversion(
@@ -97,7 +98,7 @@ package object operation {
     config: ConversionToolConfig,
     useProlineRule: Boolean = false, //TODO: move to config?
     outputDirectory: String,
-    overwriteOutputFile: Boolean = true,
+    @deprecated overwriteOutputFile: Boolean = true,
     emailNotification: Option[EMailNotification] = None,
     cmdLineExecution: Option[CmdLineExecution] = None,
     webServiceCall: Option[WebServiceCall] = None
@@ -108,8 +109,9 @@ package object operation {
     require(config != null, "Conversion tool config must be specified")
     require(outputDirectory != null && outputDirectory.isEmpty() == false, "Output directory must be specified")
     
+    /** Clone this FileConversion **/
     def cloneMe() = this.copy()
-
+    
     //TODO: move to right place
     def someProfilePeakPicking(): Boolean = {
       for (

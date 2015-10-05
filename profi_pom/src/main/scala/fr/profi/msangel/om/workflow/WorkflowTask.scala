@@ -19,6 +19,7 @@ case class WorkflowTask(
    *  Parameters
    */
   var id: Option[BSONObjectID] = None,
+  var number: Option[Int] = None,
   var inputFiles: Array[String] = Array(),
   var workflowJobIds : Array[String] = Array(),
   var msiTaskIds : Array[String] = Array(),
@@ -87,7 +88,7 @@ case class WorkflowTask(
     val successOrFail = status ==  TaskStatus.SUCCEEDED || status == TaskStatus.FAILED //TODO || status == WorkflowTaskStatus.DELETED)
 
     // If task is in RTM mode, it may not be finished though its status is SUCCEEDED or FAILED
-    if (this.isInRealTimeMonitoringMode()) {
+    if (this.isInRealTimeMonitoringMode) {
       if (this.areRtmEndingConditionsReached() == false) false
       else successOrFail
 
@@ -96,13 +97,15 @@ case class WorkflowTask(
     }
   }
   
+  def isPaused : Boolean = status == TaskStatus.PAUSED
+  
   /** Get workflow operation at given index */
   def getOperation( index: Int): IWorkflowOperation = {
     this.workflow.operations(index)
   }
 
   /** Compute if selected workflow operation is of type PeaklistIedntification */
-  def isOpeartionOfTypePeaklistIdentification(operation: IWorkflowOperation): Boolean = {
+  def isOperationOfTypePeaklistIdentification(operation: IWorkflowOperation): Boolean = {
     operation match {
       case pi: PeaklistIdentification => true
       case _                          => false
@@ -110,31 +113,39 @@ case class WorkflowTask(
   }
   
   def isOperationOfTypePeaklistIdentification(operationIndex: Int): Boolean = {
-    val operation = this.getOperation(operationIndex)
-    this.isOpeartionOfTypePeaklistIdentification(operation)
+    isOperationOfTypePeaklistIdentification( getOperation(operationIndex) )
   }
   
-  def isInRealTimeMonitoringMode(): Boolean = scheduleType == SchedulingType.REAL_TIME_MONITORING
+  def somePeaklistIdentification(): Boolean = {
+    this.workflow.operations.foreach ( operation =>
+      if (isOperationOfTypePeaklistIdentification(operation)) return true
+    )
+    false
+  }
+  
+  def isInRealTimeMonitoringMode: Boolean = scheduleType == SchedulingType.REAL_TIME_MONITORING
 
   /** If scheduling type is real-time monitoring, compute if ending conditions are reached */
   def areRtmEndingConditionsReached(): Boolean = {
-    require(isInRealTimeMonitoringMode(), "Workflow task's scheduling mode is not of type 'Real-time monitoring'.")
+
+    require(isInRealTimeMonitoringMode, "Workflow task's scheduling mode is not of type 'Real-time monitoring'.")
     require(fileMonitoringConfig.isDefined, "File monitoring configuration is not defined.")
 
     val config = fileMonitoringConfig.get
 
     // Return true if ANY OF ending conditions is reached
-    import fr.profi.msangel.om.dateTimeOrdering
 
-    // Max date has passed
-    if (config.maxDate.isDefined
+    // Max date is over
+    if (
+      config.maxDate.isDefined
       && DateTime.now().isAfter(config.maxDate.get)
     ) return true
 
     // Max file count is reached
+    import fr.profi.msangel.om.dateTimeOrdering
     if (
       config.maxFileCount.isDefined
-      && inputFiles.length >= config.maxFileCount.get
+      && inputFiles.length >= config.maxFileCount.get //FIXME: as many registered as needed. Should be as many complete !
     ) return true
     
     //Max interval between acquisitions overheaded

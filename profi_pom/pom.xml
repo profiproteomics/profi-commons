@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -11,20 +10,13 @@
 
   <groupId>fr.profi</groupId>
   <artifactId>MSAngel-OM</artifactId>
-  <version>0.2.0</version>
+  <version>0.3.0-SNAPSHOT</version>
   <name>${project.artifactId}</name>
   <description>Object Model for MSAngel-GUI and its server PWX-MSAngel</description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-
-  <!-- <repositories> TypeSafe <repository> <id>Typesafe Repository</id> 
-    <url>http://repo.typesafe.com/typesafe/releases/</url> </repository> <repository> 
-    <id>Typesafe Snapshots</id> <url>http://repo.typesafe.com/typesafe/snapshots/</url> 
-    </repository> Sonatype OSS Snapshots <repository> <id>Sonatype OSS Snapshots</id> 
-    <url>https://oss.sonatype.org/content/repositories/snapshots</url> </repository> 
-    </repositories> -->
 
   <dependencies>
 
@@ -42,34 +34,6 @@
       <!-- Version inherited from ProFI-Pom -->
     </dependency>
     
-    <!-- Reactivemongo BSON -->
-    <dependency>
-      <groupId>org.reactivemongo</groupId>
-      <artifactId>reactivemongo-bson_2.10</artifactId>
-      <version>0.10.0</version>
-    </dependency>
-
-    <!-- Play! JSON -->
-    <dependency>
-      <groupId>com.typesafe.play</groupId>
-      <artifactId>play-json_2.10</artifactId>
-      <version>2.2.3</version>
-    </dependency>
-    
-    <!-- Play! JSON variants (add support for traits serialization) -->
-    <dependency>
-      <groupId>org.julienrf</groupId>
-      <artifactId>play-json-variants_2.10</artifactId>
-      <version>1.0.1</version>
-    </dependency>
-
-  <!-- Play! WS -->
-  <!-- <dependency> -->
-  <!-- <groupId>com.typesafe.play</groupId> -->
-  <!-- <artifactId>play-ws_2.10</artifactId> -->
-  <!-- <version>2.3.1</version> -->
-  <!-- </dependency> -->
-
     <!-- Logging -->
     <dependency>
       <groupId>ch.qos.logback</groupId>
@@ -80,6 +44,34 @@
       <groupId>com.typesafe</groupId>
       <artifactId>scalalogging-slf4j_2.10</artifactId>
       <!-- Version inherited from ProFI-Pom -->
+    </dependency>
+    
+    <!-- Reactivemongo BSON -->
+    <dependency>
+      <groupId>org.reactivemongo</groupId>
+      <artifactId>reactivemongo-bson_2.10</artifactId>
+      <version>0.11.3</version>
+    </dependency>
+
+    <!-- Play! JSON -->
+    <dependency>
+      <groupId>com.typesafe.play</groupId>
+      <artifactId>play-json_2.10</artifactId>
+      <version>2.3.10</version>
+    </dependency>
+    
+    <!-- Play! JSON variants (add support for traits serialization) -->
+    <dependency>
+      <groupId>org.julienrf</groupId>
+      <artifactId>play-json-variants_2.10</artifactId>
+      <version>1.1.0</version>
+    </dependency>
+
+    <!-- ProFi Commons -->
+    <dependency>
+      <groupId>fr.proline.util</groupId>
+      <artifactId>ProFI-Commons-Scala</artifactId>
+      <version>0.3.0-SNAPSHOT</version>
     </dependency>
 
     <!-- Tests -->

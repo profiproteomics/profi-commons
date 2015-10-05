@@ -1,15 +1,17 @@
 package fr.profi.msangel
 
-import scala.util.Try
 import org.joda.time.DateTime
+
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
+
+import reactivemongo.bson.BSONObjectID
+
 import fr.profi.msangel.om.msi._
 import fr.profi.msangel.om.workflow._
 import fr.profi.msangel.om.workflow.operation._
 import fr.profi.pwx.util.json.PWXJson
-import reactivemongo.bson.BSONObjectID
-import reactivemongo.bson.BSONValue
+import fr.profi.util.lang.EnhancedEnum
 
 package object om {
 
@@ -33,26 +35,9 @@ package object om {
   /**
    *  Automatically parse Enumeration values from/to Json.
    */
-  trait JsonEnumeration extends Enumeration {
+  trait JsonEnumeration extends EnhancedEnum {
     implicit val enumReads: Reads[this.Value] = EnumUtils.enumReads(this)
     implicit def enumWrites: Writes[this.Value] = EnumUtils.enumWrites
-
-    /** Compute if enumeration contains given key */
-    //TODO : at Enumeration level
-    def contains(test: String): Boolean = {
-      try {
-        this.withName(test)
-        true
-      } catch {
-        case t: Throwable => false
-      }
-    }
-
-    def contains(key: this.Value): Boolean = {
-      this.values.contains(key)
-    }
-    
-    implicit def enum2string(enumValue: this.Value): String = enumValue.toString()
   }
 
   /**

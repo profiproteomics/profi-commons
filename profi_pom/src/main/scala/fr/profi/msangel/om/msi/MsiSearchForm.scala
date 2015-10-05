@@ -19,7 +19,7 @@ case class MsiSearchForm(
 
   /** Parameters */
   var id: Option[BSONObjectID] = None,
-  val targetURL: String, //TODO: move to MsiTask? (replace by isFake)
+  //val targetURL: String,
   val searchEngine: SearchEngine.Value,
   val paramMap: JsObject,
   val isTemplate: Boolean = false,
@@ -32,8 +32,8 @@ case class MsiSearchForm(
   //extends IMsiObject {
 
   /** Requirements */
-  require(targetURL != null, "targetURL must not be null.")
-  require(targetURL.isEmpty() == false, "targetURL must not be empty.")
+  //require(targetURL != null, "targetURL must not be null.")
+  //require(targetURL.isEmpty() == false, "targetURL must not be empty.")
   require(searchEngine != null, "Search engine must not be null")
   require(paramMap != null, "Some paramMap must be provided")
 
@@ -99,8 +99,18 @@ MS/MS IONS SEARCH : false
 object DefaultMascotSearchForm {
   def apply() = {
     MsiSearchForm(
-      targetURL = "http://www.matrixscience.com/cgi",
+      //targetURL = "http://www.matrixscience.com/cgi",
       searchEngine = SearchEngine.MASCOT,
+      paramMap = Json.obj(),
+      isTemplate = true
+    )
+  }
+}
+
+object DefaultOmssaSearchForm {
+  def apply() = {
+    MsiSearchForm(
+      searchEngine = SearchEngine.OMSSA,
       paramMap = Json.obj(),
       isTemplate = true
     )

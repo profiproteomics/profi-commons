@@ -12,6 +12,8 @@ case class MSAngelServerConfig(
   var extractmsnPath: Option[String] = None,
   var raw2mzdbPath: Option[String] = None,
   var mzdbaccessPath: Option[String] = None,
+  
+  var mascotUrl: Option[String] = None,
 
   var mascotMountPoint: Option[String] = None,
   var omssaMountPoint: Option[String] = None
@@ -24,6 +26,8 @@ case class MSAngelServerConfig(
   require(raw2mzdbPath != null, "raw2mzdbPath must not be null")
   require(mzdbaccessPath != null, "mzdbaccessPath must not be null")
 
+  require(mascotUrl!= null, "Mascot URL must not be null")
+  
   require(mascotMountPoint != null, "mascotMountPoint must not be null")
   require(omssaMountPoint != null, "omssaMountPoint must not be null")
 }

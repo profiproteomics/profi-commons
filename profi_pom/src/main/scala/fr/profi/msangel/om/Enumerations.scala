@@ -1,6 +1,7 @@
 package fr.profi.msangel.om
 
 import scala.collection.immutable.HashMap
+import fr.profi.util.lang.EnhancedEnum
 
 /**
  * Enumerates accepted statuses for WorkflowTask and MsiTask objects.
@@ -69,6 +70,7 @@ object MsiTaskStatus extends TaskStatus {
 object WorkflowJobStatus extends JsonEnumeration {
   val CREATED = Value("created")
   val RUNNING = Value("running")
+  val PAUSED = Value("paused")
 
   val FAILED = Value("failed")
   val SUCCEEDED = Value("succeeded")
@@ -156,20 +158,9 @@ object FileConversionTool extends JsonEnumeration {
  */
 object DataFileExtension extends JsonEnumeration {
 
-  val RAW = Value("RAW")
-  val WIFF = Value("WIFF")
-  val TOFTOF = Value("TOFTOF")
-  val MZDB = Value("MZDB")
-  val MGF = Value("MGF")
+  val RAW, WIFF, TOFTOF, MZDB, MGF = Value
 
-  val MZML = Value("MZML")
-  val MZXML = Value("MZXML")
-  val MZ5 = Value("MZ5")
-  val TEXT = Value("TEXT")
-  val MS1 = Value("MS1")
-  val CMS1 = Value("CMS1")
-  val MS2 = Value("MS2")
-  val CMS2 = Value("CMS2")
+  val MZML, MZXML, MZ5, TEXT, MS1, CMS1, MS2, CMS2 = Value
 
   val rankedExtensions: Seq[(Int, this.Value)] = Seq(
     (1, this.RAW),
@@ -232,73 +223,128 @@ object MascotSearchParam extends Enumeration {
 
   def printAll() { println(scala.runtime.ScalaRunTime.stringOf(values)) }
 
-  val ACCESSION = Value("ACCESSION")
-  val CHARGE = Value("CHARGE")
-  val CLE = Value("CLE")
-  val COM = Value("COM")
-  val COMP = Value("COMP")
-  val CUTOUT = Value("CUTOUT")
-  val DB = Value("DB")
-  val DECOY = Value("DECOY")
-  val ERRORTOLERANT = Value("ERRORTOLERANT")
-  val ErrTolRepeat = Value("ErrTolRepeat")
-  val ETAG = Value("ETAG")
-  val FILE = Value("FILE")
-  val FORMAT = Value("FORMAT")
-  val FORMVER = Value("FORMVER")
-  val FRAMES = Value("FRAMES")
-  val INSTRUMENT = Value("INSTRUMENT")
-  val INTERMEDIATE = Value("INTERMEDIATE")
-  val IT_MODS = Value("IT_MODS")
-  val ITOL = Value("ITOL")
-  val ITOLU = Value("ITOLU")
-  val LOCUS = Value("LOCUS")
-  val MASS = Value("MASS")
-  val MODS = Value("MODS")
-  val MULTI_SITE_MODS = Value("MULTI_SITE_MODS")
-  val PEAK = Value("PEAK")
-  val PEP_ISOTOPE_ERROR = Value("PEP_ISOTOPE_ERROR")
-  val PEPMASS = Value("PEPMASS")
-  val PFA = Value("PFA")
-  val PRECURSOR = Value("PRECURSOR")
-  val QUANTITATION = Value("QUANTITATION")
-  val QUE = Value("QUE")
-  val QUERYLIST = Value("QUERYLIST")
-  val RAWFILE = Value("RAWFILE")
-  val RAWSCANS = Value("RAWSCANS")
-  val REPORT = Value("REPORT")
-  val REPTYPE = Value("REPTYPE")
-  val RTINSECONDS = Value("RTINSECONDS")
-  val SCANS = Value("SCANS")
-  val SEARCH = Value("SEARCH")
-  val SEG = Value("SEG")
-  val SEQ = Value("SEQ")
-  val TAG = Value("TAG")
-  val TAXONOMY = Value("TAXONOMY")
-  val TITLE = Value("TITLE")
-  val TOL = Value("TOL")
-  val TOLU = Value("TOLU")
-  val USER00 = Value("USER00")
-  val USER01 = Value("USER01")
-  val USER02 = Value("USER02")
-  val USER03 = Value("USER03")
-  val USER04 = Value("USER04")
-  val USER05 = Value("USER05")
-  val USER06 = Value("USER06")
-  val USER07 = Value("USER07")
-  val USER08 = Value("USER08")
-  val USER09 = Value("USER09")
-  val USER10 = Value("USER10")
-  val USER11 = Value("USER11")
-  val USER12 = Value("USER12")
-  val USEREMAIL = Value("USEREMAIL")
-  val USERNAME = Value("USERNAME")
+  val ACCESSION = Value
+  val CHARGE = Value
+  val CLE = Value
+  val COM = Value
+  val COMP = Value
+  val CUTOUT = Value
+  val DB = Value
+  val DECOY = Value
+  val ERRORTOLERANT = Value
+  val ErrTolRepeat = Value
+  val ETAG = Value
+  val FILE = Value
+  val FORMAT = Value
+  val FORMVER = Value
+  val FRAMES = Value
+  val INSTRUMENT = Value
+  val INTERMEDIATE = Value
+  val IT_MODS = Value
+  val ITOL = Value
+  val ITOLU = Value
+  val LOCUS = Value
+  val MASS = Value
+  val MODS = Value
+  val MULTI_SITE_MODS = Value
+  val PEAK = Value
+  val PEP_ISOTOPE_ERROR = Value
+  val PEPMASS = Value
+  val PFA = Value
+  val PRECURSOR = Value
+  val QUANTITATION = Value
+  val QUE = Value
+  val QUERYLIST = Value
+  val RAWFILE = Value
+  val RAWSCANS = Value
+  val REPORT = Value
+  val REPTYPE = Value
+  val RTINSECONDS = Value
+  val SCANS = Value
+  val SEARCH = Value
+  val SEG = Value
+  val SEQ = Value
+  val TAG = Value
+  val TAXONOMY = Value
+  val TITLE = Value
+  val TOL = Value
+  val TOLU = Value
+  val USER00 = Value
+  val USER01 = Value
+  val USER02 = Value
+  val USER03 = Value
+  val USER04 = Value
+  val USER05 = Value
+  val USER06 = Value
+  val USER07 = Value
+  val USER08 = Value
+  val USER09 = Value
+  val USER10 = Value
+  val USER11 = Value
+  val USER12 = Value
+  val USEREMAIL = Value
+  val USERNAME = Value
+}
+
+/**
+ * Enumerates accepted Mascot search parameters.
+ */
+object OmssaSearchParam extends EnhancedEnum {
+
+  def printAll() { println(scala.runtime.ScalaRunTime.stringOf(values)) }
+
+  val INPUT_FILES = Value("input_files")
+  val OUTPUT_FILES = Value("output_files")
+  val PRECURSOR_SEARCH_TYPE = Value("precursor_search_type")
+  val PRODUCT_SEARCH_TYPE = Value("product_search_type")
+  val IONS_TO_SEARCH = Value("ions_to_search")
+  val PRECURSOR_TOLERANCE = Value("precursor_tolerance")
+  val PRECURSOR_TOLERANCE_UNIT = Value("precursor_tolerance_unit")
+  val PRODUCT_TOLERANCE = Value("product_tolerance")
+  val ZDEP = Value("zdep")
+  val CUTOFF = Value("cutoff")
+  val CUTLO = Value("cutlo")
+  val SINGLE_WIN = Value("single_win")
+  val DOUBLE_WIN = Value("double_win")
+  val SINGLE_NUM = Value("single_num")
+  val DOUBLE_NUM = Value("double_num")
+  val FIXED_PTMS = Value("fixed_ptms")
+  val VARIABLE_PTMS = Value("variable_ptms")
+  val ENZYME = Value("enzyme")
+  val MISSED_CLEAVAGE = Value("missed_cleavage")
+  val MIN_NO_ENZYME = Value("min_no_enzyme")
+  val MAX_NO_ENZYME = Value("max_no_enzyme")
+  val HIT_LIST_LEN = Value("hit_list_len")
+  val DATABASE = Value("database")
+  val TOP_HIT_NUM = Value("top_hit_num")
+  val MIN_SPECTRA = Value("min_spectra")
+  val MAX_MODS = Value("max_mods")
+  val CHARGE_HANDLING = Value("charge_handling")
+  val CALC_PLUS_ONE = Value("calc_plus_one")
+  val CALC_CHARGE = Value("calc_charge")
+  val MIN_CHARGE = Value("min_charge")
+  val MAX_CHARGE = Value("max_charge")
+  val CONSIDER_MULT = Value("consider_mult")
+  val PLUS_ONE = Value("plus_one")
+  val MAX_PRODUCT_CHARGE = Value("max_product_charge")
+  val SEARCH_B1 = Value("search_b1")
+  val SEARCH_CTERM = Value("search_cterm")
+  val MAX_PRODUCTIONS = Value("max_productions")
+  val EXACT_MASS = Value("exact_mass")
+  val RESEARCH_THRESH = Value("research_thresh")
+  val PRECURSOR_CULL = Value("precursor_cull")
+  val NO_CORRELATION_SCORE = Value("no_correlation_score")
+  val PROB_FOLLOWING_ION = Value("prob_following_ion")
+  val N_METHIONINE = Value("n_methionine")
+  val NUM_ISOTOPES = Value("num_isotopes")
+  val REPORTED_HIT_COUNT = Value("reported_hit_count")
+
 }
 
 /**
  * Enumerates accepted tags in a search form.
  */
-object SearchFormTag extends Enumeration {
+object SearchFormTag extends EnhancedEnum {
   val PROLINE_PROJECT = Value("<proline_project>")
   val PROLINE_USER = Value("<proline_user>")
   val TASK_NAME = Value("<task_name>")
