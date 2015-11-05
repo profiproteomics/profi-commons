@@ -97,7 +97,7 @@
       <dependency>
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-entitymanager</artifactId>
-        <version>4.3.11.Final</version> <!-- Latest 4.2.x version (JPA 2.0) on 10 june 2014 ; TODO upgrade to 4.3.10 or 5.x -->
+        <version>4.3.11.Final-Patched</version> <!-- Latest 4.2.x version (JPA 2.0) on 10 june 2014 ; TODO upgrade to 4.3.10 or 5.x -->
       </dependency>
 
       <!-- C3p0 Pool for Hibernate (same version as hibernate-entitymanager dependency) -->
