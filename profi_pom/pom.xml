@@ -169,6 +169,13 @@
         <groupId>org.postgresql</groupId>
         <artifactId>postgresql</artifactId>
         <version>9.4-1200-jdbc41</version> <!-- Latest checked on 03 September 2015 -->
+        <!-- Exclude slf4j-simple which the implementation used by logback-classic dependency -->
+        <exclusions>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
@@ -255,23 +262,23 @@
               <javacArg>-Xlint:deprecation</javacArg>
             </javacArgs>
           </configuration>
-		   <executions>
-        <execution>
-            <id>scala-compile-first</id>
-            <phase>process-resources</phase>
-            <goals>
+          <executions>
+            <execution>
+              <id>scala-compile-first</id>
+              <phase>process-resources</phase>
+              <goals>
                 <goal>add-source</goal>
                 <goal>compile</goal>
-            </goals>
-        </execution>
-        <execution>
-            <id>scala-test-compile</id>
-            <phase>process-test-resources</phase>
-            <goals>
+              </goals>
+            </execution>
+            <execution>
+              <id>scala-test-compile</id>
+              <phase>process-test-resources</phase>
+              <goals>
                 <goal>testCompile</goal>
-            </goals>
-        </execution>
-    </executions>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
 
         <!-- For Eclipse build -->
