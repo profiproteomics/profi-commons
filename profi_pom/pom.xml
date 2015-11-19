@@ -5,7 +5,7 @@
   <parent>
     <artifactId>ProFI-Pom</artifactId>
     <groupId>fr.proline</groupId>
-    <version>0.0.6</version> <!-- Snapshot Trunk version -->
+    <version>0.1.0-SNAPSHOT</version> <!-- Snapshot Trunk version -->
   </parent>
 
   <groupId>fr.profi</groupId>
@@ -40,31 +40,41 @@
       <artifactId>logback-classic</artifactId>
       <!-- Compile scope (Proline-Admin can be used as a stand-alone program) -->
     </dependency>
-    <dependency>
-      <groupId>com.typesafe</groupId>
-      <artifactId>scalalogging-slf4j_2.10</artifactId>
-      <!-- Version inherited from ProFI-Pom -->
-    </dependency>
+    
+    <!-- <dependency> -->
+    <!--   <groupId>com.typesafe</groupId> -->
+    <!--   <artifactId>scalalogging-slf4j_2.10</artifactId> -->
+    <!-- Version inherited from ProFI-Pom -->
+    <!-- </dependency> -->
     
     <!-- Reactivemongo BSON -->
     <dependency>
       <groupId>org.reactivemongo</groupId>
-      <artifactId>reactivemongo-bson_2.10</artifactId>
+      <artifactId>reactivemongo-bson_2.11</artifactId>
       <version>0.11.3</version>
     </dependency>
 
     <!-- Play! JSON -->
     <dependency>
       <groupId>com.typesafe.play</groupId>
-      <artifactId>play-json_2.10</artifactId>
+      <artifactId>play-json_2.11</artifactId>
       <version>2.3.10</version>
+      
+      <!-- Exclude slf4j which is an older version than the logback dependency -->
+      <exclusions>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-annotations</artifactId>          
+        </exclusion>
+      </exclusions>
+      
     </dependency>
     
     <!-- Play! JSON variants (add support for traits serialization) -->
     <dependency>
       <groupId>org.julienrf</groupId>
-      <artifactId>play-json-variants_2.10</artifactId>
-      <version>1.1.0</version>
+      <artifactId>play-json-variants_2.11</artifactId>
+      <version>1.1.0</version> <!-- 2.0 -->
     </dependency>
 
     <!-- ProFi Commons -->

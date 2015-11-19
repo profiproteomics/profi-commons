@@ -1,6 +1,6 @@
 package fr.profi.msangel.om.workflow.operation
 
-import com.typesafe.scalalogging.slf4j.Logging
+import com.typesafe.scalalogging.LazyLogging
 
 import play.api.libs.json._
 
@@ -150,7 +150,6 @@ object MacroParam {
         new MacroStringParam(name, isRequired, cmdFlag, value.map(_.as[String]), default.map(_.as[String]), options.map(_.as[Seq[String]]))
       }
       case MacroParamType.RANGE => {
-        //new MacroRangeParam(name, isRequired, cmdFlag, value.map(_.as[Range]), default.map(_.as[Range]))
         new MacroRangeParam(name, isRequired, cmdFlag, value.map(_.as[BigDecimalRange]), default.map(_.as[BigDecimalRange]))
       }
       case MacroParamType.CHOICE => {
@@ -347,7 +346,7 @@ case class MacroRangeParam(
   //  val default: Option[Range] = None
   var value: Option[BigDecimalRange] = None,
   val default: Option[BigDecimalRange] = None
-) extends MacroParam with Logging {
+) extends MacroParam with LazyLogging {
 
   val paramType = MacroParamType.RANGE
   val options = None
@@ -381,7 +380,7 @@ case class MacroChoiceParam(
   var value: Option[MacroChoiceParamItem] = None,
   val default: Option[MacroChoiceParamItem] = None,
   val options: Option[Seq[MacroChoiceParamItem]]
-) extends MacroParam with Logging {
+) extends MacroParam with LazyLogging {
 
   val paramType = MacroParamType.CHOICE //only used for filters
   val isRequired: Boolean = false
@@ -411,7 +410,7 @@ case class MacroSelectionParam(
   var value: Option[MacroChoiceParamItem] = None,
   val default: Option[MacroChoiceParamItem] = None,
   val options: Option[Seq[MacroChoiceParamItem]]
-) extends MacroParam with Logging {
+) extends MacroParam with LazyLogging {
 
   val paramType = MacroParamType.SELECTION //only used for filters
   val isRequired: Boolean = false

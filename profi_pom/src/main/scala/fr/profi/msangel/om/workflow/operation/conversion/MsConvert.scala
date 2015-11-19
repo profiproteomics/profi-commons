@@ -106,19 +106,22 @@ object MsConvert extends IFileConversionTool {
 
     val cmdLineBuffer = new ArrayBuffer[String]()
 
+    val inputFileName = new File(inputFilePath).getName
+
     /* Executable **/
     cmdLineBuffer += s""""${conversionToolPath}"""" //msconvert.exe path
 
     /* RAW input file **/
     require(inputFilePath matches """(?i).+\.raw""", "MSConvert only accepts RAW input files") //move?
     cmdLineBuffer += s""""$inputFilePath"""" //input file path
+    
 
     /* Output directory and format **/
     cmdLineBuffer += s"""-o "${fileConversion.outputDirectory}""""
     cmdLineBuffer += s"""${_getOutputFormatCmdFlag(fileConversion.outputFileFormat)}"""
     
-    /* Force output file name: "inputFilePath.outputFormat" */
-    cmdLineBuffer += s"""--outfile "$inputFilePath.${DataFileExtension.getPrettyName(fileConversion.outputFileFormat)}""""
+    /* Force output file name: "inputFileNAME.outputFormat" */
+    cmdLineBuffer += s"""--outfile "$inputFileName.${DataFileExtension.getPrettyName(fileConversion.outputFileFormat)}""""
 
     /* Additional conversion parameters **/
     fileConversion.config.params.withFilter(_.value.isDefined).foreach { param =>
@@ -145,7 +148,7 @@ object MsConvert extends IFileConversionTool {
     /* Add custom TITLE maker filter using Proline convention **/
     if (fileConversion.useProlineRule) {
 
-      val splittedInputFileName = new File(inputFilePath).getName.split("""\.""")
+      val splittedInputFileName = inputFileName.split("""\.""")
       //require(splittedInputFileName.length == 2, "incorrect input file name: "+new File(inputFilePath).getName)
       val rawFileIdentifier = s"raw_file_identifier:${splittedInputFileName.head};"
 
