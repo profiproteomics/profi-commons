@@ -18,6 +18,8 @@ object TaskStatus extends JsonEnumeration {
   val RUNNING = Value("running")
   val PAUSED = Value("paused")
 
+  val MONITORING_ERROR = Value("monitoring_error")
+
   val DELETED = Value("deleted") //TODO: by owner only. Change into "killed"?
   val FAILED = Value("failed")
   val SUCCEEDED = Value("succeeded")
@@ -71,6 +73,8 @@ object WorkflowJobStatus extends JsonEnumeration {
   val CREATED = Value("created")
   val RUNNING = Value("running")
   val PAUSED = Value("paused")
+  
+  val MONITORING_ERROR = Value("monitoring_error")
 
   val FAILED = Value("failed")
   val SUCCEEDED = Value("succeeded")
@@ -89,6 +93,7 @@ object MsiSearchStatus extends JsonEnumeration {
   val RUNNING = Value("running")
   val PAUSED = Value("paused")
 
+  val MONITORING_ERROR = Value("monitoring_error")
   //  val IMPORTING = Value("importing") //into Proline. TODO : rename?
 
   val FAILED = Value("failed")

@@ -41,12 +41,6 @@
       <!-- Compile scope (Proline-Admin can be used as a stand-alone program) -->
     </dependency>
     
-    <!-- <dependency> -->
-    <!--   <groupId>com.typesafe</groupId> -->
-    <!--   <artifactId>scalalogging-slf4j_2.10</artifactId> -->
-    <!-- Version inherited from ProFI-Pom -->
-    <!-- </dependency> -->
-    
     <!-- Reactivemongo BSON -->
     <dependency>
       <groupId>org.reactivemongo</groupId>
@@ -60,12 +54,19 @@
       <artifactId>play-json_2.11</artifactId>
       <version>2.3.10</version>
       
-      <!-- Exclude slf4j which is an older version than the logback dependency -->
+      <!-- Exclude jackson-annotations (older version) -->
       <exclusions>
         <exclusion>
           <groupId>com.fasterxml.jackson.core</groupId>
           <artifactId>jackson-annotations</artifactId>          
         </exclusion>
+        
+        <!-- Exclude slf4j which is an older version than the logback dependency -->
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+        
       </exclusions>
       
     </dependency>
