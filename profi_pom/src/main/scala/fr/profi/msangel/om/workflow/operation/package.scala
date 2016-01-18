@@ -98,7 +98,7 @@ package object operation {
     config: ConversionToolConfig,
     useProlineRule: Boolean = false, //TODO: move to config?
     outputDirectory: String,
-    @deprecated overwriteOutputFile: Boolean = true,
+    @deprecated("0.5.0","don't use this option, it should be always true and it will be removed in the future") overwriteOutputFile: Boolean = true,
     emailNotification: Option[EMailNotification] = None,
     cmdLineExecution: Option[CmdLineExecution] = None,
     webServiceCall: Option[WebServiceCall] = None

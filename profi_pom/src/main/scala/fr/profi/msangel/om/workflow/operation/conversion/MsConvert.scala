@@ -15,7 +15,7 @@ object MsConvert extends IFileConversionTool {
   def getName(): FileConversionTool.Value = FileConversionTool.MSCONVERT
   val successExitValue = 0
   val canExecuteProlineParsingRule = true
-  val associatedPeaklistSoftware = DefaultPeaklistSoftware.PROTEO_WIZARD_3_0
+  val associatedPeaklistSoftware = Some(DefaultPeaklistSoftware.PROTEO_WIZARD_3_0)
 
   
   /**
@@ -90,7 +90,7 @@ object MsConvert extends IFileConversionTool {
     //    println("containsExe: " + containsExe)
     //    println("exeAtPath: " + exeAtPath)
 
-    if (containsExe && exeExistsAtPath) true else false
+    containsExe && exeExistsAtPath
     //    require(containsExe, "Exe path must finish by msconvert.exe") //? can be renamed...
     //    require(exeAtPath, "msconvert.exe can't be found at specified path")
   }

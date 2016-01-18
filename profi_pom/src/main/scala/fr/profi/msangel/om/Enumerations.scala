@@ -163,16 +163,16 @@ object FileConversionTool extends JsonEnumeration {
  */
 object DataFileExtension extends JsonEnumeration {
 
-  val RAW, WIFF, TOFTOF, MZDB, MGF = Value
-
-  val MZML, MZXML, MZ5, TEXT, MS1, CMS1, MS2, CMS2 = Value
+  val D, CMS1, CMS2, MGF, MS1, MS2, MZ5, MZDB, MZML, MZXML, RAW, TEXT, TOFTOF, WIFF = Value
 
   val rankedExtensions: Seq[(Int, this.Value)] = Seq(
-    (1, this.RAW),
-    (1, this.WIFF),
-    (2, this.MZDB),
-    (3, this.MGF),
+    (1, this.RAW),  // Thermo
+    (1, this.WIFF), // AbSciex
+    (1, this.D),    // Bruker
 
+    (2, this.MZDB), // DBO
+    
+    (3, this.MGF),  // MatrixScience
     (3, this.MZML),
     (3, this.MZXML),
     (3, this.MZ5),
@@ -187,18 +187,20 @@ object DataFileExtension extends JsonEnumeration {
 
   def getLowerExtensions(initExt: this.Value) = {
     val initRank = _getInitRank(initExt)
-    rankedExtensions.filter { f => f._1 <= initRank && f._2 != initExt }.map(_._2)
+    rankedExtensions.filter { f => f._1 < initRank && f._2 != initExt }.map(_._2)
   }
-  def getUpperExtensions(initExt: this.Value) = {
+  def getGreaterExtensions(initExt: this.Value) = {
     val initRank = _getInitRank(initExt)
-    rankedExtensions.filter { f => f._1 >= initRank && f._2 != initExt }.map(_._2)
+    rankedExtensions.filter { f => f._1 > initRank && f._2 != initExt }.map(_._2)
   }
+  
+  def getMaxRank() = rankedExtensions.map(_._1).max
 
   def getMinRankedExtensions() = {
     rankedExtensions.filter(_._1 == 1).map(_._2)
   }
   def getMaxRankedExtensions() = {
-    val maxRank = rankedExtensions.map(_._1).max
+    val maxRank = getMaxRank()
     rankedExtensions.filter(_._1 == maxRank).map(_._2)
   }
   

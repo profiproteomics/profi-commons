@@ -29,13 +29,13 @@ trait IFileConversionTool {
 
   def checkExePath(conversionToolPath: String): Boolean
 
-  def generateCmdLine(filePath: String, conversionToolPath: String, fileConversion: FileConversion): String
+  def generateCmdLine(inputFilePath: String, conversionToolPath: String, fileConversion: FileConversion): String
 
   def successExitValue: Int
 
   def canExecuteProlineParsingRule: Boolean
 
-  def associatedPeaklistSoftware: PeaklistSoftware
+  def associatedPeaklistSoftware: Option[PeaklistSoftware]
   
   //  def getOutputFileFromSTDOUT( stdOut : String ) : Option[String]
   //  def checkForm(): Boolean
@@ -258,9 +258,12 @@ sealed trait MacroParam { //extends Cloneable
 
   def getOptionsAsStrings() = options.map(_.map(_.toString)).getOrElse(Seq())
   //  def getOptionsAsBigDecimals() = options.map(_.map(_.asInstanceOf[BigDecimal])).getOrElse(Seq())
+  
+  def getValueOrDefaultAsString(): String = value.getOrElse(default.getOrElse("")).toString
 
   /** To be defined in each implementation */
   def setValue(valueAsStr: String)
+  def setValueAsDefault(): Unit
 
   def cloneMe(): MacroParam
 }
@@ -289,6 +292,8 @@ case class MacroBooleanParam(
     if (valueAsStr == null || valueAsStr.isEmpty) value = None
     else value = Some(valueAsStr.toBoolean)
   }
+  
+  def setValueAsDefault() { value = default }
 
   def cloneMe() = this.copy()
 
@@ -313,6 +318,8 @@ case class MacroStringParam(
     if (valueAsStr == null || valueAsStr.isEmpty) value = None
     else value = Some(valueAsStr)
   }
+  
+  def setValueAsDefault() { value = default }
 
   def cloneMe() = this.copy()
 }
@@ -333,6 +340,8 @@ case class MacroNumericParam(
     if (valueAsStr == null || valueAsStr.isEmpty) value = None
     else value = Some(BigDecimal(valueAsStr))
   }
+  
+  def setValueAsDefault() { value = default }
 
   def cloneMe() = this.copy()
 }
@@ -342,14 +351,21 @@ case class MacroRangeParam(
   val name: String,
   val isRequired: Boolean = false,
   val cmdFlag: String,
-  //  var value: Option[Range] = None,
-  //  val default: Option[Range] = None
   var value: Option[BigDecimalRange] = None,
   val default: Option[BigDecimalRange] = None
 ) extends MacroParam with LazyLogging {
 
   val paramType = MacroParamType.RANGE
   val options = None
+  
+  /*private var _allowEmptyMax = false
+  def allowEmptyMax() { _allowEmptyMax = true }
+  def forbidEmptyMax() { _allowEmptyMax = false }*/
+  
+  override def getValueOrDefaultAsString(): String = {
+    val vOrDefOpt = if(value.isDefined) value else default
+    vOrDefOpt.map( range => range._1.getOrElse("") + " to " + range._2.getOrElse("") ).getOrElse("")
+  }
 
   /** WARNING : strings defining macro range MUST be of type "val1#val2" */
   def setValue(valueAsStr: String) {
@@ -358,6 +374,7 @@ case class MacroRangeParam(
 
     val split = valueAsStr.split("#")
     if (split.length != 2) value = None
+    //if (_allowEmptyMax == false && split.length != 2) value = None
     else {
       this.setValue(Some(BigDecimal(split.head)), Some(BigDecimal(split.last)))
     }
@@ -366,6 +383,8 @@ case class MacroRangeParam(
   def setValue(min: Option[BigDecimal] = None, max: Option[BigDecimal] = None) = {
     this.value = Some(min, max)
   }
+  
+  def setValueAsDefault() { value = default }
 
   def cloneMe() = this.copy()
 }
@@ -375,6 +394,7 @@ case class MacroChoiceParamItem(name: String, cmdFlag: String) {
   override def toString(): String = this.name
 }
 
+/** Choice parameter: choose between options with cmdFlag (GUI: RadioBox) */
 case class MacroChoiceParam(
   val name: String,
   var value: Option[MacroChoiceParamItem] = None,
@@ -401,10 +421,13 @@ case class MacroChoiceParam(
   def setValue(value: MacroChoiceParamItem) {
     this.value = Some(value)
   }
+  
+  def setValueAsDefault() { value = default }
 
   def cloneMe() = this.copy()
 }
 
+/** Selection parameter: choose between options with cmdFlag (GUI: ComboBox) */
 case class MacroSelectionParam(
   val name: String,
   var value: Option[MacroChoiceParamItem] = None,
@@ -433,6 +456,8 @@ case class MacroSelectionParam(
   def setValue(value: MacroChoiceParamItem) {
     this.value = Some(value)
   }
+  
+  def setValueAsDefault() { value = default }
 
   def cloneMe() = this.copy()
 }
@@ -454,6 +479,8 @@ case class MacroFilterParam(
   val isRequired = false
 
   def setValue(valueAsStr: String) {} //TODO
+  
+  def setValueAsDefault() { value = default }
 
   override def toString(): String = this.name
 

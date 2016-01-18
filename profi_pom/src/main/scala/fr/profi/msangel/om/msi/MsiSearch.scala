@@ -60,5 +60,3 @@ case class MsiSearch( //one search <=> one input file
     this.monitoringTrace = Some(updatedTrace)
   }
 }
-
-

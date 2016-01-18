@@ -10,7 +10,7 @@ object MzdbAccess extends IFileConversionTool {
   def getName(): FileConversionTool.Value = FileConversionTool.MZDB_ACCESS
   val successExitValue = 0
   val canExecuteProlineParsingRule = false
-  val associatedPeaklistSoftware = DefaultPeaklistSoftware.PROTEO_WIZARD_3_0
+  val associatedPeaklistSoftware = Some(DefaultPeaklistSoftware.PROLINE_1_0)
 
   /**
    * Get mzdb-access configuration template
@@ -38,5 +38,5 @@ object MzdbAccess extends IFileConversionTool {
    *  Generate command line
    */
   //TODO
-  def generateCmdLine(filePath: String, conversionToolPath: String, fileConversion: FileConversion): String = ""
+  def generateCmdLine(inputFilePath: String, conversionToolPath: String, fileConversion: FileConversion): String = ""
 }

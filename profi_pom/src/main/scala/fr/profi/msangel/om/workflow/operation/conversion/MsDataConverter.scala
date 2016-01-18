@@ -15,7 +15,7 @@ object MsDataConverter extends IFileConversionTool {
   def getName(): FileConversionTool.Value = FileConversionTool.MS_DATA_CONVERTER
   val successExitValue = 0
   val canExecuteProlineParsingRule = false
-  val associatedPeaklistSoftware = DefaultPeaklistSoftware.PROTEIN_PILOT
+  val associatedPeaklistSoftware = Some(DefaultPeaklistSoftware.PROTEIN_PILOT)
 
   /**
    * List all output formats handled by MS Data Converter, linked to their command flag
@@ -104,7 +104,7 @@ object MsDataConverter extends IFileConversionTool {
    *  Command line generator
    */
   def generateCmdLine(
-    filePath: String,
+    inputFilePath: String,
     conversionToolPath: String,
     fileConversion: FileConversion
   ): String = {
@@ -121,7 +121,7 @@ object MsDataConverter extends IFileConversionTool {
     /* Input file */
     //TODO: accepts TOF/TOF too
     //    require(filePath matches """(?i).+\.wiff""", "MS Data Converter only accepts WIFF input files") //move?
-    cmdLineBuffer += s""""$filePath"""" //input file path
+    cmdLineBuffer += s""""$inputFilePath"""" //input file path
 
     /* Output content type */
     val outputContentTypeOpt = paramByName(ParamName.PEAK_PICKING).asInstanceOf[MacroSelectionParam].value
@@ -135,7 +135,7 @@ object MsDataConverter extends IFileConversionTool {
     cmdLineBuffer += outputFormatOpt.get.cmdFlag*/
     
     /* Output file */
-    val fileName = new File(filePath).getName
+    val fileName = new File(inputFilePath).getName
     val outputFormat = DataFileExtension.getPrettyName(fileConversion.outputFileFormat)
     val outputFilePath = fileConversion.outputDirectory + "/" + fileName + "." + outputFormat
     cmdLineBuffer += s""""${outputFilePath}""""

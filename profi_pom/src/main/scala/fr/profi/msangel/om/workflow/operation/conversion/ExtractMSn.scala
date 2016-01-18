@@ -9,7 +9,7 @@ object ExtractMSn extends IFileConversionTool {
   def getName(): FileConversionTool.Value = FileConversionTool.EXTRACT_MSN
   val successExitValue = 0
   val canExecuteProlineParsingRule = false
-  val associatedPeaklistSoftware = DefaultPeaklistSoftware.EXTRACT_MSN
+  val associatedPeaklistSoftware = Some(DefaultPeaklistSoftware.EXTRACT_MSN)
 
   /**
    * Get ExtractMSn configuration template
@@ -56,6 +56,6 @@ object ExtractMSn extends IFileConversionTool {
    *  Generate command line
    */
   //TODO
-  def generateCmdLine(filePath: String, conversionToolPath: String, fileConversion: FileConversion): String = ""
+  def generateCmdLine(inputFilePath: String, conversionToolPath: String, fileConversion: FileConversion): String = ""
 
 }
