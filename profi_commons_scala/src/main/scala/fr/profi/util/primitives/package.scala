@@ -199,18 +199,18 @@ Pattern DOUBLE_PATTERN = Pattern.compile(
     def getAnyOption(key: String): Option[Any]
     def getAnyValOption(key: String): Option[AnyVal]
     
-    def getBooleanOrElse( key: String, default: Boolean ): Boolean
-    def getIntOrElse( key: String, default: Int ): Int
-    def getLongOrElse( key: String, default: Long ): Long
-    def getFloatOrElse( key: String, default: Float ): Float
-    def getDoubleOrElse( key: String, default: Double ): Double
-    def getBytesOrElse( key: String, default: Array[Byte] ): Array[Byte]
-    def getStringOrElse( key: String, default: String ): String
-    def getTimestampOrElse( key: String, default: Timestamp ): Timestamp
-    def getDateOrElse( key: String, default: Date ): Date
-    def getAnyRefOrElse( key: String, default: AnyRef ): AnyRef
-    def getAnyOrElse( key: String, default: Any ): Any
-    def getAnyValOrElse( key: String, default: AnyVal ): AnyVal 
+    def getBooleanOrElse( key: String, default: => Boolean ): Boolean
+    def getIntOrElse( key: String, default: => Int ): Int
+    def getLongOrElse( key: String, default: => Long ): Long
+    def getFloatOrElse( key: String, default: => Float ): Float
+    def getDoubleOrElse( key: String, default: => Double ): Double
+    def getBytesOrElse( key: String, default: => Array[Byte] ): Array[Byte]
+    def getStringOrElse( key: String, default: => String ): String
+    def getTimestampOrElse( key: String, default: => Timestamp ): Timestamp
+    def getDateOrElse( key: String, default: => Date ): Date
+    def getAnyRefOrElse( key: String, default: => AnyRef ): AnyRef
+    def getAnyOrElse( key: String, default: => Any ): Any
+    def getAnyValOrElse( key: String, default: => AnyVal ): AnyVal 
   }
   
   // TODO: check the class http://grepcode.com/file_/repo1.maven.org/maven2/org.apache.wicket/wicket-util/6.13.0/org/apache/wicket/util/value/ValueMap.java/?v=source
@@ -261,18 +261,18 @@ Pattern DOUBLE_PATTERN = Pattern.compile(
     def getAnyOption(key: String): Option[Any] = getIfNotNull(key)
     def getAnyValOption(key: String): Option[AnyVal] = getIfNotNull(key).map( _.asInstanceOf[AnyVal] )
     
-    def getBooleanOrElse( key: String, default: Boolean ): Boolean = getBooleanOption(key).getOrElse(default)
-    def getIntOrElse( key: String, default: Int ): Int = getIntOption(key).getOrElse(default)
-    def getLongOrElse( key: String, default: Long ): Long = getLongOption(key).getOrElse(default)
-    def getFloatOrElse( key: String, default: Float ): Float = getFloatOption(key).getOrElse(default)
-    def getDoubleOrElse( key: String, default: Double ): Double = getDoubleOption(key).getOrElse(default)
-    def getBytesOrElse( key: String, default: Array[Byte] ): Array[Byte] = getBytesOption(key).getOrElse(default)
-    def getStringOrElse( key: String, default: String ): String = getStringOption(key).getOrElse(default)
-    def getTimestampOrElse( key: String, default: Timestamp ): Timestamp = getTimestampOption(key).getOrElse(default)
-    def getDateOrElse( key: String, default: Date ): Date = getDateOption(key).getOrElse(default)
-    def getAnyRefOrElse( key: String, default: AnyRef ): AnyRef = getAnyRefOption(key).getOrElse(default)
-    def getAnyOrElse( key: String, default: Any ): Any = getAnyOption(key).getOrElse(default)
-    def getAnyValOrElse( key: String, default: AnyVal ): AnyVal = getAnyValOption(key).getOrElse(default)
+    def getBooleanOrElse( key: String, default: => Boolean ): Boolean = getBooleanOption(key).getOrElse(default)
+    def getIntOrElse( key: String, default: => Int ): Int = getIntOption(key).getOrElse(default)
+    def getLongOrElse( key: String, default: => Long ): Long = getLongOption(key).getOrElse(default)
+    def getFloatOrElse( key: String, default: => Float ): Float = getFloatOption(key).getOrElse(default)
+    def getDoubleOrElse( key: String, default: => Double ): Double = getDoubleOption(key).getOrElse(default)
+    def getBytesOrElse( key: String, default: => Array[Byte] ): Array[Byte] = getBytesOption(key).getOrElse(default)
+    def getStringOrElse( key: String, default: => String ): String = getStringOption(key).getOrElse(default)
+    def getTimestampOrElse( key: String, default: => Timestamp ): Timestamp = getTimestampOption(key).getOrElse(default)
+    def getDateOrElse( key: String, default: => Date ): Date = getDateOption(key).getOrElse(default)
+    def getAnyRefOrElse( key: String, default: => AnyRef ): AnyRef = getAnyRefOption(key).getOrElse(default)
+    def getAnyOrElse( key: String, default: => Any ): Any = getAnyOption(key).getOrElse(default)
+    def getAnyValOrElse( key: String, default: => AnyVal ): AnyVal = getAnyValOption(key).getOrElse(default)
   }
   
   class AnyMap() extends HashMap[String,Any] with AnyMapLike

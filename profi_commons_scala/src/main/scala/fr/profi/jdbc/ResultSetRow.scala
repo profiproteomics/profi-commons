@@ -47,18 +47,18 @@ class ResultSetRow(val rs: ResultSet) extends IValueContainer {
   def getAnyOption(colLabel: String): Option[Any] = _getValueOption(colLabel,rs.getObject)
   def getAnyValOption(colLabel: String): Option[AnyVal] = _getValueOption(colLabel,rs.getObject).map( _.asInstanceOf[AnyVal] )
   
-  def getBooleanOrElse( colLabel: String, value: Boolean ): Boolean = _getValueOrElse(colLabel,rs.getBoolean,value)
-  def getIntOrElse( colLabel: String, value: Int ): Int = _getValueOrElse(colLabel,rs.getInt,value)
-  def getLongOrElse( colLabel: String, value: Long ): Long = _getValueOrElse(colLabel,rs.getLong,value)
-  def getFloatOrElse( colLabel: String, value: Float ): Float = _getValueOrElse(colLabel,rs.getFloat,value)
-  def getDoubleOrElse( colLabel: String, value: Double ): Double = _getValueOrElse(colLabel,rs.getDouble,value)
-  def getBytesOrElse( colLabel: String, value: Array[Byte] ): Array[Byte] = _getValueOrElse(colLabel,rs.getBytes,value)
-  def getStringOrElse( colLabel: String, value: String ): String = _getValueOrElse(colLabel,rs.getString,value)
-  def getTimestampOrElse( colLabel: String, value: Timestamp ): Timestamp = _getValueOrElse(colLabel,rs.getTimestamp,value)
-  def getDateOrElse( colLabel: String, value: Date ): Date = _getValueOrElse(colLabel,rs.getTimestamp,value)
-  def getAnyRefOrElse( colLabel: String, value: AnyRef ): AnyRef = _getValueOrElse(colLabel,rs.getObject,value)
-  def getAnyOrElse( colLabel: String, value: Any ): Any = _getValueOrElse(colLabel,rs.getObject,value)
-  def getAnyValOrElse( colLabel: String, value: AnyVal ): AnyVal = _getValueOrElse(colLabel,rs.getObject,value).asInstanceOf[AnyVal]
+  def getBooleanOrElse( colLabel: String, value: => Boolean ): Boolean = _getValueOrElse(colLabel,rs.getBoolean,value)
+  def getIntOrElse( colLabel: String, value: => Int ): Int = _getValueOrElse(colLabel,rs.getInt,value)
+  def getLongOrElse( colLabel: String, value: => Long ): Long = _getValueOrElse(colLabel,rs.getLong,value)
+  def getFloatOrElse( colLabel: String, value: => Float ): Float = _getValueOrElse(colLabel,rs.getFloat,value)
+  def getDoubleOrElse( colLabel: String, value: => Double ): Double = _getValueOrElse(colLabel,rs.getDouble,value)
+  def getBytesOrElse( colLabel: String, value: => Array[Byte] ): Array[Byte] = _getValueOrElse(colLabel,rs.getBytes,value)
+  def getStringOrElse( colLabel: String, value: => String ): String = _getValueOrElse(colLabel,rs.getString,value)
+  def getTimestampOrElse( colLabel: String, value: => Timestamp ): Timestamp = _getValueOrElse(colLabel,rs.getTimestamp,value)
+  def getDateOrElse( colLabel: String, value: => Date ): Date = _getValueOrElse(colLabel,rs.getTimestamp,value)
+  def getAnyRefOrElse( colLabel: String, value: => AnyRef ): AnyRef = _getValueOrElse(colLabel,rs.getObject,value)
+  def getAnyOrElse( colLabel: String, value: => Any ): Any = _getValueOrElse(colLabel,rs.getObject,value)
+  def getAnyValOrElse( colLabel: String, value: => AnyVal ): AnyVal = _getValueOrElse(colLabel,rs.getObject,value).asInstanceOf[AnyVal]
   
   /** Maintain the current column position. */
   private var _position = 0
@@ -89,18 +89,18 @@ class ResultSetRow(val rs: ResultSet) extends IValueContainer {
   def nextAnyOption: Option[Any] = _nextValueOption(rs.getObject)
   def nextAnyValOption: Option[AnyVal] = _nextValueOption(rs.getObject).map( _.asInstanceOf[AnyVal] )
   
-  def nextBooleanOrElse( value: Boolean ): Boolean = _nextValueOrElse(rs.getBoolean,value)
-  def nextIntOrElse( value: Int ): Int = _nextValueOrElse(rs.getInt,value)
-  def nextLongOrElse( value: Long ): Long = _nextValueOrElse(rs.getLong,value)
-  def nextFloatOrElse( value: Float ): Float = _nextValueOrElse(rs.getFloat,value)
-  def nextDoubleOrElse( value: Double ): Double = _nextValueOrElse(rs.getDouble,value)
-  def nextBytesOrElse( value: Array[Byte] ): Array[Byte] = _nextValueOrElse(rs.getBytes,value)
-  def nextStringOrElse( value: String ): String = _nextValueOrElse(rs.getString,value)
-  def nextTimestampOrElse( value: Timestamp ): Timestamp = _nextValueOrElse(rs.getTimestamp,value)
-  def nextDateOrElse( value: Date ): Date = _nextValueOrElse(rs.getTimestamp,value)
-  def nextAnyRefOrElse( value: AnyRef ): AnyRef = _nextValueOrElse(rs.getObject,value)
-  def nextAnyOrElse( value: Any ): Any = _nextValueOrElse(rs.getObject,value)
-  def nextAnyValOrElse( value: AnyVal ): AnyVal = _nextValueOrElse(rs.getObject,value).asInstanceOf[AnyVal]
+  def nextBooleanOrElse( value: => Boolean ): Boolean = _nextValueOrElse(rs.getBoolean,value)
+  def nextIntOrElse( value: => Int ): Int = _nextValueOrElse(rs.getInt,value)
+  def nextLongOrElse( value: => Long ): Long = _nextValueOrElse(rs.getLong,value)
+  def nextFloatOrElse( value: => Float ): Float = _nextValueOrElse(rs.getFloat,value)
+  def nextDoubleOrElse( value: => Double ): Double = _nextValueOrElse(rs.getDouble,value)
+  def nextBytesOrElse( value: => Array[Byte] ): Array[Byte] = _nextValueOrElse(rs.getBytes,value)
+  def nextStringOrElse( value: => String ): String = _nextValueOrElse(rs.getString,value)
+  def nextTimestampOrElse( value: => Timestamp ): Timestamp = _nextValueOrElse(rs.getTimestamp,value)
+  def nextDateOrElse( value: => Date ): Date = _nextValueOrElse(rs.getTimestamp,value)
+  def nextAnyRefOrElse( value: => AnyRef ): AnyRef = _nextValueOrElse(rs.getObject,value)
+  def nextAnyOrElse( value: => Any ): Any = _nextValueOrElse(rs.getObject,value)
+  def nextAnyValOrElse( value: => AnyVal ): AnyVal = _nextValueOrElse(rs.getObject,value).asInstanceOf[AnyVal]
   
   def toAnyMap(): AnyMap = {
     
@@ -135,7 +135,7 @@ class ResultSetRow(val rs: ResultSet) extends IValueContainer {
     else Option(value)
   }
   
-  private def _getValueOrElse[T](colLabel: String, f: (String) => T, defaultValue: T): T = {    
+  private def _getValueOrElse[T](colLabel: String, f: (String) => T, defaultValue: => T): T = {    
     val value = f(colLabel)
     if (rs.wasNull) defaultValue
     else value
@@ -159,7 +159,7 @@ class ResultSetRow(val rs: ResultSet) extends IValueContainer {
     else Option(value)
   }
   
-  private def _nextValueOrElse[T](f: (Int) => T, defaultValue: T): T = {
+  private def _nextValueOrElse[T](f: (Int) => T, defaultValue: => T): T = {
     _incrementPosition
     
     val value = f(_position)

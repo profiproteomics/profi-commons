@@ -118,9 +118,13 @@ trait SQLQueryExecution {
     }
   }
   
-  def selectHeadOrElse[T](sql: String, params: ISQLFormattable*)(block: ResultSetRow => T, default: T): T = {
+  def selectHeadOrElse[T](sql: String, params: ISQLFormattable*)(block: ResultSetRow => T, default: => T): T = {
     val headOpt = this.selectHeadOption(sql, params:_*)(block)
-    if( headOpt == None ) default else headOpt.get
+    
+    headOpt match {
+      case None => default
+      case Some(head) => head
+    }
   }
 
   /**
@@ -135,7 +139,7 @@ trait SQLQueryExecution {
   @throws( classOf[NoSuchElementException] )
   def selectHead[T](sql: String, params: ISQLFormattable*)(block: ResultSetRow => T): T = {
     val headOpt = this.selectHeadOption(sql, params:_*)(block)
-    if( headOpt == None )
+    if( headOpt.isEmpty )
       throw new NoSuchElementException("can't find a record for this SQL query: '"+sql+"'")
     else
       return headOpt.get
