@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.`type`.TypeFactory
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.JsonScalaEnumeration
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
+import org.msgpack.jackson.dataformat.MessagePackFactory
 
 package object serialization {
   
@@ -34,9 +35,22 @@ package object serialization {
     
   trait ProfiSerialization[OT] {
     def serialize(value: Any): OT
-    def serialize(value: Any, writer: java.io.Writer)
+    def serialize(value: Any, writer: java.io.Writer): Unit
     def deserialize[IT:Manifest](value: OT) : IT 
 
+  }
+  
+  trait ProfiJacksonSerialization[OT] extends ProfiSerialization[OT] with ObjectMapperContainer {
+    def getObjectMapper(): ObjectMapper
+    
+    protected def configureObjectMapper( mapper: ObjectMapper with ScalaObjectMapper ): Unit = {     
+      // Configure serialization for visibility of data to be taken into account
+      // http://stackoverflow.com/questions/7105745/how-to-specify-jackson-to-only-use-fields-preferably-globally
+      // Note: the following settings breaks the compatibility with lazy fields
+      // -> the fix consists in using the @JsonProperty annotation on serializable lazy fields
+      mapper.setVisibility(PropertyAccessor.ALL, Visibility.NONE)
+      mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY)
+    }
   }
   
   /* Inspired from:
@@ -46,22 +60,18 @@ package object serialization {
    * http://stackoverflow.com/questions/16966743/small-example-of-jackson-scala-module
    * http://stackoverflow.com/questions/17135166/looking-for-a-good-example-of-polymorphic-serialization-deserialization-using-ja
   */
-  trait ProfiJsonSerialization extends ProfiSerialization[String] with ObjectMapperContainer {
-    
-    def getObjectMapper() = new ObjectMapper() with ScalaObjectMapper
+  trait ProfiJsonSerialization extends ProfiJacksonSerialization[String] {
     
     // Configure object mapper used for serialization
-    private lazy val objectMapper = this._configureObjectMapper( this.getObjectMapper() )
+    private val objectMapper = {
+      val objMapper = new ObjectMapper() with ScalaObjectMapper
+      this.configureObjectMapper( objMapper )
+      objMapper
+    }
     
-    // Register some modules
-    /*val module = new SimpleModule("ProlineJSONSerializer")
-    module.addSerializer(classOf[Throwable], new ThrowableSerializer)
-    module.addSerializer(classOf[ObjectId], new ObjectIdSerializer)
-    module.addDeserializer(classOf[ObjectId], new ObjectIdDeserializer)
-    objectMapper.registerModule(module)
-    */
-  
-    private def _configureObjectMapper( mapper: ObjectMapper with ScalaObjectMapper ): ObjectMapper with ScalaObjectMapper = {
+    override protected def configureObjectMapper( mapper: ObjectMapper with ScalaObjectMapper ): Unit = {
+      super.configureObjectMapper(mapper)
+      
       // Configure the property naming strategy with the Proline convention
       //println("mapper conf called")
       mapper.setPropertyNamingStrategy(
@@ -73,25 +83,18 @@ package object serialization {
       // Note: this is currently not taken into account by jerkson and json4s
       mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
       
-      // Configure serialization null and empty exclusion
+      // Configure serialization for null and empty exclusion
       mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
       mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
-      
-      // Configure serialization visibility
-      // http://stackoverflow.com/questions/7105745/how-to-specify-jackson-to-only-use-fields-preferably-globally
-      // Note: the following settings breaks the compatibility with lazy fields
-      // -> the fix consists in using the @JsonProperty annotation on serializable lazy fields
-      mapper.setVisibility(PropertyAccessor.ALL, Visibility.NONE)
-      mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY)
-      
-      mapper
     }
+    
+    def getObjectMapper() = objectMapper
   
     def serialize(value: Any): String = {
       objectMapper.writeValueAsString(value)
     }
     
-    def serialize(value: Any, writer: java.io.Writer) = {
+    def serialize(value: Any, writer: java.io.Writer): Unit = {
       objectMapper.writeValue(writer, value)
     }
     
@@ -100,26 +103,6 @@ package object serialization {
       //objectMapper.readValue(value, typeReference[T])
       objectMapper.readValue(value, objectMapper.constructType[T] )
     }
-
-    //import scala.reflect.api._
-    //import scala.reflect.classTag
-    //import scala.reflect.runtime.universe.typeOf
-    //import scala.reflect.runtime.universe.typeTag
-    
-    // Old code snippet used for Jackson Scala Module deserialization (prior 2.4.0 version)
-    /*private [this] def typeReference[T: Manifest] = new TypeReference[T] {
-      override def getType = typeFromManifest(manifest[T])
-    }
-    
-    private [this] def typeFromManifest(m: Manifest[_]): Type = {
-      val runtimeClass = m.runtimeClass
-      if (m.typeArguments.isEmpty || runtimeClass.isArray() ) { runtimeClass } // was m.erasure in Scala 2.9
-      else new ParameterizedType {
-        def getRawType = runtimeClass  // was m.erasure in Scala 2.9
-        def getActualTypeArguments = m.typeArguments.map(typeFromManifest).toArray
-        def getOwnerType = null
-      }
-    }*/
     
   }
   
@@ -131,41 +114,37 @@ package object serialization {
     override def getObjectMapper() = jsmObjectMapper
   }
   
-  object ProfiJson extends ProfiJSMSerialization // with ProfiJson4sSerialization
+  object ProfiJson extends ProfiJSMSerialization
   
-  /*import org.json4s._
-  import org.json4s.jackson.JsonMethods
-  import org.json4s.jackson.JsonMethods._
-  import org.json4s.jackson.Serialization
-  import org.json4s.jackson.JValueSerializer
+  /**
+   * Trait for MessagePack serialization using Jackson data binding and Jackson ScalaModule
+   */
+  trait ProfiMsgPackSerialization extends ProfiJacksonSerialization[Array[Byte]] {
     
-  // Tests have been done with json4s, works well but jSM is prefered for now
-  trait ProfiJson4sSerialization extends JsonMethods with ProfiJsonSerialization {
-    
-    override def deserialize[T: Manifest ](value: String): T = {
-        
-      try {
-        implicit val formats = DefaultFormats + new OptionJNullSerializer()
-        val json = parse(value).camelizeKeys
-        json.extract[T]
-      } catch {
-        case e: Exception => super.deserialize(value)
-      }
-
+    private val objectMapper = {
+      val objMapper = new ObjectMapper(new MessagePackFactory()) with ScalaObjectMapper
+      objMapper.registerModule(DefaultScalaModule)
+      this.configureObjectMapper( objMapper )
+      
+      objMapper
     }
     
-    //note: first lambda is deserializer second lambda is serializer                                                                                     
-    class OptionJNullSerializer extends CustomSerializer[Option[_]](format => ({ case JNull => None }, { case None => JNull } )) 
-
-    def serializeType[T <: AnyRef](value: T): String = {
-      implicit val formats = DefaultFormats + new OptionJNullSerializer()
-
-      val jvalue = Extraction.decompose(value).snakizeKeys
-      val filtered = jvalue.filterField{ case (s, ast) => ast != JNull }
-     
-      mapper.writeValueAsString(new JObject(filtered))
+    def getObjectMapper() = objectMapper
+    
+    def serialize(value: Any): Array[Byte] = {
+      objectMapper.writeValueAsBytes(value)
     }
-  }*/
+    
+    def serialize(value: Any, writer: java.io.Writer): Unit = {
+      objectMapper.writeValue(writer, value)
+    }
+    
+    def deserialize[T: Manifest](value: Array[Byte] ): T = {
+      objectMapper.readValue(value, objectMapper.constructType[T] )
+    }
+  }
+  
+  object ProfiMsgPack extends ProfiMsgPackSerialization
   
   private[this] object CustomDoubleSerializer {
     
