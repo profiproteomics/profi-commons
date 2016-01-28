@@ -5,11 +5,11 @@ package object regex {
 
   object RegexUtils {
     
-    import util.matching.Regex
+    import scala.util.matching.Regex
     import java.util.regex.Pattern
     
     // Private cache of compiled regexes
-    val regexCache = new collection.mutable.HashMap[Pair[String,String],Regex]
+    val regexCache = new scala.collection.mutable.HashMap[(String,String),Regex]
     
     def getRegex( s: String, groupNames: String* ) = synchronized {
       val groupNamesAsStr = groupNames.mkString("%")
