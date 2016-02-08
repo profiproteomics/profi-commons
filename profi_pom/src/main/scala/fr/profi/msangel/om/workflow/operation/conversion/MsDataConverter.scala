@@ -57,7 +57,9 @@ object MsDataConverter extends IFileConversionTool {
           
         MacroSelectionParam(
           name = ParamName.PEAK_PICKING,
-          default = Some(instruCentroid),
+          //default = Some(instruCentroid),
+          default = Some(proteinPilotCentroid),
+          value = Some(proteinPilotCentroid), //here we set the value because we chose a default value different that exe default, so it needs to be explicit
           options = Some(Seq(profile, instruCentroid, proteinPilotCentroid))
         ),
         MacroSelectionParam(
@@ -105,6 +107,7 @@ object MsDataConverter extends IFileConversionTool {
    */
   def generateCmdLine(
     inputFilePath: String,
+    outputFilePath: String,
     conversionToolPath: String,
     fileConversion: FileConversion
   ): String = {
@@ -119,8 +122,6 @@ object MsDataConverter extends IFileConversionTool {
     cmdLineBuffer += fileConversion.inputFileFormat
 
     /* Input file */
-    //TODO: accepts TOF/TOF too
-    //    require(filePath matches """(?i).+\.wiff""", "MS Data Converter only accepts WIFF input files") //move?
     cmdLineBuffer += s""""$inputFilePath"""" //input file path
 
     /* Output content type */
@@ -133,15 +134,16 @@ object MsDataConverter extends IFileConversionTool {
     /*paramByName(ParamName.PEAK_LIST_FORMAT).asInstanceOf[MacroChoiceParam].value
     require( outputFormatOpt.isDefined, "outputFormat must be defined")
     cmdLineBuffer += outputFormatOpt.get.cmdFlag*/
-    
+
     /* Output file */
-    val fileName = new File(inputFilePath).getName
-    val outputFormat = DataFileExtension.getPrettyName(fileConversion.outputFileFormat)
-    val outputFilePath = fileConversion.outputDirectory + "/" + fileName + "." + outputFormat
-    cmdLineBuffer += s""""${outputFilePath}""""
+    //    val fileName = new File(inputFilePath).getName
+    //    val outputFormat = DataFileExtension.getPrettyName(fileConversion.outputFileFormat)
+    //    val outputFilePath = fileConversion.outputDirectory + "/" + fileName + "." + outputFormat
+    cmdLineBuffer += s""""$outputFilePath""""
 
     /* Additional conversion parameters */
     //these are all parameters for mzML only
+    val outputFormat = DataFileExtension.getPrettyName(fileConversion.outputFileFormat)
     if (outputFormat == MZML) {
       for (
         param <- fileConversion.config.params;

@@ -17,6 +17,7 @@ object TaskStatus extends JsonEnumeration {
 
   val RUNNING = Value("running")
   val PAUSED = Value("paused")
+  val KILLED = Value("killed")
 
   val MONITORING_ERROR = Value("monitoring_error")
 
@@ -73,7 +74,8 @@ object WorkflowJobStatus extends JsonEnumeration {
   val CREATED = Value("created")
   val RUNNING = Value("running")
   val PAUSED = Value("paused")
-  
+  val KILLED = Value("killed")
+
   val MONITORING_ERROR = Value("monitoring_error")
 
   val FAILED = Value("failed")
@@ -92,13 +94,14 @@ object MsiSearchStatus extends JsonEnumeration {
 
   val RUNNING = Value("running")
   val PAUSED = Value("paused")
+  val KILLED = Value("killed")
 
   val MONITORING_ERROR = Value("monitoring_error")
   //  val IMPORTING = Value("importing") //into Proline. TODO : rename?
 
   val FAILED = Value("failed")
   val SUCCEEDED = Value("succeeded")
-  val KILLED = Value("killed")
+
 }
 
 /**
@@ -383,7 +386,7 @@ object ExecutionVariable extends JsonEnumeration {
   val MASCOT_IDENTIFICATION_FILE_PATH = Value("mascot_identification_file_path")
   val OMSSA_IDENTIFICATION_FILE_PATH = Value("omssa_identification_file_path")
 
-  // TODO : move to dedicated place (WorkflowJob ? )
+  /** Return the entry corresponding to the given file extension **/
   def getFormatKey(fileFormat: DataFileExtension.Value): this.Value = {
     import DataFileExtension._
     fileFormat match {
@@ -403,8 +406,9 @@ object ExecutionVariable extends JsonEnumeration {
       case _ => throw new Exception("File extension not handled")
     }
   }
-  
-  def getFormatKeyAsString (fileFormat: DataFileExtension.Value): String = {
+
+  /** Return the entry corresponding to the given file extension **/
+  def getFormatKeyAsString(fileFormat: DataFileExtension.Value): String = {
     this.getFormatKey(fileFormat).toString()
   }
 }

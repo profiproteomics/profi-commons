@@ -1,13 +1,11 @@
 package fr.profi.msangel.om.workflow
 
-import java.util.Date
 import org.joda.time.DateTime
-import scala.collection.mutable.ArrayBuffer
-import java.io.File
 
 case class FileMonitoringConfig(
   val directory: String,
   val wildcardPattern: String = "", // may contain wildcards represented by asterisks and question marks
+  val includeFilesMatchingWildcard: Boolean = true,
 
   val newFilesOnly: Boolean = false,
   val includeSubDirs: Boolean = false,

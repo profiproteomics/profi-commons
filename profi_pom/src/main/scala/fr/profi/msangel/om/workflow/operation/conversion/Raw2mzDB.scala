@@ -116,6 +116,7 @@ object Raw2mzDB extends IFileConversionTool {
   //TODO
   def generateCmdLine(
     inputFilePath: String,
+    outputFilePath: String,    
     conversionToolPath: String,
     fileConversion: FileConversion
   ): String = {
@@ -128,15 +129,12 @@ object Raw2mzDB extends IFileConversionTool {
     cmdLineBuffer += s""""${conversionToolPath}"""" //raw2mzdb.exe path
 
     /* Input file (D, RAW, WIFF) **/
-//    require(inputFilePath matches """(?i).+\.raw""", "raw2mzDB.exe only accepts RAW input files")
-//    require(inputFilePath matches """(?i).+\.raw""", "raw2mzDB.exe only accepts RAW input files")
-//    require(inputFilePath matches """(?i).+\.raw""", "raw2mzDB.exe only accepts RAW input files")
     cmdLineBuffer += s"""-i "$inputFilePath""""
 
     /* Output file (MZDB) **/
     val fileName = new File(inputFilePath).getName
     val outputFormat = DataFileExtension.getPrettyName(fileConversion.outputFileFormat)
-    val outputFilePath = fileConversion.outputDirectory + "/" + fileName + "." + outputFormat
+//    val outputFilePath = fileConversion.outputDirectory + "/" + fileName + "." + outputFormat
     cmdLineBuffer += s"""-o "$outputFilePath""""
 
     /* Additional conversion parameters **/

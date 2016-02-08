@@ -12,9 +12,11 @@ case class MSAngelServerConfig(
   var extractmsnPath: Option[String] = None,
   var raw2mzdbPath: Option[String] = None,
   var mzdbaccessPath: Option[String] = None,
-  
+
   var mascotUrl: Option[String] = None,
 
+  var rawFilesMountPoint: Option[String] = None,
+  var mzdbFilesMountPoint: Option[String] = None,
   var mascotMountPoint: Option[String] = None,
   var omssaMountPoint: Option[String] = None
 
@@ -33,11 +35,18 @@ case class MSAngelServerConfig(
 }
 
 object MountPointsMapKeys {
+
+  val RAW_FILES = "RAW_FILES"
+  val PUTATIVE_RAW_FILES = "Putative_RAW_FILES"
+
+  val MZDB_FILES = "MZDB_FILES"
+  val PUTATIVE_MZDB_FILES = "Putative_MZDB_FILES"
+
   val MASCOT = SearchEngine.MASCOT.toString()
-  val PUTATIVE_MASCOT = s"Putative" + SearchEngine.MASCOT
+  val PUTATIVE_MASCOT = "Putative_" + SearchEngine.MASCOT
 
   val OMSSA = SearchEngine.OMSSA.toString()
-  val PUTATIVE_OMSSA = s"Putative" + SearchEngine.OMSSA
+  val PUTATIVE_OMSSA = "Putative_" + SearchEngine.OMSSA
 
   val ALL = "All"
 }

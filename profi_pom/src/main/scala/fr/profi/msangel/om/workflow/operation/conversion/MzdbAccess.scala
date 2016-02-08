@@ -33,10 +33,10 @@ object MzdbAccess extends IFileConversionTool {
     //TODO
     false
   }
-  
+
   /**
    *  Generate command line
    */
   //TODO
-  def generateCmdLine(inputFilePath: String, conversionToolPath: String, fileConversion: FileConversion): String = ""
+  def generateCmdLine(inputFilePath: String, outputFilePath: String, conversionToolPath: String, fileConversion: FileConversion): String = ""
 }

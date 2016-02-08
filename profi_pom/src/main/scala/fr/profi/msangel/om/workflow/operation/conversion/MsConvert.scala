@@ -1,8 +1,8 @@
 package fr.profi.msangel.om.workflow.operation.conversion
 
-import java.io.File
-
 import scala.collection.mutable.ArrayBuffer
+
+import java.io.File
 
 import fr.profi.msangel.om._
 import fr.profi.msangel.om.DataFileExtension
@@ -100,6 +100,7 @@ object MsConvert extends IFileConversionTool {
    */
   def generateCmdLine(
     inputFilePath: String,
+    outputFilePath: String,
     conversionToolPath : String,
     fileConversion: FileConversion
   ): String = {
@@ -112,16 +113,15 @@ object MsConvert extends IFileConversionTool {
     cmdLineBuffer += s""""${conversionToolPath}"""" //msconvert.exe path
 
     /* RAW input file **/
-    require(inputFilePath matches """(?i).+\.raw""", "MSConvert only accepts RAW input files") //move?
     cmdLineBuffer += s""""$inputFilePath"""" //input file path
-    
 
     /* Output directory and format **/
     cmdLineBuffer += s"""-o "${fileConversion.outputDirectory}""""
     cmdLineBuffer += s"""${_getOutputFormatCmdFlag(fileConversion.outputFileFormat)}"""
     
     /* Force output file name: "inputFileNAME.outputFormat" */
-    cmdLineBuffer += s"""--outfile "$inputFileName.${DataFileExtension.getPrettyName(fileConversion.outputFileFormat)}""""
+    val outputFileName = new File(outputFilePath).getName
+    cmdLineBuffer += s"""--outfile "$outputFileName""""
 
     /* Additional conversion parameters **/
     fileConversion.config.params.withFilter(_.value.isDefined).foreach { param =>

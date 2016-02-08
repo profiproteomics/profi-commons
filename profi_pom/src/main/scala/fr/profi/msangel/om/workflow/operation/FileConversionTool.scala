@@ -29,7 +29,7 @@ trait IFileConversionTool {
 
   def checkExePath(conversionToolPath: String): Boolean
 
-  def generateCmdLine(inputFilePath: String, conversionToolPath: String, fileConversion: FileConversion): String
+  def generateCmdLine(inputFilePath: String, outputFilePath: String, conversionToolPath: String, fileConversion: FileConversion): String
 
   def successExitValue: Int
 
