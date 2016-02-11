@@ -43,8 +43,11 @@ package object collection {
     def toLongMap(): LongMap[A] = this.toLongMap(xs)
   }
 
-  implicit class LongMapBuilderFromTuplesArray[A](xs: Array[(Long, A)]) extends LongMapBuilderFromTuplesOps {
+  /*implicit class LongMapBuilderFromTuplesArray[A](xs: Array[(Long, A)]) extends LongMapBuilderFromTuplesOps {
     def toLongMap(): LongMap[A] = this.toLongMap(xs)
+  }*/
+  implicit def tuplesArray2longMapBuilder[A]( xs: Array[(Long, A)] ): LongMapBuilderFromTraversableTuples[A] = {
+    new LongMapBuilderFromTraversableTuples[A](xs)
   }
 
   implicit class LongMapBuilderFromTraversableOnce[A](xs: TraversableOnce[A]) extends LongMapBuilderFromTraversableOnceOps {
@@ -56,13 +59,16 @@ package object collection {
     }
   }
 
-  implicit class LongMapBuilderFromArray[A](objects: Array[A]) extends LongMapBuilderFromTraversableOnceOps {
+  /*implicit class LongMapBuilderFromArray[A](xs: Array[A]) extends LongMapBuilderFromTraversableOnceOps {
     def toLongMap[V](kvMapping: A => (Long, V)): LongMap[V] = {
-      this.toLongMap(objects, kvMapping)
+      this.toLongMap(xs, kvMapping)
     }
     def mapByLong(byKey: A => Long): LongMap[A] = {
-      this.mapByLong(objects, byKey)
+      this.mapByLong(xs, byKey)
     }
+  }*/
+  implicit def array2longMapBuilder[A]( xs: Array[A] ): LongMapBuilderFromTraversableOnce[A] = {
+    new LongMapBuilderFromTraversableOnce[A](xs)
   }
 
   trait LongMapGrouperFromTraversableLikeOps {
@@ -88,5 +94,8 @@ package object collection {
       this.groupByLong(xs, byLong)
     }
   }
+  /*implicit def array2longMapGrouper[A]( xs: Array[A] ): LongMapGrouperFromTraversableLikeOps = {
+    new LongMapGrouperFromTraversableLike[A, Repr](xs)
+  }*/
 
 }
