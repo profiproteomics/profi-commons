@@ -8,6 +8,6 @@ package fr.profi.util.system;
  */
 public enum OSType {
 
-    LINUX_I386, LINUX_AMD64, WINDOWS_X86, WINDOWS_AMD64
+	LINUX_I386, LINUX_AMD64, WINDOWS_X86, WINDOWS_AMD64
 
 }

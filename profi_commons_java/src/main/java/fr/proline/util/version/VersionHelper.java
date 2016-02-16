@@ -11,45 +11,45 @@ import org.slf4j.LoggerFactory;
 
 public final class VersionHelper {
 
-    private static final Logger LOG = LoggerFactory.getLogger(VersionHelper.class);
+	private static final Logger LOG = LoggerFactory.getLogger(VersionHelper.class);
 
-    /* Private constructor (Utility class) */
-    private VersionHelper() {
-    }
+	/* Private constructor (Utility class) */
+	private VersionHelper() {
+	}
 
-    /**
-     * Retreives all services implementing <code>IVersion</code> interface via <code>ServiceLoader</code>.
-     * 
-     * @return Array of found services (can be empty).
-     */
-    public static IVersion[] getVersions() {
-	final ServiceLoader<IVersion> versionLoader = ServiceLoader.load(IVersion.class);
+	/**
+	 * Retreives all services implementing <code>IVersion</code> interface via <code>ServiceLoader</code>.
+	 * 
+	 * @return Array of found services (can be empty).
+	 */
+	public static IVersion[] getVersions() {
+		final ServiceLoader<IVersion> versionLoader = ServiceLoader.load(IVersion.class);
 
-	Iterator<IVersion> iter = versionLoader.iterator(); // Lazy iterator
+		Iterator<IVersion> iter = versionLoader.iterator(); // Lazy iterator
 
-	final List<IVersion> versions = new ArrayList<IVersion>();
+		final List<IVersion> versions = new ArrayList<IVersion>();
 
-	/* Protect hasNext() and next() methods from ServiceConfigurationError */
-	boolean hasNext = false;
+		/* Protect hasNext() and next() methods from ServiceConfigurationError */
+		boolean hasNext = false;
 
-	do {
-	    hasNext = false; // Pessimistic initialization
+		do {
+			hasNext = false; // Pessimistic initialization
 
-	    try {
-		hasNext = iter.hasNext();
+			try {
+				hasNext = iter.hasNext();
 
-		if (hasNext) {
-		    final IVersion v = iter.next();
-		    versions.add(v);
-		}
+				if (hasNext) {
+					final IVersion v = iter.next();
+					versions.add(v);
+				}
 
-	    } catch (ServiceConfigurationError sce) {
-		LOG.error("Error retrieving IVersion service", sce);
-	    }
+			} catch (ServiceConfigurationError sce) {
+				LOG.error("Error retrieving IVersion service", sce);
+			}
 
-	} while (hasNext);
+		} while (hasNext);
 
-	return versions.toArray(new IVersion[0]);
-    }
+		return versions.toArray(new IVersion[0]);
+	}
 
 }

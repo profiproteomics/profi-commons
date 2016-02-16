@@ -8,15 +8,15 @@ import org.slf4j.LoggerFactory;
 
 public class OSInfoTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OSInfoTest.class);
+	private static final Logger LOG = LoggerFactory.getLogger(OSInfoTest.class);
 
-    @Test
-    public void testGetOSType() {
-	final OSType osType = OSInfo.getOSType();
+	@Test
+	public void testGetOSType() {
+		final OSType osType = OSInfo.getOSType();
 
-	assertNotNull("Returned OS Type", osType);
+		assertNotNull("Returned OS Type", osType);
 
-	LOG.info("Detected OS Type : {}", osType);
-    }
+		LOG.info("Detected OS Type : {}", osType);
+	}
 
 }

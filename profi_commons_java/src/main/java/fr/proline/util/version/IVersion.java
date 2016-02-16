@@ -8,8 +8,8 @@ package fr.proline.util.version;
  */
 public interface IVersion {
 
-    String getModuleName();
+	String getModuleName();
 
-    String getVersion();
+	String getVersion();
 
 }
