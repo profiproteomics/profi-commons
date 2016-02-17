@@ -10,7 +10,7 @@
 
   <groupId>fr.profi</groupId>
   <artifactId>MSAngel-OM</artifactId>
-  <version>0.4.0-SNAPSHOT</version>
+  <version>0.3.0-SNAPSHOT</version>
   <name>${project.artifactId}</name>
   <description>Object Model for MSAngel-GUI and its server PWX-MSAngel</description>
 
