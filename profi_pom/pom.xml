@@ -14,9 +14,9 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <scala.version>2.11</scala.version> <!-- Scala major version -->
     <scala-library.version>2.11.7</scala-library.version> <!-- Scala library version -->
-    <jackson.version>2.6.3</jackson.version> <!-- Latest version (2.7.0) checked on 27 January 2015 -->
+    <jackson.version>2.7.2</jackson.version> <!-- Latest version checked on 01 March 2016 -->
     <sqlite4java.version>1.0.392</sqlite4java.version> <!-- Latest version checked on 03 September 2015 -->
-    <msgpack.version>0.8.2</msgpack.version> <!-- Latest version checked on 27 January 2015 -->
+    <msgpack.version>0.8.3</msgpack.version> <!-- Latest version checked on 01 March 2016 -->
   </properties>
 
    <prerequisites> 
