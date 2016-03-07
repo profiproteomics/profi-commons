@@ -56,6 +56,6 @@ object ExtractMSn extends IFileConversionTool {
    *  Generate command line
    */
   //TODO
-  def generateCmdLine(inputFilePath: String, outputFilePath: String, conversionToolPath: String, fileConversion: FileConversion): String = ""
+  def generateCmdLine(inputFilePath: String, outputFilePath: String, conversionToolPath: String, fileConversion: FileConversion, javaArgs:Array[String] = Array()): String = ""
 
 }

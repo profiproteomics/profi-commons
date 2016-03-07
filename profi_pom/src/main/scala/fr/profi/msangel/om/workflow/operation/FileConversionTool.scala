@@ -29,7 +29,7 @@ trait IFileConversionTool {
 
   def checkExePath(conversionToolPath: String): Boolean
 
-  def generateCmdLine(inputFilePath: String, outputFilePath: String, conversionToolPath: String, fileConversion: FileConversion): String
+  def generateCmdLine(inputFilePath: String, outputFilePath: String, conversionToolPath: String, fileConversion: FileConversion, javaArgs:Array[String] = Array()): String
 
   def successExitValue: Int
 
@@ -132,6 +132,7 @@ object MacroParam {
     paramTypeAsStr: String,
     isRequired: Boolean,
     cmdFlag: String,
+    description: Option[String],
     value: Option[JsValue],
     default: Option[JsValue],
     options: Option[JsArray]
@@ -141,25 +142,25 @@ object MacroParam {
 
     val macroParam: MacroParam = paramType match {
       case MacroParamType.BOOLEAN => {
-        new MacroBooleanParam(name, cmdFlag, value.map(_.as[Boolean]), default.map(_.as[Boolean]))
+        new MacroBooleanParam(name, cmdFlag, description, value.map(_.as[Boolean]), default.map(_.as[Boolean]))
       }
       case MacroParamType.NUMERIC => {
-        new MacroNumericParam(name, isRequired, cmdFlag, value.map(_.as[BigDecimal]), default.map(_.as[BigDecimal]), options.map(_.as[Seq[BigDecimal]]))
+        new MacroNumericParam(name, isRequired, cmdFlag, description, value.map(_.as[BigDecimal]), default.map(_.as[BigDecimal]), options.map(_.as[Seq[BigDecimal]]))
       }
       case MacroParamType.STRING => {
-        new MacroStringParam(name, isRequired, cmdFlag, value.map(_.as[String]), default.map(_.as[String]), options.map(_.as[Seq[String]]))
+        new MacroStringParam(name, isRequired, cmdFlag, description, value.map(_.as[String]), default.map(_.as[String]), options.map(_.as[Seq[String]]))
       }
       case MacroParamType.RANGE => {
-        new MacroRangeParam(name, isRequired, cmdFlag, value.map(_.as[BigDecimalRange]), default.map(_.as[BigDecimalRange]))
+        new MacroRangeParam(name, isRequired, cmdFlag, description, value.map(_.as[BigDecimalRange]), default.map(_.as[BigDecimalRange]))
       }
       case MacroParamType.CHOICE => {
-        new MacroChoiceParam(name, value.map(_.as[MacroChoiceParamItem]), default.map(_.as[MacroChoiceParamItem]), options.map(_.as[Seq[MacroChoiceParamItem]]))
+        new MacroChoiceParam(name, description, value.map(_.as[MacroChoiceParamItem]), default.map(_.as[MacroChoiceParamItem]), options.map(_.as[Seq[MacroChoiceParamItem]]))
       }
       case MacroParamType.SELECTION => {
-        new MacroSelectionParam(name, value.map(_.as[MacroChoiceParamItem]), default.map(_.as[MacroChoiceParamItem]), options.map(_.as[Seq[MacroChoiceParamItem]]))
+        new MacroSelectionParam(name, description, value.map(_.as[MacroChoiceParamItem]), default.map(_.as[MacroChoiceParamItem]), options.map(_.as[Seq[MacroChoiceParamItem]]))
       }
       //      case MacroParamType.FILTER => {
-      //        new MacroFilterParam(name, default.map(_.as[Seq[MacroParam]]), options.map(_.as[Seq[MacroParam]]))
+      //        new MacroFilterParam(name, description, default.map(_.as[Seq[MacroParam]]), options.map(_.as[Seq[MacroParam]]))
       //      }
       case _ => throw new Exception("error when parsing MacroParamList")
     }
@@ -167,7 +168,7 @@ object MacroParam {
     macroParam
   }
 
-  def unapply(par: MacroParam): Option[(String, String, Boolean, String, Option[JsValue], Option[JsValue], Option[JsArray])] = {
+  def unapply(par: MacroParam): Option[(String, String, Boolean, String, Option[String], Option[JsValue], Option[JsValue], Option[JsArray])] = {
     val tuple = par match {
 
       case p: MacroBooleanParam => (
@@ -175,6 +176,7 @@ object MacroParam {
         p.paramType.toString,
         p.isRequired,
         p.cmdFlag,
+        p.description,
         p.value.map(Json.toJson(_)),
         p.default.map(Json.toJson(_)),
         p.options.map(Json.toJson(_).as[JsArray])
@@ -185,6 +187,7 @@ object MacroParam {
         p.paramType.toString,
         p.isRequired,
         p.cmdFlag,
+        p.description,
         p.value.map(Json.toJson(_)),
         p.default.map(Json.toJson(_)),
         p.options.map(Json.toJson(_).as[JsArray])
@@ -195,6 +198,7 @@ object MacroParam {
         p.paramType.toString,
         p.isRequired,
         p.cmdFlag,
+        p.description,
         p.value.map(Json.toJson(_)),
         p.default.map(Json.toJson(_)),
         p.options.map(Json.toJson(_).as[JsArray])
@@ -205,6 +209,7 @@ object MacroParam {
         p.paramType.toString,
         p.isRequired,
         p.cmdFlag,
+        p.description,
         p.value.map(Json.toJson(_)),
         p.default.map(Json.toJson(_)),
         //        p.value.map(Json.toJson(_)),
@@ -217,6 +222,7 @@ object MacroParam {
         p.paramType.toString,
         p.isRequired,
         "",
+        p.description,
         p.value.map(Json.toJson(_)),
         p.default.map(Json.toJson(_)),
         p.options.map(Json.toJson(_).as[JsArray])
@@ -227,6 +233,7 @@ object MacroParam {
         p.paramType.toString,
         p.isRequired,
         "",
+        p.description,
         p.value.map(Json.toJson(_)),
         p.default.map(Json.toJson(_)),
         p.options.map(Json.toJson(_).as[JsArray])
@@ -238,7 +245,6 @@ object MacroParam {
     Some(tuple)
   }
 }
-
 /**
  * Model for all types of parameters
  */
@@ -247,6 +253,7 @@ sealed trait MacroParam { //extends Cloneable
   def paramType: MacroParamType.Value
   def isRequired: Boolean
   def cmdFlag: String // "-o" || "--opt"
+  def description: Option[String]
   def value: Option[Any]
   def default: Option[Any]
   def options: Option[Seq[Any]]
@@ -276,6 +283,7 @@ sealed trait MacroParam { //extends Cloneable
 case class MacroBooleanParam(
   val name: String,
   val cmdFlag: String,
+  val description: Option[String] = None,
   var value: Option[Boolean] = None,
   val default: Option[Boolean] = Some(false)
 ) extends MacroParam {
@@ -307,6 +315,7 @@ case class MacroStringParam(
   val name: String,
   val isRequired: Boolean,
   val cmdFlag: String,
+  val description: Option[String] = None,
   var value: Option[String] = None,
   val default: Option[String] = None,
   val options: Option[Seq[String]] = None
@@ -329,6 +338,7 @@ case class MacroNumericParam(
   val name: String,
   val isRequired: Boolean,
   val cmdFlag: String,
+  val description: Option[String] = None,
   var value: Option[BigDecimal] = None,
   val default: Option[BigDecimal] = None,
   val options: Option[Seq[BigDecimal]] = None
@@ -351,6 +361,7 @@ case class MacroRangeParam(
   val name: String,
   val isRequired: Boolean = false,
   val cmdFlag: String,
+  val description: Option[String] = None,
   var value: Option[BigDecimalRange] = None,
   val default: Option[BigDecimalRange] = None
 ) extends MacroParam with LazyLogging {
@@ -397,6 +408,7 @@ case class MacroChoiceParamItem(name: String, cmdFlag: String) {
 /** Choice parameter: choose between options with cmdFlag (GUI: RadioBox) */
 case class MacroChoiceParam(
   val name: String,
+  val description: Option[String] = None,
   var value: Option[MacroChoiceParamItem] = None,
   val default: Option[MacroChoiceParamItem] = None,
   val options: Option[Seq[MacroChoiceParamItem]]
@@ -430,6 +442,7 @@ case class MacroChoiceParam(
 /** Selection parameter: choose between options with cmdFlag (GUI: ComboBox) */
 case class MacroSelectionParam(
   val name: String,
+  val description: Option[String] = None,
   var value: Option[MacroChoiceParamItem] = None,
   val default: Option[MacroChoiceParamItem] = None,
   val options: Option[Seq[MacroChoiceParamItem]]
@@ -467,6 +480,7 @@ case class MacroSelectionParam(
 case class MacroFilterParam(
   val name: String,
   val cmdFlag: String,
+  val description: Option[String] = None,
   var value: Option[Seq[MacroParam]] = None,
   val default: Option[Seq[MacroParam]] = None,
   val options: Option[Seq[MacroParam]] //contains filter's parameters as MacroParams

@@ -102,7 +102,8 @@ object MsConvert extends IFileConversionTool {
     inputFilePath: String,
     outputFilePath: String,
     conversionToolPath : String,
-    fileConversion: FileConversion
+    fileConversion: FileConversion,
+    javaArgs:Array[String] = Array()
   ): String = {
 
     val cmdLineBuffer = new ArrayBuffer[String]()

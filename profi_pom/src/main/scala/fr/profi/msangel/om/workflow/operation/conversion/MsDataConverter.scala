@@ -109,7 +109,8 @@ object MsDataConverter extends IFileConversionTool {
     inputFilePath: String,
     outputFilePath: String,
     conversionToolPath: String,
-    fileConversion: FileConversion
+    fileConversion: FileConversion,
+    javaArgs:Array[String] = Array()
   ): String = {
 
     val paramByName = fileConversion.config.params.map(p => p.name -> p).toMap
@@ -151,20 +152,20 @@ object MsDataConverter extends IFileConversionTool {
         if param.name != ParamName.PEAK_PICKING
       ) {
         param match {
-          /** Boolean **/
+          
           case boolean: MacroBooleanParam => {
             if (boolean.value.get == true) cmdLineBuffer += boolean.cmdFlag
           }
-          /** Choice **/
+          
           case choice: MacroSelectionParam => {
             cmdLineBuffer += choice.cmdFlag
           }
-          case _ => throw new Exception("invalid parameter type for this tool")
+        case _ => throw new Exception("Invalid parameter type for this tool: " + param)
         }
       }
     }
 
-    /** Build and return final command string **/
+    /* Build and return final command string **/
     cmdLineBuffer.mkString(" ")
   }
 }

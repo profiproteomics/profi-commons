@@ -1,13 +1,14 @@
 package fr.profi.msangel.om.workflow.operation.conversion
 
+import scala.collection.mutable.ArrayBuffer
+
 import java.io.File
+
 import fr.profi.msangel.om._
-import fr.profi.msangel.om.workflow.DefaultPeaklistSoftware
 import fr.profi.msangel.om.workflow.operation._
 import fr.profi.msangel.om.workflow.operation.ConversionToolConfig
 import fr.profi.msangel.om.workflow.operation.IFileConversionTool
 import fr.profi.util.scala.BigDecimalRange
-import scala.collection.mutable.ArrayBuffer
 
 
 object Raw2mzDB extends IFileConversionTool {
@@ -113,12 +114,12 @@ object Raw2mzDB extends IFileConversionTool {
   /**
    *  Generate command line
    */
-  //TODO
   def generateCmdLine(
     inputFilePath: String,
     outputFilePath: String,    
     conversionToolPath: String,
-    fileConversion: FileConversion
+    fileConversion: FileConversion,
+    javaArgs:Array[String] = Array()
   ): String = {
 
     val cmdLineBuffer = new ArrayBuffer[String]()
@@ -132,9 +133,9 @@ object Raw2mzDB extends IFileConversionTool {
     cmdLineBuffer += s"""-i "$inputFilePath""""
 
     /* Output file (MZDB) **/
-    val fileName = new File(inputFilePath).getName
-    val outputFormat = DataFileExtension.getPrettyName(fileConversion.outputFileFormat)
-//    val outputFilePath = fileConversion.outputDirectory + "/" + fileName + "." + outputFormat
+    //    val fileName = new File(inputFilePath).getName
+    //    val outputFormat = DataFileExtension.getPrettyName(fileConversion.outputFileFormat)
+    //    val outputFilePath = fileConversion.outputDirectory + "/" + fileName + "." + outputFormat
     cmdLineBuffer += s"""-o "$outputFilePath""""
 
     /* Additional conversion parameters **/

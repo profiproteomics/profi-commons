@@ -12,6 +12,7 @@ case class MSAngelServerConfig(
   var extractmsnPath: Option[String] = None,
   var raw2mzdbPath: Option[String] = None,
   var mzdbaccessPath: Option[String] = None,
+  var mzdbaccessJavaArgs: Option[Array[String]] = None,
 
   var mascotUrl: Option[String] = None,
 
