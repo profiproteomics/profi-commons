@@ -26,12 +26,12 @@ package object regex {
     def getPattern( s: String ) = this.getRegex( s ).pattern
 
     /** Use a Regex object to match a given string */
-    implicit class RichRegex(self: Regex) {
+    implicit class RichRegex(val self: scala.util.matching.Regex) extends AnyVal {
       def ~=(s: String) = self.pattern.matcher(s).matches
     }
     
     /** Match a string object to a given regular expression */
-    implicit class RichString(self: String) {
+    implicit class RichString(val self: String) extends AnyVal {
       
       /** Matching with regular expression provided as a Scala Regex object */
       def =~(r: util.matching.Regex): Boolean = r.pattern.matcher(self).matches

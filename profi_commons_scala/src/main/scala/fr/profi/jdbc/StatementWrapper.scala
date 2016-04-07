@@ -120,7 +120,8 @@ trait StatementWrapper {
 
 class PreparedStatementWrapper(
   val jdbcPrepStmt: PreparedStatement,
-  val dialect: AbstractSQLDialect ) extends StatementWrapper {
+  val dialect: AbstractSQLDialect
+) extends StatementWrapper {
   
   /**
    * Executes the statement with the previously set parameters
@@ -169,7 +170,6 @@ class PreparedStatementWrapper(
 class BatchStatementWrapper(    
   override val jdbcPrepStmt: PreparedStatement,
   override val dialect: AbstractSQLDialect
-  
 ) extends PreparedStatementWrapper(jdbcPrepStmt,dialect) {
   
   /**

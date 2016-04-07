@@ -171,7 +171,7 @@ Pattern DOUBLE_PATTERN = Pattern.compile(
   }
   
 
-  trait IValueContainer {
+  trait IValueContainer extends Any {
     
     def getBoolean(key: String): Boolean
     def getInt(key: String): Int
@@ -215,7 +215,7 @@ Pattern DOUBLE_PATTERN = Pattern.compile(
   
   // TODO: check the class http://grepcode.com/file_/repo1.maven.org/maven2/org.apache.wicket/wicket-util/6.13.0/org/apache/wicket/util/value/ValueMap.java/?v=source
   // There may be some interesting stuffs there
-  trait AnyMapLike extends IValueContainer {
+  trait AnyMapLike extends Any with IValueContainer {
     
     import fr.profi.util.sql.StringOrBoolAsBool.asBoolean
     
@@ -276,13 +276,13 @@ Pattern DOUBLE_PATTERN = Pattern.compile(
   }
   
   class AnyMap() extends HashMap[String,Any] with AnyMapLike
-  class AnyMapWrapper( wrappedMap: Map[String,Any] ) extends AnyMapLike {
+  class AnyMapWrapper( val wrappedMap: Map[String,Any] ) extends AnyVal with AnyMapLike {
     def apply(key: String): Any = wrappedMap(key)
     def contains(key: String): Boolean = wrappedMap.contains(key)
     def get(key: String): Option[Any] = wrappedMap.get(key)
   }
 
-  trait StringMapLike extends AnyMapLike {
+  trait StringMapLike extends Any with AnyMapLike {
     
     override def apply(key: String): String
     override def get(key: String): Option[String]
@@ -298,7 +298,7 @@ Pattern DOUBLE_PATTERN = Pattern.compile(
   }
   
   class StringMap() extends HashMap[String,String] with StringMapLike
-  class StringMapWrapper( wrappedMap: Map[String,String] ) extends StringMapLike {
+  class StringMapWrapper( val wrappedMap: Map[String,String] ) extends AnyVal with StringMapLike {
     def apply(key: String): String = wrappedMap(key)
     def contains(key: String): Boolean = wrappedMap.contains(key)
     def get(key: String): Option[String] = wrappedMap.get(key)
