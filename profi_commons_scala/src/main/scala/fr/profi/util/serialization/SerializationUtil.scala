@@ -1,4 +1,4 @@
-package fr.profi.util
+package fr.profi.util.serialization
 
 import java.lang.reflect.{Type, ParameterizedType}
 import com.fasterxml.jackson.annotation._
@@ -20,7 +20,6 @@ import com.fasterxml.jackson.module.scala.JsonScalaEnumeration
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 import org.msgpack.jackson.dataformat.MessagePackFactory
 
-package object serialization {
   
   trait ObjectMapperContainer {
      def getObjectMapper(): ObjectMapper
@@ -197,7 +196,7 @@ package object serialization {
       }
     }
   }
-  
+   
   // Previous version (for jackson <= 2.3.5)
   /*private[this] class CustomArrayOfDoubleSerializer() extends ArraySerializerBase[Array[Double]](classOf[Array[Double]], null) {
     
@@ -233,4 +232,3 @@ package object serialization {
     
   }*/
 
-}

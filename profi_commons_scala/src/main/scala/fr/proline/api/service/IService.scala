@@ -91,3 +91,9 @@ trait HasProgress extends LazyLogging {
   //def registerOnStepAction( stepNum: Int, action: () => Unit ): Unit = this.onStepActions(stepNum-1) += action
 
 }
+
+abstract class IServiceWrapper extends IService {
+  
+}
+
+
