@@ -73,7 +73,7 @@ trait ProfiJsonSerialization extends ProfiJacksonSerialization[String] {
     // Configure the property naming strategy with the Proline convention
     //println("mapper conf called")
     mapper.setPropertyNamingStrategy(
-      PropertyNamingStrategy.SNAKE_CASE
+      PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES
     )
     
     // Disable Exceptions for unknown properties
