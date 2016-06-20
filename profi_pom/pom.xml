@@ -45,20 +45,28 @@
     <dependency>
       <groupId>org.reactivemongo</groupId>
       <artifactId>reactivemongo-bson_2.11</artifactId>
-      <version>0.11.3</version>
+      <version>0.11.11</version>
     </dependency>
+    
+    <!-- Reactivemongo JSON
+    <dependency>
+      <groupId>org.reactivemongo</groupId>
+      <artifactId>reactivemongo-play-json_2.11</artifactId>
+      <version>0.11.11-play24</version>
+    </dependency>
+     -->
 
     <!-- Play! JSON -->
     <dependency>
       <groupId>com.typesafe.play</groupId>
       <artifactId>play-json_2.11</artifactId>
-      <version>2.3.10</version>
+      <version>2.4.6</version>
       
       <!-- Exclude jackson-annotations (older version) -->
       <exclusions>
         <exclusion>
           <groupId>com.fasterxml.jackson.core</groupId>
-          <artifactId>jackson-annotations</artifactId>          
+          <artifactId>jackson-annotations</artifactId>
         </exclusion>
         
         <!-- Exclude slf4j which is an older version than the logback dependency -->
@@ -71,12 +79,34 @@
       
     </dependency>
     
+    <!-- Play! JSON extension (add support for Tuples and Option serialization) -->
+    <dependency>
+      <groupId>org.cvogt</groupId>
+      <artifactId>play-json-extensions_2.11</artifactId>
+      <version>0.8.0</version>
+    </dependency>
+    
     <!-- Play! JSON variants (add support for traits serialization) -->
     <dependency>
       <groupId>org.julienrf</groupId>
       <artifactId>play-json-variants_2.11</artifactId>
-      <version>1.1.0</version> <!-- 2.0 -->
+      <version>1.1.0</version> <!-- Upgrade with play-json-derived-codecs_2.11 below -->
     </dependency>
+    
+    <!--
+    Play! JSON derived codecs (add support for traits serialization)
+    <dependency>
+      <groupId>org.julienrf</groupId>
+      <artifactId>play-json-derived-codecs_2.11</artifactId>
+      <version>3.2</version>
+    </dependency>
+    Include shapeless (it should be a dependency of play-json-derived-codecs)
+    <dependency>
+      <groupId>com.chuusai</groupId>
+      <artifactId>shapeless_2.11</artifactId>
+      <version>2.3.0</version>
+    </dependency>
+     -->
 
     <!-- ProFi Commons -->
     <dependency>

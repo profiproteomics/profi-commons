@@ -2,20 +2,18 @@ package fr.profi.msangel.om.workflow
 
 import scala.collection.mutable.HashMap
 
+import play.api.data.validation.ValidationError
+import play.api.libs.json._
+
+import fr.profi.msangel.om._
 import fr.profi.msangel.om.workflow.operation.conversion.MsDataConverter
 
-package object operation {
+import julienrf.variants.Variants
 
-  import java.io.File
-  
-  import play.api.data.validation.ValidationError
-  import play.api.libs.json._
-  
-  import julienrf.variants.Variants
-  
-  import fr.profi.msangel.om._
-  import fr.profi.msangel.om.DataFileExtension
-  import fr.profi.msangel.om.SearchEngine
+import org.cvogt.play.json.implicits.optionNoError
+//import org.cvogt.play.json.tuples._
+
+package object operation {
 
   /*
    * **************************************************************************** *
@@ -25,7 +23,7 @@ package object operation {
 
   /** JSON reader for Tuple2 **/
   //from https://gist.github.com/alexanderjarvis/4595298
-  implicit def tuple2Reads[A, B](implicit aReads: Reads[A], bReads: Reads[B]): Reads[Tuple2[A, B]] = Reads[Tuple2[A, B]] {
+  /*implicit def tuple2Reads[A, B](implicit aReads: Reads[A], bReads: Reads[B]): Reads[Tuple2[A, B]] = Reads[Tuple2[A, B]] {
     case JsArray(arr) if arr.size == 2 => for {
       a <- aReads.reads(arr(0))
       b <- bReads.reads(arr(1))
@@ -36,10 +34,27 @@ package object operation {
   /** JSON writer for Tuple2 **/
   implicit def tuple2Writes[A, B](implicit aWrites: Writes[A], bWrites: Writes[B]): Writes[Tuple2[A, B]] = new Writes[Tuple2[A, B]] {
     def writes(tuple: Tuple2[A, B]) = JsArray(Seq(aWrites.writes(tuple._1), bWrites.writes(tuple._2)))
+  }*/
+  
+  // From https://github.com/hmrc/simple-reactivemongo/blob/master/src/main/scala/uk/gov/hmrc/mongo/json/TupleFormats.scala
+  implicit def tuple2Reads[B, T1, T2](c : (T1, T2) => B)(implicit aReads: Reads[T1], bReads: Reads[T2]): Reads[B] = Reads[B] {
+    case JsArray(arr) if arr.size == 2 => for {
+      a <- aReads.reads(arr(0))
+      b <- bReads.reads(arr(1))
+    } yield c(a, b)
+    case _ => JsError(Seq(JsPath() -> Seq(ValidationError("Expected array of two elements"))))
+  }
+
+  implicit def tuple2Writes[T1, T2](implicit aWrites: Writes[T1], bWrites: Writes[T2]): Writes[Tuple2[T1, T2]] = new Writes[Tuple2[T1, T2]] {
+    def writes(tuple: Tuple2[T1, T2]) = JsArray(Seq(aWrites.writes(tuple._1), bWrites.writes(tuple._2)))
+  }
+  
+  implicit def tuple2Format[T1, T2](implicit aReads: Reads[T1], bReads: Reads[T2], aWrites: Writes[T1], bWrites: Writes[T2]) = {
+    Format(tuple2Reads[Tuple2[T1, T2], T1, T2]((t1, t2) => (t1, t2)), tuple2Writes[T1, T2])
   }
 
   /** JSON Format for HashMap[String, String] **/
-  implicit val objectMapFormat = new Format[HashMap[String, String]] {
+  implicit val stringMapFormat: Format[HashMap[String, String]] = new Format[HashMap[String, String]] {
 
     /** JSON reader for HashMap[String, String] **/
     // From http://stackoverflow.com/questions/19974014/how-to-deserialize-a-map-of-map-with-play
@@ -68,23 +83,21 @@ package object operation {
       JsObject(strTuples)
     }
   } // EOF objectMapFormat
-
+  
   /*
    * *************************************************** *
    * JSON Formats for case classes (related to workflow) *
    * *************************************************** *
    */
 
-  implicit val macroChoiceParamItemFormat = Json.format[MacroChoiceParamItem]
-  implicit val macroParamFormat = Json.format[MacroParam]
-  implicit val macroFilterParamFormat = Json.format[MacroFilterParam]
-  implicit val conversionToolConfigFormat = Json.format[ConversionToolConfig]
-
-  implicit val cmdLineExecutionFormat = Json.format[CmdLineExecution]
-  implicit val emailNotificationFormat = Json.format[EMailNotification]
-  implicit val webServiceCallFormat = Json.format[WebServiceCall]
-
+  implicit val macroParamFormat: Format[MacroParam] = Json.format[MacroParam]
+  implicit val macroChoiceParamItemFormat: Format[MacroChoiceParamItem] = Json.format[MacroChoiceParamItem]
+  implicit val macroFilterParamFormat: Format[MacroFilterParam] = Json.format[MacroFilterParam]
+  implicit val conversionToolConfigFormat: Format[ConversionToolConfig] = Json.format[ConversionToolConfig]
   
+  implicit val cmdLineExecutionFormat: Format[CmdLineExecution] = Json.format[CmdLineExecution]
+  implicit val emailNotificationFormat: Format[EMailNotification] = Json.format[EMailNotification]
+  implicit val webServiceCallFormat: Format[WebServiceCall] = Json.format[WebServiceCall]
   
   /**
    * ****************************************** *
@@ -96,12 +109,10 @@ package object operation {
     val emailNotification: Option[EMailNotification]
     val cmdLineExecution: Option[CmdLineExecution]
     val webServiceCall: Option[WebServiceCall]
-
+  
     /** Clone this workflow operation **/
     def cloneMe(): IWorkflowOperation
   }
-
-  
   
   /**
    * ************************** *
@@ -119,7 +130,7 @@ package object operation {
     cmdLineExecution: Option[CmdLineExecution] = None,
     webServiceCall: Option[WebServiceCall] = None
   ) extends IWorkflowOperation {
-
+  
     require(inputFileFormat != null, "Initial format must be specified")
     require(outputFileFormat != null, "Target format must be specified")
     require(config != null, "Conversion tool config must be specified")
@@ -142,7 +153,7 @@ package object operation {
       false
     }
   } // EOF FileConversion
-
+  
   
   
   /**
@@ -152,18 +163,18 @@ package object operation {
    */
   case class MzdbRegistration(
     instrumentId: Long, //uds ID
-
+  
     emailNotification: Option[EMailNotification] = None,
     cmdLineExecution: Option[CmdLineExecution] = None,
     webServiceCall: Option[WebServiceCall] = None
   ) extends IWorkflowOperation {
-
+  
     require(instrumentId > 0, "Invalid instrument ID for MzdbRegistration")
-
+  
     /** Clone this MzdbRegistration **/
     def cloneMe() = this.copy()
   } // EOF MzdbRegistration
-
+  
   
   
   /**
@@ -174,18 +185,18 @@ package object operation {
   case class FileTransfer(
     initFolder: String,
     targetFolder: String,
-
+  
     emailNotification: Option[EMailNotification] = None,
     cmdLineExecution: Option[CmdLineExecution] = None,
     webServiceCall: Option[WebServiceCall] = None
   ) extends IWorkflowOperation {
-
+  
     /** Clone this FileTransfer **/
     def cloneMe() = this.copy()
   } // EOF FileTransfer
-
-
-
+  
+  
+  
   /**
    * ********************************** *
    * Model for a PeaklistIdentification *
@@ -197,16 +208,16 @@ package object operation {
     cmdLineExecution: Option[CmdLineExecution] = None,
     webServiceCall: Option[WebServiceCall] = None
   ) extends IWorkflowOperation {
-
+  
     /** Clone this PeaklistIdentification **/
     def cloneMe() = this.copy()
-
+  
     /** Check is some search has no MsiSearchForm **/
     def someSearchWithoutTemplate() = !this.searchEnginesWithFormIds.map(_._2).forall(_.isDefined)
   } // EOF PeaklistIdentification
-
   
-
+  
+  
   /**
    * ************************* *
    * Model for a ProlineImport *
@@ -219,19 +230,21 @@ package object operation {
     format: ProlineDataFileFormat.Value = ProlineDataFileFormat.MASCOT,
     protMatchDecoyRuleId: Option[Long] = None, //uds ID
     importerProperties: HashMap[String, String] = HashMap(),
-
+  
     emailNotification: Option[EMailNotification] = None,
     cmdLineExecution: Option[CmdLineExecution] = None,
     webServiceCall: Option[WebServiceCall] = None
   ) extends IWorkflowOperation {
-
+  
     require(instrumentConfigId > 0, "Invalid instrumentConfig ID for ProlineImport")
     require(peaklistSoftwareId > 0, "Invalid peaklistSoftware ID for ProlineImport")
-
+  
     /** Clone this ProlineImport **/
     def cloneMe() = this.copy()
-  } // EOF ProlineImport
+  } // end of ProlineImport
 
   /* JSON Format for any workflow operation */
+  // TODO: try to upgrade JSON Variants (I hope you like to drink hot coffee)
+  //implicit val workflowOperationFormat: OFormat[IWorkflowOperation] = derived.oformat //((__ \ "type").format[String]) //[IWorkflowOperation] //("type")
   implicit val workflowOperationFormat: Format[IWorkflowOperation] = Variants.format[IWorkflowOperation]("type")
 }

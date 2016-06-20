@@ -125,6 +125,19 @@ object MongoDbCollection extends Enumeration {
 }
 
 /**
+ * Enumerates udsDB table names used in MSAngel.
+ */
+object UdsDbTable extends Enumeration {
+  
+  val INSTRUMENT = Value("instrument")
+  val INSTRUMENT_CONFIG = Value("instrument_config")
+  val PEAKLIST_SOFTWARE = Value("peaklist_software")
+  val PROJECT = Value("project")
+  val PROT_MATCH_DECOY_RULE = Value("prot_match_decoy_rule")
+  val USER_ACCOUNT = Value("user_account")
+}
+
+/**
  * Enumerates accepted search engines.
  */
 object SearchEngine extends JsonEnumeration {

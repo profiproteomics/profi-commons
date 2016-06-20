@@ -13,6 +13,8 @@ import fr.profi.msangel.om.workflow.operation._
 import fr.profi.pwx.util.json.PWXJson
 import fr.profi.util.lang.EnhancedEnum
 
+import org.cvogt.play.json.implicits.optionNoError
+
 package object om {
 
   /** 
@@ -87,6 +89,6 @@ package object om {
 
   implicit val fileMonitoringConfigFormat = Json.format[FileMonitoringConfig] //not extending IMongoDbEntity because embedded doc
 
-  implicit val workflowTaskFormat = PWXJson.entityFormat(Json.format[WorkflowTask])
   implicit val msiTaskFormat = PWXJson.entityFormat(Json.format[MsiTask])
+  implicit val workflowTaskFormat = PWXJson.entityFormat(Json.format[WorkflowTask])
 }

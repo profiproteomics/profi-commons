@@ -14,6 +14,8 @@ import fr.profi.msangel.om.FileConversionTool
 import fr.profi.msangel.om.workflow.PeaklistSoftware
 import fr.profi.util.scala.BigDecimalRange
 
+import org.cvogt.play.json.implicits.optionNoError
+
 /**
  * Describes file conversion tools
  */
@@ -22,6 +24,8 @@ import fr.profi.util.scala.BigDecimalRange
 trait IFileConversionTool {
   
   def getName(): FileConversionTool.Value
+  
+  // TODO? getMinVersion, getVersion, getVersionsRange
   
   def getConfigTemplate(): ConversionToolConfig
   
@@ -126,6 +130,8 @@ object MacroParamType extends JsonEnumeration {
  * Handles serialization & de-serialization of parameters
  */
 object MacroParam {
+  
+  implicit val macroChoiceParamItemFormat: Format[MacroChoiceParamItem] = fr.profi.msangel.om.workflow.operation.macroChoiceParamItemFormat
 
   def apply(
     name: String,
