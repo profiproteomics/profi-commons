@@ -1,12 +1,19 @@
 package fr.profi.util
 
 import fr.profi.util.primitives.isZeroOrNaN
-import scala.collection.mutable.ArrayBuffer
-import org.apache.commons.math3.stat.StatUtils
-import fr.profi.util.random.randomGaussian
 
 /** Miscellaneous helpers */
 package object math {
+  
+  def filteredMean(s: Array[Float]): Float = {
+    val defS = s.filter( isZeroOrNaN(_) == false )
+    if( defS.isEmpty ) Float.NaN else defS.sum / defS.length
+  }
+  
+  def filteredMedian(s: Array[Float]): Float = {
+    val defS = s.filter( isZeroOrNaN(_) == false )
+    if( defS.isEmpty ) Float.NaN else median(defS)
+  }
 
   /** Computes the median value of a sequence of Doubles */
   /*def median(s: Seq[Double]): Double = {
@@ -18,16 +25,6 @@ package object math {
     val (lower, upper) = s.sortWith(_<_).splitAt(s.size / 2)
     if (s.size % 2 == 0) (lower.last + upper.head) / 2.0f else upper.head
   }*/
-  
-  def filteredMean(s: Array[Float]): Float = {
-    val defS = s.filter( isZeroOrNaN(_) == false )
-    if( defS.isEmpty ) Float.NaN else defS.sum / defS.length
-  }
-  
-  def filteredMedian(s: Array[Float]): Float = {
-    val defS = s.filter( isZeroOrNaN(_) == false )
-    if( defS.isEmpty ) Float.NaN else median(defS)
-  }
   
   def median[T](s: Seq[T])(implicit n: Fractional[T]): T = {
     import n._
@@ -187,77 +184,4 @@ package object math {
     linearInterpolation(xValue,xyValues,true)
   }
   
-  def generatePositiveGaussianValues(
-    expectedMean: Double,
-    expectedStdDev: Double,
-    stdDevTol: Float = 0.05f,
-    nbValues: Int = 3,
-    maxIterations: Int = 50000
-  ): Array[Double] = {
-    require( expectedMean.isNaN == false, "mean is NaN")
-    require( isZeroOrNaN(expectedStdDev) == false, "expectedStdDev equals zero or is NaN")
-    require( stdDevTol >= 0, "stdDevTol must be greater than zero")
-    require( nbValues >= 3, "can't generate less than 3 values to obtain the expectedStdDev")
-    require( maxIterations >= 0, "maxIterations must be greater than zero")
-    
-    val stdDevAbsTol = expectedStdDev * stdDevTol
-    var values = new ArrayBuffer[Double](nbValues)
-    
-    // First pass to initialize the values
-    for( i <- 0 until nbValues ) {
-      values += Math.abs( randomGaussian(expectedMean, expectedStdDev) )
-    }
-    
-    val centerIdx = (nbValues / 2) - 1
-    
-    //println("expectedStdDev",expectedStdDev)
-    
-    var curStdDev = Math.sqrt( StatUtils.variance(values.toArray) )
-    
-    val minValue = expectedMean - 3 * expectedStdDev
-    val maxValue = expectedMean + 3 * expectedStdDev
-    
-    //println("optimizing curStdDev")
-    var i = 0
-    while( Math.abs(curStdDev - expectedStdDev) > stdDevAbsTol ) {
-      i += 1
-      
-      if( i == maxIterations ) {
-        return null
-      }
-      //println("curStdDev",curStdDev)
-      
-      val sortedValues = values.sorted
-      
-      // If curStdDev is too high
-      values = if( curStdDev > expectedStdDev ) {
-        //println(s"curStdDev $curStdDev is too high")
-        sortedValues.tail
-      // Else curStdDev is too low
-      } else {
-        //println(s"curStdDev $curStdDev is too low ")
-        sortedValues.remove(centerIdx)
-        sortedValues
-      }
-      assert( values.length == nbValues - 1)
-      
-      // Generate a new value that must be between minValue and maxValue
-      var isValueInAcceptableRange = false
-      while( isValueInAcceptableRange == false ) {
-        val value = Math.abs( randomGaussian(expectedMean, expectedStdDev) )
-        if( value > minValue && value < maxValue ) {
-          values += value
-          isValueInAcceptableRange = true
-        }
-      }
-      
-      curStdDev = Math.sqrt( StatUtils.variance(values.toArray) )
-    }
-    
-    // Center the generated values around the expectedMean
-    val currentMean = values.sum / nbValues
-    val centeredValues = values.map( _ * expectedMean / currentMean )
-    
-    centeredValues.toArray
-  }
 }
