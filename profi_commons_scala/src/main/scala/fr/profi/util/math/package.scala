@@ -2,18 +2,9 @@ package fr.profi.util
 
 import fr.profi.util.primitives.isZeroOrNaN
 
+
 /** Miscellaneous helpers */
 package object math {
-  
-  def filteredMean(s: Array[Float]): Float = {
-    val defS = s.filter( isZeroOrNaN(_) == false )
-    if( defS.isEmpty ) Float.NaN else defS.sum / defS.length
-  }
-  
-  def filteredMedian(s: Array[Float]): Float = {
-    val defS = s.filter( isZeroOrNaN(_) == false )
-    if( defS.isEmpty ) Float.NaN else median(defS)
-  }
 
   /** Computes the median value of a sequence of Doubles */
   /*def median(s: Seq[Double]): Double = {
@@ -25,6 +16,26 @@ package object math {
     val (lower, upper) = s.sortWith(_<_).splitAt(s.size / 2)
     if (s.size % 2 == 0) (lower.last + upper.head) / 2.0f else upper.head
   }*/
+  
+  def filteredMean(s: Array[Float]): Float = {
+    val defS = s.filter( isZeroOrNaN(_) == false )
+    if( defS.isEmpty ) Float.NaN else defS.sum / defS.length
+  }
+  
+  def filteredMedian(s: Array[Float]): Float = {
+    val defS = s.filter( isZeroOrNaN(_) == false )
+    if( defS.isEmpty ) Float.NaN else median(defS)
+  }
+  
+  def filteredMean(s: Array[Double]): Double = {
+    val defS = s.filter( isZeroOrNaN(_) == false )
+    if( defS.isEmpty ) Double.NaN else defS.sum / defS.length
+  }
+  
+  def filteredMedian(s: Array[Double]): Double = {
+    val defS = s.filter( isZeroOrNaN(_) == false )
+    if( defS.isEmpty ) Double.NaN else median(defS)
+  }
   
   def median[T](s: Seq[T])(implicit n: Fractional[T]): T = {
     import n._
