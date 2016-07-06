@@ -45,17 +45,9 @@
       <artifactId>logback-classic</artifactId>
       <!-- Version inherited from ProFI-Pom -->
     </dependency>
-
     <dependency>
       <groupId>com.typesafe.scala-logging</groupId>
       <artifactId>scala-logging_${scala.version}</artifactId>
-      <!-- Version inherited from ProFI-Pom -->
-    </dependency>
-
-    <!-- Commons -->
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-math3</artifactId>
       <!-- Version inherited from ProFI-Pom -->
     </dependency>
 

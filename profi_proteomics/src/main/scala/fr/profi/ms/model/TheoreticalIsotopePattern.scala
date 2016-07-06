@@ -5,8 +5,9 @@ package fr.profi.ms.model
  *
  */
 case class TheoreticalIsotopePattern(
-    mzAbundancePairs: Array[(Double, Float)],
-    charge: Int) {
+  mzAbundancePairs: Array[(Double, Float)],
+  charge: Int
+) {
 
   lazy val monoMz = mzAbundancePairs(0)._1
   lazy val isotopeCount = mzAbundancePairs.length
