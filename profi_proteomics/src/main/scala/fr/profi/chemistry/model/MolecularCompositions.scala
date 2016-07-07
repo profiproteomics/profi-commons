@@ -1,9 +1,10 @@
 package fr.profi.chemistry.model
 
 import scala.collection.mutable.HashMap
+import scala.collection.mutable.LongMap
+import scala.collection.MapLike
 import implicits._
 import MolecularConstants._
-import scala.collection.MapLike
 
 object AbundanceMapOps {
 
@@ -168,32 +169,51 @@ abstract class AbstractMolecularEntityComposition[M <: IMolecularEntity] {
 }
 
 class AminoAcidComposition(
-    val abundanceMap: HashMap[AminoAcidResidue, Float]) extends AbstractMolecularEntityComposition[AminoAcidResidue] {
+  val abundanceMap: HashMap[AminoAcidResidue, Float]
+) extends AbstractMolecularEntityComposition[AminoAcidResidue] {
   require(abundanceMap != null, "abundanceMap is null")
-
+  
   // Define a secondary constructor using an amino acid sequence as input
-  def this(sequence: String, aaTable: AminoAcidTableLike) = {
+  def this(sequence: String, code1ToAA: Char => Option[AminoAcidResidue] ) = {
     this({
-      val tmpAbundanceMap = new HashMap[AminoAcidResidue, Float]()
-
       val seqWithoutSpace = sequence.replaceAll("\\s+", "")
+      val seqLen = seqWithoutSpace.length
 
-      // Update abundanceMap
-      val aaChars = sequence.toCharArray()
-      for (aaChar <- aaChars) {
+      // Count the AA occurrences
+      val aaCountByChar = new LongMap[Int]()
+      
+      var i = 0
+      while (i < seqLen) {
+        val aaCharAsInt = seqWithoutSpace.charAt(i).toInt
+        val aaCount = aaCountByChar.getOrElseUpdate(aaCharAsInt, 0)
+        aaCountByChar(aaCharAsInt) = aaCount + 1
+        i += 1
+      }
+      
+      // Build the abundanceMap
+      val tmpAbundanceMap = new HashMap[AminoAcidResidue, Float]()
+      
+      for ( (aaCharAsInt,aaCount) <- aaCountByChar) {
 
-        val aaSymbol = aaChar.toString()
-        val aaOpt = aaTable.getAminoAcidOpt(aaSymbol)
-        require(aaOpt.isDefined, s"amino acid ${aaSymbol} is missing in provided aaTable")
+        val aaChar = aaCharAsInt.toChar
+        val aaOpt = code1ToAA(aaChar)
+        require(aaOpt.isDefined, s"amino acid $aaChar is missing in provided aaTable")
 
-        val aa = aaOpt.get
-        val aaCount = tmpAbundanceMap.getOrElseUpdate(aa, 0)
-        tmpAbundanceMap(aa) = aaCount + 1
+        tmpAbundanceMap(aaOpt.get) = aaCount
       }
 
       tmpAbundanceMap
-
     })
+  }
+  
+  // Define a secondary constructor using an aaTable mapping
+  def this(sequence: String, aaTable: IMolecularTable[AminoAcidResidue]) = {
+    this( sequence, { char: Char => aaTable.getMolecurlarEntityOpt(char.toString) } )
+  }
+  
+  // Define a secondary constructor using an aaByCode1 mapping
+  def this(sequence: String, aaByCode1: LongMap[AminoAcidResidue]) = {
+    this( sequence, { char: Char => aaByCode1.get(char) } )
   }
 
   override def clone() = new AminoAcidComposition(abundanceMap.clone())
@@ -243,7 +263,8 @@ class AminoAcidComposition(
 }
 
 class AtomComposition( // or ElementalComposition
-    val abundanceMap: HashMap[Atom, Float]) extends AbstractMolecularEntityComposition[Atom] {
+  val abundanceMap: HashMap[Atom, Float]
+) extends AbstractMolecularEntityComposition[Atom] {
   require(abundanceMap != null, "abundanceMap is null")
 
   // Define a secondary constructor using a formula as input
@@ -349,7 +370,8 @@ class AtomComposition( // or ElementalComposition
 }
 
 class AtomIsotopeComposition(
-    val abundanceMap: HashMap[AtomIsotopicVariant, Float]) extends AbstractMolecularEntityComposition[AtomIsotopicVariant] {
+  val abundanceMap: HashMap[AtomIsotopicVariant, Float]
+) extends AbstractMolecularEntityComposition[AtomIsotopicVariant] {
 
   override def clone() = new AtomIsotopeComposition(abundanceMap.clone())
 
