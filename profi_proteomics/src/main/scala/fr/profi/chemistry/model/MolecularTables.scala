@@ -15,16 +15,37 @@ trait IMolecularTable[M <: IMolecularEntity] {
     for (entity <- entities) hmBuilder += (entity.symbol -> entity)
     hmBuilder.result
   }
+  
+  def molecularEntities: List[M]
+  def molecularEntityMap: HashMap[String, M]
+
+  // TODO: move thse methods to CustomMolecularTable ?
+  def hasMolecurlarEntity(symbol: String): Boolean = molecularEntityMap.contains(symbol)
+  def getMolecurlarEntity(symbol: String): M = molecularEntityMap.apply(symbol)
+  def getMolecurlarEntityOpt(symbol: String): Option[M] = molecularEntityMap.get(symbol)
+  
+  def toCustomTable(): CustomMolecularTable = new CustomMolecularTable(molecularEntities)
 
 }
 
-object AtomTable extends IMolecularTable[Atom] {
+class CustomMolecularTable(val molecularEntities: List[IMolecularEntity]) extends IMolecularTable[IMolecularEntity] {
+  
+  def this(molecularTable: IMolecularTable[IMolecularEntity]) = {
+    this(molecularTable.molecularEntities)
+  }
+  
+  val molecularEntityMap: HashMap[String, IMolecularEntity] = this.buildMap(molecularEntities)
+  
+  def addMolecurlarEntity(symbol: String, entity: IMolecularEntity): Option[IMolecularEntity] = molecularEntityMap.put(symbol, entity)
+}
+
+object AtomTable {
   //def apply( atoms: Seq[Atom] ) = new AtomTable(this.buildMap(atoms))
-  def apply(atoms: Array[Atom]) = new AtomTable(atoms)
+  def apply(atoms: List[Atom]) = new AtomTable(atoms)
 }
 
 //class AtomTable private( protected val atomMap: HashMap[String,Atom] ) extends AtomTableLike
-class AtomTable(val atoms: Array[Atom]) extends AtomTableLike {
+class AtomTable(val atoms: List[Atom]) extends AtomTableLike {
   require(
     atoms.length == atoms.map(_.symbol).distinct.length,
     "atoms contains duplicated entries"
@@ -32,8 +53,11 @@ class AtomTable(val atoms: Array[Atom]) extends AtomTableLike {
 }
 
 trait AtomTableLike extends IMolecularTable[Atom] {
-
-  def atoms: Array[Atom]
+  
+  def molecularEntities: List[Atom] = atoms
+  def molecularEntityMap: HashMap[String, Atom] = atomMap
+  
+  def atoms: List[Atom]
   protected lazy val atomMap: HashMap[String, Atom] = this.buildMap(atoms)
 
   private lazy val atomByProtonNumber = atomMap.map(tuple => tuple._2.protonNumber -> tuple._2).toMap
@@ -47,13 +71,13 @@ trait AtomTableLike extends IMolecularTable[Atom] {
 
 }
 
-object AminoAcidTable extends IMolecularTable[AminoAcidResidue] {
+object AminoAcidTable {
   //def apply( aaSeq: Seq[AminoAcidResidue] ) = new AminoAcidTable(this.buildMap(aaSeq))
-  def apply(aminoAcids: Array[AminoAcidResidue]) = new AminoAcidTable(aminoAcids)
+  def apply(aminoAcids: List[AminoAcidResidue]) = new AminoAcidTable(aminoAcids)
 }
 
 //class AminoAcidTable private( protected val aaMap: HashMap[String,AminoAcidResidue] ) extends AminoAcidTableLike
-class AminoAcidTable(val aminoAcids: Array[AminoAcidResidue]) extends AminoAcidTableLike {
+class AminoAcidTable(val aminoAcids: List[AminoAcidResidue]) extends AminoAcidTableLike {
   require(
     aminoAcids.length == aminoAcids.map(_.symbol).distinct.length,
     "aminoAcids contains duplicated entries"
@@ -61,8 +85,11 @@ class AminoAcidTable(val aminoAcids: Array[AminoAcidResidue]) extends AminoAcidT
 }
 
 trait AminoAcidTableLike extends IMolecularTable[AminoAcidResidue] {
+  
+  def molecularEntities: List[AminoAcidResidue] = aminoAcids
+  def molecularEntityMap: HashMap[String, AminoAcidResidue] = aaMap
 
-  def aminoAcids: Array[AminoAcidResidue]
+  def aminoAcids: List[AminoAcidResidue]
   protected lazy val aaMap: HashMap[String, AminoAcidResidue] = this.buildMap(aminoAcids)
 
   lazy val averageAAMass = this.aminoAcids.foldLeft(0.0)((s, a) => s + a.monoMass * a.occurrence)
@@ -118,7 +145,7 @@ trait AminoAcidTableLike extends IMolecularTable[AminoAcidResidue] {
 
 object BiomoleculeAtomTable extends AtomTableLike {
 
-  val atoms = Array(
+  val atoms = List(
     Atom(symbol = "H", name = "Hydrogen", atomicNumber = 1, isotopes = Array(
       Isotope(1, 1.00782503207, 0.999885f),
       Isotope(2, 2.0141017778, 0.000115f)
@@ -161,9 +188,10 @@ object BiomoleculeAtomTable extends AtomTableLike {
 // Sources :
 // * http://en.wikipedia.org/wiki/Proteinogenic_amino_acid
 // * https://proteomicsresource.washington.edu/tools/masses.php
+// * http://www.matrixscience.com/help/aa_help.html
 object HumanAminoAcidTable extends AminoAcidTableLike {
 
-  val aminoAcids = Array(
+  val aminoAcids = List(
     AminoAcidResidue(
       code1 = 'A',
       code3 = "Ala",
@@ -365,16 +393,6 @@ object HumanAminoAcidTable extends AminoAcidTableLike {
       pI = 6.3f,
       codons = Array("CCA", "CCC", "CCG", "CCU")
     ),
-    /*AminoAcidResidue(
-      code1 = 'O',
-      code3 = "Pyl",
-      name = "Pyrrolysine",
-      formula = "C(12) H(21) O(3) N(3)",
-      monoMass = 237.1477266,
-      averageMass = 237.298143,
-      occurrence = 0f,
-      codons = Array("UAG")
-    ),*/
     AminoAcidResidue(
       code1 = 'U',
       code3 = "Sec",
@@ -457,76 +475,61 @@ object HumanAminoAcidTable extends AminoAcidTableLike {
       codons = Array("GUA", "GUC", "GUG", "GUU")
     )
   )
+  
+  
 
 }
 
-/*object AtomTable {
-  def apply(ts: (String, Atom)*): AtomTable = new AtomTable(ts.toMap)
+object ProteinogenicAminoAcidTable extends AminoAcidTableLike {
+  
+  val aminoAcids = HumanAminoAcidTable.aminoAcids ++ List(
+    // massCalcObject.setSymbolModification('B', 114.53494)
+    AminoAcidResidue(
+      code1 = 'B',
+      code3 = "Asx",
+      name = "Asn or Asp",
+      formula = "",
+      monoMass = 114.5349353,
+      averageMass = 114.59502
+    ),
+    // massCalcObject.setSymbolModification('J', 113.084064)
+    AminoAcidResidue(
+      code1 = 'J',
+      code3 = "Xle",
+      name = "Ile or Leu",
+      formula = "C(6) H(11) O N",
+      monoMass = 113.084064,
+      averageMass = 113.15764
+    ),
+    // Was: massCalcObject.setSymbolModification('O', 255.158295) (237 + 18 ???)
+    AminoAcidResidue(
+      code1 = 'O',
+      code3 = "Pyl",
+      name = "Pyrrolysine",
+      formula = "C(12) H(21) O(3) N(3)",
+      monoMass = 237.1477266,
+      averageMass = 237.298143,
+      occurrence = 0f,
+      codons = Array("UAG")
+    ),
+    // massCalcObject.setSymbolModification('X', 111.0)
+    AminoAcidResidue(
+      code1 = 'X',
+      code3 = "Xaa",
+      name = "Unknown",
+      formula = "",
+      monoMass = 111.0,
+      averageMass = 111.0
+    ),
+    // massCalcObject.setSymbolModification('Z', 128.55059)
+    AminoAcidResidue(
+      code1 = 'Z',
+      code3 = "Glx",
+      name = "Glu or Gln",
+      formula = "",
+      monoMass = 128.5505853,
+      averageMass = 128.6216
+    )
+  )
 }
 
-class Table[V] private(atomMap: Map[String, V]) extends Map[String, V]  {
-  
-  // Implement Map interface
-  def +[B1 >: V](kv: (String, V)) = new Table(atomMap + kv)
-  def -(key: String) = new Table(atomMap - key)
-  def get(key: String) = atomMap.get(key)
-  def iterator = atomMap.iterator
-  
-}
-
-class AtomTable extends Table[Atom] {
-  
-}*/
-
-/*
-object AtomTable extends ImmutableMapFactory[HashMap] { //extends ImmutableMapFactory[HashMap]
-  
-  def empty[A, B]: HashMap[A,B] = EmptyHashMap.asInstanceOf[HashMap[A,B]]
-  private object EmptyHashMap extends HashMap[java.lang.String,Atom] { }
-  
-  //private val factory = scala.collection.immutable.HashMap.apply[String,Atom]
-  
-  //def empty[A, B]: CC[A, B] =
-  
-  //def apply(atoms: (String, Atom)*): AtomTable = new AtomTable() ++ atoms.map { case (s,a) => (a -> a) }
-  //def apply(atoms: Seq[](String, Atom)] ): AtomTable = new AtomTable() ++ atoms.map( a => (a.symbol -> a) )
-  def apply( atoms: Seq[Atom] ) = {
-    
-    val hmBuilder = this.newBuilder[String,Atom]
-    
-    for( atom <- atoms) hmBuilder += (atom.symbol -> atom)
-    
-    //AtomTable.n
-    //new AtomTable() ++ atoms.map( a => (a.symbol -> a) )
-    
-    hmBuilder.result().asInstanceOf[AtomTable]
-  }
-  
-}*/
-
-/*object AtomTable2 {
-  
-  final val EmptyAtomTable = new AtomTable2()
-  
-  //private object EmptyAtomTable2 extends AtomTable2 { }
-  private class AtomTableBuilder extends MapBuilder[String,Atom,AtomTable2]( EmptyAtomTable )
-  
-  def apply( atoms: Seq[Atom] ) = {
-    
-    val b = new AtomTableBuilder
-  
-  
-    val hmBuilder = HashMap.newBuilder[String,Atom]    
-    for( atom <- atoms) b += (atom.symbol -> atom)      
-    val c = b.result
-    
-    new AtomTable2() ++ hmBuilder.result //atoms.map( a => a.symbol -> a)
-  }
-}
-
-class AtomTable2 
-  extends HashMap[String,Atom] 
-  with scala.collection.GenMap[String, Atom]
-  with scala.collection.GenMapLike[String, Atom,AtomTable2] {
-  
-}*/

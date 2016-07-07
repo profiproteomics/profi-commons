@@ -23,6 +23,13 @@ trait IMolecularEntity {
 
 }
 
+case class MolecularEntity(
+  val symbol: String,
+  val name: String,
+  val monoMass: Double,
+  val averageMass: Double
+) extends IMolecularEntity
+
 trait IMolecule extends IMolecularEntity {
 
   val formula: String
@@ -46,7 +53,7 @@ case class AminoAcidResidue(
   formula: String,
   monoMass: Double,
   averageMass: Double,
-  occurrence: Float, // occurrence in human proteins
+  occurrence: Float = 0f, // occurrence in human proteins
   pKa1: Float = 0, // C-term pKa
   pKa2: Float = 0, // N-term pKa
   pKa3: Float = 0, // side chain pKa
