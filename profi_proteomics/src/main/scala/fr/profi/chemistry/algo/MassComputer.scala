@@ -21,11 +21,11 @@ class MassComputer(
   
   import MassPrecision._
 
-  def calcPeptideMass(aaSequence: String): Double = {
-    this.calcPeptideMass(aaSequence.toCharArray())
+  def computeMass(aaSequence: String): Double = {
+    this.computeMass(aaSequence.toCharArray())
   }
   
-  def calcPeptideMass(aaSequence: Array[Char]): Double = {
+  def computeMass(aaSequence: Array[Char]): Double = {
     require( aaSequence.nonEmpty, "aaSequence is empty" )
     
     val symbols = aaSequence.map(_.toString)

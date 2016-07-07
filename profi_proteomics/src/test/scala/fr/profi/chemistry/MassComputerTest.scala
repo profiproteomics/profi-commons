@@ -19,7 +19,7 @@ class MassComputerTest extends StrictLogging {
     for ((sequence,expectedMass) <- sequenceAndMassList) {
       logger.info("Peptide sequence = " + sequence)
   
-      val mass = massComputer.calcPeptideMass(sequence)
+      val mass = massComputer.computeMass(sequence)
       logger.info("Computed mass = " + mass)
       
       Assert.assertEquals(expectedMass, mass, 0.01)
@@ -40,7 +40,7 @@ class MassComputerTest extends StrictLogging {
     for ((sequence,expectedMass) <- sequenceAndMassList) {
       logger.info("Peptide sequence = " + sequence)
   
-      val mass = massComputer.calcPeptideMass(sequence)
+      val mass = massComputer.computeMass(sequence)
       logger.info("Computed mass = " + mass)
       
       Assert.assertEquals(expectedMass, mass, 0.01)
