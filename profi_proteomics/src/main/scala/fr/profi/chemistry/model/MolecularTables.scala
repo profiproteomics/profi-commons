@@ -2,6 +2,7 @@ package fr.profi.chemistry.model
 
 import scala.collection.generic.ImmutableMapFactory
 import scala.collection.mutable.HashMap
+import scala.collection.mutable.LongMap
 import scala.collection.mutable.MapBuilder
 
 /**
@@ -91,6 +92,14 @@ trait AminoAcidTableLike extends IMolecularTable[AminoAcidResidue] {
 
   def aminoAcids: List[AminoAcidResidue]
   protected lazy val aaMap: HashMap[String, AminoAcidResidue] = this.buildMap(aminoAcids)
+  
+  lazy val aaByCode1 = {
+    val aaByLong = new LongMap[AminoAcidResidue]
+     for (aa <- this.aminoAcids) {
+      aaByLong.put(aa.code1.toInt, aa)
+    }
+    aaByLong
+  }
 
   lazy val averageAAMass = this.aminoAcids.foldLeft(0.0)((s, a) => s + a.monoMass * a.occurrence)
 

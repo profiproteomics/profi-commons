@@ -174,7 +174,7 @@ class AminoAcidComposition(
   require(abundanceMap != null, "abundanceMap is null")
   
   // Define a secondary constructor using an amino acid sequence as input
-  def this(sequence: String, code1ToAA: Char => Option[AminoAcidResidue] ) = {
+  private def this(sequence: String, aaByCode1: LongMap[AminoAcidResidue] ) = {
     this({
       val seqWithoutSpace = sequence.replaceAll("\\s+", "")
       val seqLen = seqWithoutSpace.length
@@ -195,9 +195,8 @@ class AminoAcidComposition(
       
       for ( (aaCharAsInt,aaCount) <- aaCountByChar) {
 
-        val aaChar = aaCharAsInt.toChar
-        val aaOpt = code1ToAA(aaChar)
-        require(aaOpt.isDefined, s"amino acid $aaChar is missing in provided aaTable")
+        val aaOpt = aaByCode1.get(aaCharAsInt)
+        require(aaOpt.isDefined, s"amino acid ${aaCharAsInt.toChar} is missing in provided aaTable")
 
         tmpAbundanceMap(aaOpt.get) = aaCount
       }
@@ -207,13 +206,8 @@ class AminoAcidComposition(
   }
   
   // Define a secondary constructor using an aaTable mapping
-  def this(sequence: String, aaTable: IMolecularTable[AminoAcidResidue]) = {
-    this( sequence, { char: Char => aaTable.getMolecurlarEntityOpt(char.toString) } )
-  }
-  
-  // Define a secondary constructor using an aaByCode1 mapping
-  def this(sequence: String, aaByCode1: LongMap[AminoAcidResidue]) = {
-    this( sequence, { char: Char => aaByCode1.get(char) } )
+  def this(sequence: String, aaTable: AminoAcidTableLike) = {
+    this( sequence, aaTable.aaByCode1 )
   }
 
   override def clone() = new AminoAcidComposition(abundanceMap.clone())

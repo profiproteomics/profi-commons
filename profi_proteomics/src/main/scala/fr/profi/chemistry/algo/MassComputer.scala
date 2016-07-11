@@ -1,7 +1,5 @@
 package fr.profi.chemistry.algo
 
-import scala.collection.mutable.LongMap
-
 import fr.profi.chemistry.model._
 import fr.profi.util.lang.EnhancedEnum
 
@@ -14,21 +12,16 @@ object MassPrecision extends EnhancedEnum {
  *
  */
 class MassComputer(
-  val aaTable: IMolecularTable[AminoAcidResidue],
+  val aaTable: AminoAcidTableLike,
   val massPrecision: MassPrecision.Value = MassPrecision.MONOISOTOPIC
 ) {
   
   import MassPrecision._
   
-  private val aaByCode1 = new LongMap[AminoAcidResidue]
-  for (aa <- aaTable.molecularEntities) {
-    aaByCode1.put(aa.code1.toInt, aa)
-  }
-  
   def computeMass(aaSequence: String): Double = {
     require( aaSequence.nonEmpty, "aaSequence is empty" )
     
-    val aaCompo = new AminoAcidComposition(aaSequence, aaByCode1)
+    val aaCompo = new AminoAcidComposition(aaSequence, aaTable)
     
     massPrecision match {
       case AVERAGE => aaCompo.getAverageMass()
