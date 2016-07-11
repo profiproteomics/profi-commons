@@ -85,19 +85,17 @@ case class WorkflowTask(
    *  Utilities
    */
   def isComplete: Boolean = {
-    val successOrFail = status ==  TaskStatus.SUCCEEDED || status == TaskStatus.FAILED //TODO || status == WorkflowTaskStatus.DELETED)
+    val isStatusOfTypeComplete = status ==  TaskStatus.SUCCEEDED || status == TaskStatus.FAILED || status == TaskStatus.KILLED
 
     // If task is in RTM mode, it may not be finished though its status is SUCCEEDED or FAILED
-    if (this.isInRealTimeMonitoringMode) {
+    if (this.isInRealTimeMonitoringMode == false) isStatusOfTypeComplete
+    else {
       if (this.areRtmEndingConditionsReached() == false) false
-      else successOrFail
-
-    } else {
-      successOrFail
+      else isStatusOfTypeComplete
     }
   }
   
-  def isPaused : Boolean = status == TaskStatus.PAUSED
+  //def isPaused : Boolean = status == TaskStatus.PAUSED
   
   /** Get workflow operation at given index */
   def getOperation( index: Int): IWorkflowOperation = {

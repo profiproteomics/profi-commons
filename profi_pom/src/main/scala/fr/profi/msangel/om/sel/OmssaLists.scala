@@ -1,4 +1,4 @@
-package fr.profi.msangel.om.sel
+package fr.profi.msangel.om.sel.omssa
 
 object OmssaLists {
 

@@ -15,7 +15,7 @@ object MzdbAccess extends IFileConversionTool {
   
   def getName(): FileConversionTool.Value = FileConversionTool.MZDB_ACCESS
   val successExitValue = 0
-  val canExecuteProlineParsingRule = false
+  val canExecuteProlineParsingRule = true
   val associatedPeaklistSoftware = Some(DefaultPeaklistSoftware.PROLINE_1_0)
 
   object ParamName {
@@ -50,7 +50,7 @@ object MzdbAccess extends IFileConversionTool {
         MacroSelectionParam(
           name = ParamName.PRECURSOR_MOZ,
           description = Some("Default = " + mainPrecursorMoz.name),
-          default = Some(mainPrecursorMoz),
+          default = Some(refinedThermoMoz),
           options = Some(Seq(mainPrecursorMoz, selectedIonMoz, refinedMoz,refinedThermoMoz))
         ),
 

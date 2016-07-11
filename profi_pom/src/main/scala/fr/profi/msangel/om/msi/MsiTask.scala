@@ -43,7 +43,7 @@ case class MsiTask(
   /**
    *  Utilities
    */
-  def isComplete: Boolean = (status == TaskStatus.SUCCEEDED || status == TaskStatus.FAILED || status == TaskStatus.DELETED)
+  def isComplete: Boolean = (status == TaskStatus.SUCCEEDED || status == TaskStatus.FAILED || status == TaskStatus.KILLED)
   //def isFake: Boolean = searchForm.targetURL matches """.*fake.*"""
 
   /**
