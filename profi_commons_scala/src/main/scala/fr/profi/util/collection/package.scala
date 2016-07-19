@@ -55,16 +55,17 @@ package object collection {
   }
 
   class LongMapBuilderFromTraversableOnce[A](val xs: TraversableOnce[A]) extends AnyVal with LongMapBuilderFromTraversableOnceOps {
-    def toLongMapWith[V](kvMapping: A => (Long, V)): LongMap[V] = {
-      this.toLongMap(xs, kvMapping)
-    }
     def mapByLong(byKey: A => Long): LongMap[A] = {
       this.mapByLong(xs, byKey)
+    }
+    
+    def toLongMapWith[V](kvMapping: A => (Long, V)): LongMap[V] = {
+      this.toLongMap(xs, kvMapping)
     }
   }
   // Note this conversion is conlicting filterMonadic2longMapBuilder
   // TODO: find a way to combine FilterMonadic with TraversableOnce (use TraversableLike ?)
-  // DBO => I think that initializing using a match/case in FilterMonadic is enough, we can keep the current solution
+  // DBO => I think that initializing using a match/case in FilterMonadic is simple enough, we can keep the current solution
   /*implicit def traversableOnce2longMapBuilder[A]( xs: TraversableOnce[A] ): LongMapBuilderFromTraversableOnce[A] = {
     new LongMapBuilderFromTraversableOnce[A](xs)
   }*/
@@ -74,7 +75,7 @@ package object collection {
   
   class LongMapBuilderFromFilterMonadic[A, Repr](val fm: FilterMonadic[A, Repr]) extends AnyVal with LongMapBuilder {
     
-    protected def buildLongMap[V](kvMapping: A => (Long, V)): LongMap[V] = {
+    protected def buildLongMapFromLongMapping[V](longMapping: A => (Long, V)): LongMap[V] = {
       
       // Initialize the map
       val longMap = fm match {
@@ -84,18 +85,18 @@ package object collection {
 
       // Fill the map
       fm.foreach { x =>
-        longMap += kvMapping(x)
+        longMap += longMapping(x)
       }
 
       longMap
     }
     
     def mapByLong(byKey: A => Long): LongMap[A] = {
-      this.buildLongMap({ x: A => (byKey(x), x) })
+      this.buildLongMapFromLongMapping({ x: A => (byKey(x), x) })
     }
     
     def toLongMapWith[V](kvMapping: A => (Long, V)): LongMap[V] = {
-      this.buildLongMap(kvMapping)
+      this.buildLongMapFromLongMapping(kvMapping)
     }
   }
   
