@@ -10,7 +10,6 @@ import reactivemongo.bson.BSONObjectID
 /**
  * Model for Mass Spectrometry Identification search.
  */
-
 // TODO: extends MongoDbEntity
 case class MsiSearch( //one search <=> one input file
 

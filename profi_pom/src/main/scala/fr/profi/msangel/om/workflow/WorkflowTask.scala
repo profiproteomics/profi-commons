@@ -85,14 +85,15 @@ case class WorkflowTask(
    *  Utilities
    */
   def isComplete: Boolean = {
-    val isStatusOfTypeComplete = status ==  TaskStatus.SUCCEEDED || status == TaskStatus.FAILED || status == TaskStatus.KILLED
+    /*val isStatusOfTypeComplete = status ==  TaskStatus.SUCCEEDED || status == TaskStatus.FAILED || status == TaskStatus.KILLED
 
     // If task is in RTM mode, it may not be finished though its status is SUCCEEDED or FAILED
     if (this.isInRealTimeMonitoringMode == false) isStatusOfTypeComplete
     else {
       if (this.areRtmEndingConditionsReached() == false) false
       else isStatusOfTypeComplete
-    }
+    }*/
+    status == TaskStatus.SUCCEEDED || status == TaskStatus.FAILED || status == TaskStatus.KILLED
   }
   
   //def isPaused : Boolean = status == TaskStatus.PAUSED
@@ -140,7 +141,7 @@ case class WorkflowTask(
     ) return true
 
     // Max file count is reached
-    import fr.profi.msangel.om.dateTimeOrdering
+    import fr.profi.util.scala.dateTimeOrdering
     if (
       config.maxFileCount.isDefined
       && inputFiles.length >= config.maxFileCount.get //FIXME: as many registered as needed. Should be as many complete !

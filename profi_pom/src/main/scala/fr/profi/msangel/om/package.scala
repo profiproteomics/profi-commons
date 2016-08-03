@@ -71,10 +71,6 @@ package object om {
     }
   }
 
-  /**
-   * Sort joda.DateTime
-   */
-  implicit def dateTimeOrdering: Ordering[DateTime] = Ordering.fromLessThan(_ isBefore _)
 
   /**
    * Some Play!2.2 JSON formatters for MS-Angel case classes.

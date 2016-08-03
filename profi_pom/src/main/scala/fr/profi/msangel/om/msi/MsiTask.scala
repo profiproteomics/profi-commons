@@ -21,7 +21,7 @@ case class MsiTask(
   var inputFiles: Array[String] = Array(),
   var searchIds: Array[String] = Array(), //mongo ids
 
-  var status: TaskStatus.Value = TaskStatus.CREATED, //MsiTaskStatus.CREATED
+  var status: TaskStatus.Value = TaskStatus.CREATED,
   var progression: Int = 0, // nb of searches completed 
   //var percentComplete: Int = 0,
   var startDate: Option[DateTime] = None, //TODO: make sure it's not over when task is submitted.
