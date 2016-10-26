@@ -6,6 +6,7 @@ object Polarity extends Enumeration {
 }
 
 object MolecularConstants {
+  // Source: http://pdg.lbl.gov/2012/reviews/rpp2012-rev-phys-constants.pdf
   final val ELECTRON_MASS = 0.00054857990946 // Source: NIST 2010 CODATA
   final val PROTON_MASS = 1.007276466812 // Source: NIST 2010 CODATA   
   final val WATER_MONO_MASS = 18.010565
