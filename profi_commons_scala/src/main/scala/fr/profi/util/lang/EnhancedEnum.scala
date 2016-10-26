@@ -1,5 +1,7 @@
 package fr.profi.util.lang
 
+import scala.language.implicitConversions
+
 trait EnhancedEnum extends Enumeration {
   lazy val valueByKey = values.map(v => (v.toString, v)).toMap
   

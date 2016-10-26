@@ -43,7 +43,7 @@ sealed trait ISQLFormattable extends Any {
  *
  * Note: The '=' operator is added during formatting so don't include it in your SQL
  */
-case class NullComparable(val value: Option[ISQLFormattable]) extends AnyVal with ISQLFormattable {
+final case class NullComparable(val value: Option[ISQLFormattable]) extends AnyVal with ISQLFormattable {
   
   override def escaped(dialect: AbstractSQLDialect): String = {
     value.map("=" + _.escaped(dialect)).getOrElse("is null")
@@ -59,7 +59,7 @@ case class NullComparable(val value: Option[ISQLFormattable]) extends AnyVal wit
 /**
  * Wrap your optional value in Nullable to have it converted to null if None
  */
-case class Nullable(val value: Option[ISQLFormattable]) extends AnyVal with ISQLFormattable {
+final case class Nullable(val value: Option[ISQLFormattable]) extends AnyVal with ISQLFormattable {
   
   override def escaped(dialect: AbstractSQLDialect): String = {
     value.map(_.escaped(dialect)).getOrElse(JdbcConstant.NULL_STRING)
@@ -68,7 +68,7 @@ case class Nullable(val value: Option[ISQLFormattable]) extends AnyVal with ISQL
   override def addTo(statement: StatementWrapper): Unit = statement.addNull
 }
 
-case class NullFormattable( val value: Null ) extends AnyVal with ISQLFormattable {
+final case class NullFormattable( val value: Null ) extends AnyVal with ISQLFormattable {
   override def escaped( dialect: AbstractSQLDialect ): String = JdbcConstant.NULL_STRING
   override def addTo(statement: StatementWrapper): Unit = statement.addNull
 }
@@ -80,7 +80,7 @@ case class NullFormattable( val value: Null ) extends AnyVal with ISQLFormattabl
  * Wrap a parameter string in an Identifier to avoid escaping.
  * An identifier may correspond to a database name or a table name.
  */
-case class Identifier(val value: String) extends AnyVal with ISQLFormattable {
+final case class Identifier(val value: String) extends AnyVal with ISQLFormattable {
   override def escaped(dialect: AbstractSQLDialect): String = value
   override def addTo(statement: StatementWrapper): Unit = statement.addString(value)
 }
@@ -88,7 +88,7 @@ case class Identifier(val value: String) extends AnyVal with ISQLFormattable {
 //
 // String
 //
-case class StringFormattable(val value: String) extends AnyVal with ISQLFormattable {
+final case class StringFormattable(val value: String) extends AnyVal with ISQLFormattable {
   override def escaped(dialect: AbstractSQLDialect): String = dialect.toSQLString(value)  
   override def addTo(statement: StatementWrapper): Unit = statement.addString(value)
 }
@@ -96,7 +96,7 @@ case class StringFormattable(val value: String) extends AnyVal with ISQLFormatta
 //
 // Boolean
 // 
-case class BooleanFormattable(val value: Boolean) extends AnyVal with ISQLFormattable {
+final case class BooleanFormattable(val value: Boolean) extends AnyVal with ISQLFormattable {
   
   override def escaped(dialect: AbstractSQLDialect): String = {
     val formattedBool = dialect.booleanFormatter.formatBoolean(value)
@@ -121,7 +121,7 @@ case class BooleanFormattable(val value: Boolean) extends AnyVal with ISQLFormat
 //
 // Long
 //
-case class LongFormattable(val value: Long) extends AnyVal with ISQLFormattable {
+final case class LongFormattable(val value: Long) extends AnyVal with ISQLFormattable {
   override def escaped(dialect: AbstractSQLDialect): String = value.toString
   override def addTo(statement: StatementWrapper): Unit =  statement.addLong(value)
 }
@@ -129,7 +129,7 @@ case class LongFormattable(val value: Long) extends AnyVal with ISQLFormattable 
 //
 // Int
 //
-case class IntFormattable(val value: Int) extends AnyVal with ISQLFormattable {
+final case class IntFormattable(val value: Int) extends AnyVal with ISQLFormattable {
   override def escaped(dialect: AbstractSQLDialect): String = value.toString
   override def addTo(statement: StatementWrapper): Unit = statement.addInt(value)
 }
@@ -137,7 +137,7 @@ case class IntFormattable(val value: Int) extends AnyVal with ISQLFormattable {
 //
 // Float
 //
-case class FloatFormattable(val value: Float) extends AnyVal with ISQLFormattable {
+final case class FloatFormattable(val value: Float) extends AnyVal with ISQLFormattable {
   override def escaped(dialect: AbstractSQLDialect): String = "%f".formatLocal(java.util.Locale.UK,value)
   override def addTo(statement: StatementWrapper): Unit = statement.addFloat(value)
 }
@@ -145,7 +145,7 @@ case class FloatFormattable(val value: Float) extends AnyVal with ISQLFormattabl
 //
 // Double
 //
-case class DoubleFormattable(val value: Double) extends AnyVal with ISQLFormattable {
+final case class DoubleFormattable(val value: Double) extends AnyVal with ISQLFormattable {
   override def escaped(dialect: AbstractSQLDialect): String = "%f".formatLocal(java.util.Locale.UK,value)
   override def addTo(statement: StatementWrapper): Unit = statement.addDouble(value)
 }
@@ -153,7 +153,7 @@ case class DoubleFormattable(val value: Double) extends AnyVal with ISQLFormatta
 //
 // Bytes
 //
-case class BytesFormattable(val value: Array[Byte]) extends AnyVal with ISQLFormattable {
+final case class BytesFormattable(val value: Array[Byte]) extends AnyVal with ISQLFormattable {
   override def escaped(dialect: AbstractSQLDialect): String = throw new Exception("NYI")
   override def addTo(statement: StatementWrapper): Unit = statement.addBytes(value)
 }
@@ -161,7 +161,7 @@ case class BytesFormattable(val value: Array[Byte]) extends AnyVal with ISQLForm
 //
 // DateTime
 //
-case class DateTimeFormattable(val value: DateTime) extends AnyVal with ISQLFormattable {
+final case class DateTimeFormattable(val value: DateTime) extends AnyVal with ISQLFormattable {
   
   override def escaped(dialect: AbstractSQLDialect): String = {
     dialect.toSQLString( dialect.timeStampFormatter.print(value) )
@@ -183,7 +183,7 @@ object DateTimeFormattable {
 //
 // Timestamp
 //
-case class TimestampFormattable(val value: Timestamp) extends AnyVal with ISQLFormattable {
+final case class TimestampFormattable(val value: Timestamp) extends AnyVal with ISQLFormattable {
   
   private def _toDateTime() = new DateTime( value.getTime() )
   
@@ -206,7 +206,7 @@ case class TimestampFormattable(val value: Timestamp) extends AnyVal with ISQLFo
 /**
  * Formats an Duration object by converting it to milliseconds.
  */
-case class DurationFormattable(val value: Duration) extends AnyVal with ISQLFormattable {
+final case class DurationFormattable(val value: Duration) extends AnyVal with ISQLFormattable {
   
   override def escaped(dialect: AbstractSQLDialect): String = value.getMillis.toString
   

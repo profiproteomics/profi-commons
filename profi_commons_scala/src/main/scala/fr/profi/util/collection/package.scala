@@ -3,6 +3,7 @@ package fr.profi.util
 import scala.collection.TraversableLike
 import scala.collection.mutable.LongMap
 import scala.collection.generic.FilterMonadic
+import scala.language.implicitConversions
 
 /**
  * @author David Bouyssie

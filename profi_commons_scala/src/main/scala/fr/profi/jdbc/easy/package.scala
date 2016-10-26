@@ -5,6 +5,8 @@ package object easy {
   import java.util.Date
   import java.sql.Timestamp
   
+  import scala.language.implicitConversions
+  
   import org.joda.time.DateTime
   import org.joda.time.Duration
   

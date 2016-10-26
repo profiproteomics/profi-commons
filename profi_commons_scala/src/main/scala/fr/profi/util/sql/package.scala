@@ -1,5 +1,7 @@
 package fr.profi.util
 
+import scala.language.implicitConversions
+
 package object sql {
   
   def BoolToSQLStr( value: Boolean, asInt: Boolean = false ): String = {
@@ -80,7 +82,7 @@ package object sql {
   import java.text.{DecimalFormat,DecimalFormatSymbols}
   private val decimalSymbols = new DecimalFormatSymbols()
   decimalSymbols.setDecimalSeparator('.')
-  decimalSymbols.setGroupingSeparator('\0')
+  decimalSymbols.setGroupingSeparator(0)
   
   def newDecimalFormat( template: String ): DecimalFormat = new DecimalFormat(template: String , decimalSymbols)
     

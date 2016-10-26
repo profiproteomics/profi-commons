@@ -101,7 +101,7 @@ package object math {
   /** 
    * Interpolates a value using the slope and intercept of a line
    * estimated with two consecutive data points coordinates
-   * in the provided Pair[Double,Double] vector.
+   * in the provided Tupple2[Double,Double] vector.
    * Assumes that XY values are already sorted by X.
    * If fixOutOfRange is true then out of range values will be replaced by first or last XY pair of the vector.
    *  
@@ -111,7 +111,7 @@ package object math {
    * @return the interpolated Y value
    */
   // TODO: create a LinearInterpolator class which allows to index the XY vector (faster lookup) => use EntityHistogram as backend ???
-  def linearInterpolation( xValue: Double, xyValues: Seq[Pair[Double,Double]], fixOutOfRange: Boolean ): Double = {
+  def linearInterpolation( xValue: Double, xyValues: Seq[(Double,Double)], fixOutOfRange: Boolean ): Double = {
     
     var index = xyValues.indexWhere( _._1 >= xValue )
     if( index == -1 ) {
@@ -143,7 +143,7 @@ package object math {
  
   }
   
-  def linearInterpolation( xValue: Double, xyValues: Seq[Pair[Double,Double]] ): Double = {
+  def linearInterpolation( xValue: Double, xyValues: Seq[(Double,Double)] ): Double = {
     linearInterpolation(xValue,xyValues,true)
   }
   
@@ -159,7 +159,7 @@ package object math {
    * @paramm fixOutOfRange enable/disable the support for out of range values
    * @return the interpolated Y value
    */
-  def linearInterpolation( xValue: Float, xyValues: Seq[Pair[Float,Float]], fixOutOfRange: Boolean ): Float = {
+  def linearInterpolation( xValue: Float, xyValues: Seq[(Float,Float)], fixOutOfRange: Boolean ): Float = {
     
     var index = xyValues.indexWhere( _._1 >= xValue )
     if( index == -1 ) {
@@ -191,7 +191,7 @@ package object math {
  
   }
   
-  def linearInterpolation( xValue: Float, xyValues: Seq[Pair[Float,Float]] ): Float = {
+  def linearInterpolation( xValue: Float, xyValues: Seq[(Float,Float)] ): Float = {
     linearInterpolation(xValue,xyValues,true)
   }
   

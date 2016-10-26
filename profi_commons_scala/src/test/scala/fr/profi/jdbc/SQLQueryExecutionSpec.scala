@@ -2,6 +2,7 @@ package fr.profi.jdbc
 
 import java.sql.SQLException
 
+import scala.language.postfixOps
 import scala.collection.mutable.ArrayBuffer
 
 import org.scalatest.FunSpec

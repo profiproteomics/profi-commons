@@ -27,7 +27,7 @@ object ProgressExecutionProfiling {
       val execTimeSum = execTimes.sum
       val execTimeAvg = execTimeSum / execTimes.length
       stepIdentity -> (execTimeSum,execTimeAvg)
-    } ) toMap
+    } ).toMap
   }
   
   def logExecutionStatistics( logger: com.typesafe.scalalogging.Logger ) {

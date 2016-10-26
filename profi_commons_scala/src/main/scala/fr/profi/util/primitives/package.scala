@@ -367,7 +367,7 @@ Pattern DOUBLE_PATTERN = Pattern.compile(
     if( str == "true" || str == "false" ) return DataType.BOOLEAN
     
     var dataType = DataType.INTEGER
-    var c: Char = '\0'
+    var c: Char = 0
     var i = 0
     var hasDot = false
     

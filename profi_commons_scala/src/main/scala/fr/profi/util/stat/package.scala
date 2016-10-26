@@ -14,7 +14,7 @@ package object stat {
   // Inspired by: https://github.com/geetduggal/growcode/blob/master/src/main/scala/Histogram.scala
   class EntityHistogramComputer[T]( val entities: Seq[T], val valueExtractor: T => Double ) {
 
-    def calcHistogram( nbins: Int = sqrt(entities.length).toInt, range: Option[(Double,Double)] = None ): Array[Pair[Bin,Seq[T]]] = {
+    def calcHistogram( nbins: Int = sqrt(entities.length).toInt, range: Option[(Double,Double)] = None ): Array[(Bin,Seq[T])] = {
       require( nbins > 0, "the histogram must contain at least one bin" )
       
       if( range.isDefined ) {
@@ -48,8 +48,8 @@ package object stat {
       }
       
       // Array of values for the histogram bins
-      val bins = Array.tabulate[ Pair[Bin,ArrayBuffer[T]] ](nbins) { i =>
-        Pair( bin(i),new ArrayBuffer[T])
+      val bins = Array.tabulate[(Bin,ArrayBuffer[T])](nbins) { i =>
+        ( bin(i),new ArrayBuffer[T])
       }
       
       // For each value, compute the bin in which it resides and
