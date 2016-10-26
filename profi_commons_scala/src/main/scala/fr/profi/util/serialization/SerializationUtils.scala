@@ -82,8 +82,10 @@ trait ProfiJsonSerialization extends ProfiJacksonSerialization[String] {
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     
     // Configure serialization for null and empty exclusion
-    mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
-    mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
+    // Note: with the NON_ABSENT filer, empty arrays are still serialized
+    mapper.setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
+    /*mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
+    mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY)*/
   }
   
   def getObjectMapper() = objectMapper
@@ -149,7 +151,7 @@ private[this] object CustomDoubleSerializer {
   import java.text.{DecimalFormat,DecimalFormatSymbols}
   private val decimalSymbols = new DecimalFormatSymbols()
   decimalSymbols.setDecimalSeparator('.')
-  decimalSymbols.setGroupingSeparator('\0')
+  decimalSymbols.setGroupingSeparator(0)
   
   def newDecimalFormat( template: String ): DecimalFormat = new DecimalFormat(template: String , decimalSymbols)
   
