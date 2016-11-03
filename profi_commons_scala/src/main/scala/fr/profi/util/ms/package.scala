@@ -16,6 +16,12 @@ package object ms {
     val PPM = Value("PPM")
   }
   
+  object MassTolUnitRegex {
+    val DaUnit = """(?i)Da""".r
+    val MmuUnit = """(?i)mmu""".r
+    val PpmUnit = """(?i)PPM""".r
+  }
+  
   def calcMozTolInDalton( moz: Double, mozTol: Double, massTolUnit: MassTolUnit.Value ): Double = {    
     massTolUnit match {
       case MassTolUnit.Da => mozTol
@@ -26,16 +32,10 @@ package object ms {
   
   def calcMozTolInDalton( moz: Double, mozTol: Double, tolUnitAsStr: String ): Double = {
     
-    import scala.util.matching.Regex
-    
-    val DaType = """(?i)Da""".r
-    val mmuType = """(?i)mmu""".r
-    val PPMType = """(?i)PPM""".r
-    
     tolUnitAsStr match {
-      case DaType() => calcMozTolInDalton( moz, mozTol, MassTolUnit.Da )
-      case mmuType() => calcMozTolInDalton( moz, mozTol, MassTolUnit.mmu )
-      case PPMType() =>calcMozTolInDalton( moz, mozTol, MassTolUnit.PPM )
+      case MassTolUnitRegex.DaUnit() => calcMozTolInDalton( moz, mozTol, MassTolUnit.Da )
+      case MassTolUnitRegex.MmuUnit() => calcMozTolInDalton( moz, mozTol, MassTolUnit.mmu )
+      case MassTolUnitRegex.PpmUnit() =>calcMozTolInDalton( moz, mozTol, MassTolUnit.PPM )
       case _ => throw new IllegalArgumentException("unknown tolerance unit: '" + tolUnitAsStr + "'")
     }
 
