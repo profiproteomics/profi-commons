@@ -14,6 +14,15 @@ package object ms {
     val Da = Value("Da")
     val mmu = Value("mmu")
     val PPM = Value("PPM")
+    
+    implicit def string2unit(tolUnitAsStr: String): MassTolUnit.Value = {
+       tolUnitAsStr match {
+        case MassTolUnitRegex.DaUnit() => MassTolUnit.Da
+        case MassTolUnitRegex.MmuUnit() => MassTolUnit.mmu 
+        case MassTolUnitRegex.PpmUnit() => MassTolUnit.PPM
+        case _ => throw new IllegalArgumentException("unknown tolerance unit: '" + tolUnitAsStr + "'")
+      }
+    }
   }
   
   object MassTolUnitRegex {
