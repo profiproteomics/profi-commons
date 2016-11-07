@@ -13,22 +13,22 @@ package object ms {
   object MassTolUnit extends Enumeration {
     val Da = Value("Da")
     val mmu = Value("mmu")
-    val PPM = Value("PPM")
+    val PPM = Value("ppm")
     
     implicit def string2unit(tolUnitAsStr: String): MassTolUnit.Value = {
        tolUnitAsStr match {
         case MassTolUnitRegex.DaUnit() => MassTolUnit.Da
-        case MassTolUnitRegex.MmuUnit() => MassTolUnit.mmu 
-        case MassTolUnitRegex.PpmUnit() => MassTolUnit.PPM
-        case _ => throw new IllegalArgumentException("unknown tolerance unit: '" + tolUnitAsStr + "'")
+        case MassTolUnitRegex.mmuUnit() => MassTolUnit.mmu 
+        case MassTolUnitRegex.ppmUnit() => MassTolUnit.PPM
+        case _ => throw new IllegalArgumentException(s"Unknown tolerance unit: '$tolUnitAsStr'")
       }
     }
   }
   
-  object MassTolUnitRegex {
+  private object MassTolUnitRegex {
     val DaUnit = """(?i)Da""".r
-    val MmuUnit = """(?i)mmu""".r
-    val PpmUnit = """(?i)PPM""".r
+    val mmuUnit = """(?i)mmu""".r
+    val ppmUnit = """(?i)ppm""".r
   }
   
   def calcMozTolInDalton( moz: Double, mozTol: Double, massTolUnit: MassTolUnit.Value ): Double = {    
@@ -43,8 +43,8 @@ package object ms {
     
     tolUnitAsStr match {
       case MassTolUnitRegex.DaUnit() => calcMozTolInDalton( moz, mozTol, MassTolUnit.Da )
-      case MassTolUnitRegex.MmuUnit() => calcMozTolInDalton( moz, mozTol, MassTolUnit.mmu )
-      case MassTolUnitRegex.PpmUnit() =>calcMozTolInDalton( moz, mozTol, MassTolUnit.PPM )
+      case MassTolUnitRegex.mmuUnit() => calcMozTolInDalton( moz, mozTol, MassTolUnit.mmu )
+      case MassTolUnitRegex.ppmUnit() =>calcMozTolInDalton( moz, mozTol, MassTolUnit.PPM )
       case _ => throw new IllegalArgumentException("unknown tolerance unit: '" + tolUnitAsStr + "'")
     }
 
