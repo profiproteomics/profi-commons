@@ -7,9 +7,10 @@ import fr.profi.msangel.om.workflow.operation._
 object ExtractMSn extends IFileConversionTool {
 
   def getName(): FileConversionTool.Value = FileConversionTool.EXTRACT_MSN
-  val successExitValue = 0
-  val canExecuteProlineParsingRule = false
-  val associatedPeaklistSoftware = Some(DefaultPeaklistSoftware.EXTRACT_MSN)
+  lazy val supportedVersion = None
+  lazy val successExitValue = 0
+  lazy val canExecuteProlineParsingRule = false
+  lazy val associatedPeaklistSoftware = Some(DefaultPeaklistSoftware.EXTRACT_MSN)
 
   /**
    * Get ExtractMSn configuration template
@@ -20,8 +21,7 @@ object ExtractMSn extends IFileConversionTool {
 
     new ConversionToolConfig(
       tool = this.getName(),
-      //path = "fake/path/raw2mgf",
-
+      toolVersion= None,
       params = Array(
         MacroNumericParam(name = "First scan", isRequired = false, cmdFlag = ""),
         MacroNumericParam(name = "Last scan", isRequired = false, cmdFlag = ""),

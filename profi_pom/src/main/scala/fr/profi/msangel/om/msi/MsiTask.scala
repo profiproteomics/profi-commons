@@ -16,6 +16,7 @@ case class MsiTask(
   /**
    *  Parameters
    */
+  // TODO: set vars as @volatile when using Scala 2.12
   var id: Option[BSONObjectID] = None,
   var number: Option[Int] = None,
   var inputFiles: Array[String] = Array(),

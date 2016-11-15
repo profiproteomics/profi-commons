@@ -2,13 +2,23 @@ package fr.profi.msangel.om.workflow
 
 import org.joda.time.DateTime
 
+import scala.collection.mutable.ArrayBuffer
+import scala.collection.mutable.HashMap
+
+import reactivemongo.bson.BSONObjectID
+
 import fr.profi.msangel.om.SchedulingType
 import fr.profi.msangel.om.TaskStatus
+import fr.profi.msangel.om.workflow.operation.FileConversion
+import fr.profi.msangel.om.workflow.operation.IWorkflowJobOperation
+import fr.profi.msangel.om.workflow.operation.IWorkflowOperation
+import fr.profi.msangel.om.workflow.operation.IWorkflowTaskOperation
+import fr.profi.msangel.om.workflow.operation.MzdbRegistration
+import fr.profi.msangel.om.workflow.operation.PeaklistIdentification
 import fr.profi.pwx.util.mongodb.IMongoDbEntity
 
-import operation.IWorkflowOperation
 import operation.PeaklistIdentification
-import reactivemongo.bson.BSONObjectID
+
 
 /**
  * Model for a worklfow task.
@@ -24,6 +34,7 @@ case class WorkflowTask(
   var workflowJobIds : Array[String] = Array(),
   var msiTaskIds : Array[String] = Array(),
 
+  var executionVariables: Option[HashMap[String, String]] = None,
   var status: TaskStatus.Value = TaskStatus.CREATED,
   var progression: Int = 0, // nb of steps completed
   var creationDate: Option[DateTime] = None,
@@ -35,44 +46,12 @@ case class WorkflowTask(
   val name: String,
   val scheduleType: SchedulingType.Value,
   val ownerMongoId: String, //mongo ID
-  val projectId : Option[Long] = None, //uds ID
-  
-  val isFake : Boolean = false
-) extends IMongoDbEntity {
+  val projectId: Option[Long] = None, //uds ID
 
-//  override def toString() = s"""
-//WorkflowTask(
-//  $id,
-//  ${scala.runtime.ScalaRunTime.stringOf(inputFiles)}, 
-//  ${scala.runtime.ScalaRunTime.stringOf(workflowJobIds)}, 
-//  ${scala.runtime.ScalaRunTime.stringOf(msiTasksIds)},
-//  $status,
-//  $progression,
-//  $creationDate,
-//  $startDate,
-//  $stopDate,
-//  $fileMonitoringConfig,
-//  Workflow(
-//    None,
-//    Array(),
-//    ${workflow.isTemplate},
-//    ${workflow.name},
-//    ${workflow.ownerMongoId},
-//    ${workflow.creationDate}
-//  ),
-//  $name,
-//  $scheduleType,
-//  $ownerMongoId,
-//  $projectId,
-//  $isFake
-//)
-//
-//"""
+  val isFake: Boolean = false
+) extends IMongoDbEntity {
   
-  
-  /**
-   * Requirements
-   */
+  /* Requirements */
   require(status != null, "Task status must not be null.")
   require(status !=  TaskStatus.UPLOADING, "Uploading is not an appropriate status for workflow task")
   //TODO : paused, deleted?
@@ -81,47 +60,86 @@ case class WorkflowTask(
   require(name != null && !name.isEmpty(), "name must not be null nor empty")
   require(ownerMongoId != null, "Task's owner mongo ID must not be null") //TODO : hexaDec + size
   
-  /**
-   *  Utilities
-   */
-  def isComplete: Boolean = {
-    /*val isStatusOfTypeComplete = status ==  TaskStatus.SUCCEEDED || status == TaskStatus.FAILED || status == TaskStatus.KILLED
+  /** Compute if the task is complete, based on its status **/
+  def isComplete: Boolean = status == TaskStatus.SUCCEEDED || status == TaskStatus.FAILED || status == TaskStatus.KILLED
 
-    // If task is in RTM mode, it may not be finished though its status is SUCCEEDED or FAILED
-    if (this.isInRealTimeMonitoringMode == false) isStatusOfTypeComplete
-    else {
-      if (this.areRtmEndingConditionsReached() == false) false
-      else isStatusOfTypeComplete
-    }*/
-    status == TaskStatus.SUCCEEDED || status == TaskStatus.FAILED || status == TaskStatus.KILLED
-  }
-  
   //def isPaused : Boolean = status == TaskStatus.PAUSED
-  
-  /** Get workflow operation at given index */
-  def getOperation( index: Int): IWorkflowOperation = {
+
+  /** Get workflow operation at given index **/
+  def getOperation(index: Int): IWorkflowOperation = {
     this.workflow.operations(index)
   }
 
-  /** Compute if selected workflow operation is of type PeaklistIedntification */
+  /** Compute if selected workflow operation is of type PeaklistIedntification **/
   def isOperationOfTypePeaklistIdentification(operation: IWorkflowOperation): Boolean = {
     operation match {
       case pi: PeaklistIdentification => true
       case _                          => false
     }
   }
+
+  /** Get the 'task' operations of the workflow **/
+  // TODO? Move to Workflow?
+  def getTaskOperations(): Array[IWorkflowTaskOperation] = {
+    val buffer = ArrayBuffer[IWorkflowTaskOperation]()
+    for (op <- workflow.operations) {
+      op match {
+        case taskOp: IWorkflowTaskOperation => buffer += taskOp
+        case _                              => {}
+      }
+    }
+    buffer.result().toArray
+  }
+
+  /** Split operations depending on their type: 'job operations' and 'task operations' **/
+  def splitJobAndTaskOperations(): (Array[IWorkflowJobOperation], Array[IWorkflowTaskOperation]) = {
+
+    //workflow.operations.partition (_.isJobOperation)
+
+    val jobOpsBuffer = ArrayBuffer[IWorkflowJobOperation]()
+    val taskOpsBuffer = ArrayBuffer[IWorkflowTaskOperation]()
+
+    for (op <- workflow.operations) {
+      op match {
+        case jobOp: IWorkflowJobOperation   => jobOpsBuffer += jobOp
+        case taskOp: IWorkflowTaskOperation => taskOpsBuffer += taskOp
+        case _                              => {}
+      }
+    }
+    (jobOpsBuffer.result().toArray, taskOpsBuffer.result().toArray)
+  }
+
   
+  /** Compute if selected workflow operation is of type PeaklistIedntification **/
   def isOperationOfTypePeaklistIdentification(operationIndex: Int): Boolean = {
-    isOperationOfTypePeaklistIdentification( getOperation(operationIndex) )
+    isOperationOfTypePeaklistIdentification(getOperation(operationIndex))
+  }
+
+  /** Compute if there are 'task' operations in workflow **/
+  def hasSomeTaskOperation(operations: Option[Array[IWorkflowOperation]] = None): Boolean = {
+    operations.getOrElse(workflow.operations).find(_.isInstanceOf[IWorkflowTaskOperation]).isDefined
+  }
+
+  /** Compute if there is some file conversion in the workflow **/
+  def hasSomeFileConversion(operations: Option[Array[IWorkflowOperation]] = None): Boolean = {
+    operations.getOrElse(workflow.operations).find(_.isInstanceOf[FileConversion]).isDefined
+  }
+
+  /** Compute if there is some mzDB registration in the workflow **/
+  def hasSomeMzdbRegistration(operations: Option[Array[IWorkflowOperation]] = None): Boolean = {
+    operations.getOrElse(workflow.operations).find(_.isInstanceOf[MzdbRegistration]).isDefined
+  }
+
+  /** Compute if there is some peaklist identification in the workflow **/
+  def hasSomePeaklistIdentification(operations: Option[Array[IWorkflowOperation]] = None): Boolean = {
+    operations.getOrElse(workflow.operations).find(_.isInstanceOf[PeaklistIdentification]).isDefined
   }
   
-  def somePeaklistIdentification(): Boolean = {
-    this.workflow.operations.foreach ( operation =>
-      if (isOperationOfTypePeaklistIdentification(operation)) return true
-    )
-    false
-  }
+  /*def hasSome(operationType: Class[_]): Boolean = {
+    workflow.operations.find(_.isInstanceOf[operationType.getClass]).isDefined
+  }*/
   
+  /** Compute if the task scheduling mode is Real Time Monitoring **/
   def isInRealTimeMonitoringMode: Boolean = scheduleType == SchedulingType.REAL_TIME_MONITORING
 
   /** If scheduling type is real-time monitoring, compute if ending conditions are reached */
@@ -153,4 +171,32 @@ case class WorkflowTask(
     false
   }
   
+  //  override def toString() = s"""
+//WorkflowTask(
+//  $id,
+//  ${scala.runtime.ScalaRunTime.stringOf(inputFiles)}, 
+//  ${scala.runtime.ScalaRunTime.stringOf(workflowJobIds)}, 
+//  ${scala.runtime.ScalaRunTime.stringOf(msiTasksIds)},
+//  $status,
+//  $progression,
+//  $creationDate,
+//  $startDate,
+//  $stopDate,
+//  $fileMonitoringConfig,
+//  Workflow(
+//    None,
+//    Array(),
+//    ${workflow.isTemplate},
+//    ${workflow.name},
+//    ${workflow.ownerMongoId},
+//    ${workflow.creationDate}
+//  ),
+//  $name,
+//  $scheduleType,
+//  $ownerMongoId,
+//  $projectId,
+//  $isFake
+//)
+//
+//"""
 }

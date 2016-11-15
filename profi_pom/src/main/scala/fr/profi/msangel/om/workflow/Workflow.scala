@@ -2,10 +2,10 @@ package fr.profi.msangel.om.workflow
 
 import org.joda.time.DateTime
 
-import fr.profi.pwx.util.mongodb.IMongoDbEntity
-
-import operation.IWorkflowOperation
 import reactivemongo.bson.BSONObjectID
+
+import fr.profi.msangel.om.workflow.operation.IWorkflowOperation
+import fr.profi.pwx.util.mongodb.IMongoDbEntity
 
 case class Workflow(
   var id: Option[BSONObjectID] = None,
@@ -18,6 +18,7 @@ case class Workflow(
   val ownerMongoId: Option[String] = None,
   val creationDate: Option[DateTime] = None
 ) extends IMongoDbEntity {
+
   //  require(properties != null, "Workflow properties must be defined")
 
   //  override def toString(): String = {

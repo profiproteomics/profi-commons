@@ -24,9 +24,9 @@ case class PeaklistSoftware(
 
   // TODO: delete me when obsolete
   def getCorrectVersionOpt(): Option[String] = {
-    if (versionOpt.isEmpty) None
-    else if (versionOpt.isDefined && versionOpt.get.isEmpty()) None
-    else versionOpt
+    versionOpt.map{ version =>
+      if (version.isEmpty()) null else version
+    }
   }
 }
 

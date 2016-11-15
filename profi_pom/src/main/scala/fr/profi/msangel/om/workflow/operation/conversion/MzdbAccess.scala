@@ -1,39 +1,36 @@
 package fr.profi.msangel.om.workflow.operation.conversion
 
+import scala.collection.mutable.ArrayBuffer
+
+import java.io.File
+
 import fr.profi.msangel.om._
 import fr.profi.msangel.om.DataFileExtension._
 import fr.profi.msangel.om.workflow.DefaultPeaklistSoftware
 import fr.profi.msangel.om.workflow.operation._
-import java.io.File
-import scala.collection.mutable.ArrayBuffer
 
 object MzdbAccess extends IFileConversionTool {
 
   val JAR_NAME = "mzDBaccess.jar"
   val SQLITE4JAVA_DLL_NAME = "sqlite4java-win32-x64.dll"
   val JAVA_LIB_PATH_ARG = "-Djava.library.path="
-  
+
   def getName(): FileConversionTool.Value = FileConversionTool.MZDB_ACCESS
-  val successExitValue = 0
-  val canExecuteProlineParsingRule = true
-  val associatedPeaklistSoftware = Some(DefaultPeaklistSoftware.PROLINE_1_0)
+  lazy val supportedVersion = Some("0.7")
+  lazy val successExitValue = 0
+  lazy val canExecuteProlineParsingRule = true
+  lazy val associatedPeaklistSoftware = Some(DefaultPeaklistSoftware.PROLINE_1_0)
 
-  object ParamName {
-    val PRECURSOR_MOZ = "Precursor m/z"
-    val PRECURSOR_MOZ_TOL = "Precursor m/z tolerance (PPM)"
-    val INTENSITY_CUTOFF = "Intensity cutoff"
-  }
+  // mzDB v0.9.7
+  /*val defaultPrecursorMoz = new MacroSelectionParamItem("Default precursor m/z", "default") //use cmd flag for the value
+  val pwizRefinedMoz = new MacroSelectionParamItem("ProteoWizard-refined prec. m/z", "refined_pwiz") //use cmd flag for the value
+  val mzdbRefinedMoz = new MacroSelectionParamItem("msDB-refined prec. m/z", "refined_mzdb") //use cmd flag for the value*/
 
-  // v 0.9.7
-  /*val defaultPrecursorMoz = new MacroChoiceParamItem("Default precursor m/z", "default") //use cmd flag for the value
-  val pwizRefinedMoz = new MacroChoiceParamItem("ProteoWizard-refined prec. m/z", "refined_pwiz") //use cmd flag for the value
-  val mzdbRefinedMoz = new MacroChoiceParamItem("msDB-refined prec. m/z", "refined_mzdb") //use cmd flag for the value*/
-
-  // v 0.9.8
-  val mainPrecursorMoz = new MacroChoiceParamItem("Main precursor m/z", "main_precursor_mz") //default
-  val selectedIonMoz = new MacroChoiceParamItem("Selected ion m/z", "selected_ion_mz")
-  val refinedMoz = new MacroChoiceParamItem("Refined", "refined")
-  val refinedThermoMoz = new MacroChoiceParamItem("Refined (Thermo)", "refined_thermo")
+  // v0.5.0, mzDB v0.9.8
+  val mainPrecursorMoz = new MacroSelectionParamItem("Main precursor m/z", "main_precursor_mz") //default
+  val selectedIonMoz = new MacroSelectionParamItem("Selected ion m/z", "selected_ion_mz")
+  val refinedMoz = new MacroSelectionParamItem("Refined", "refined")
+  val refinedThermoMoz = new MacroSelectionParamItem("Refined (Thermo)", "refined_thermo")
 
   /**
    * Get mzdb-access configuration template
@@ -42,40 +39,52 @@ object MzdbAccess extends IFileConversionTool {
 
     new ConversionToolConfig(
       tool = this.getName(),
+      toolVersion = this.supportedVersion,
+
       params = Array(
 
         // -mzdb: input file path: in generateCmdLine
         // -o: output file path : in generateCmdLine
 
         MacroSelectionParam(
-          name = ParamName.PRECURSOR_MOZ,
+          name = "Precursor m/z",
+          cmdFlag = "-precmz",
           description = Some("Default = " + mainPrecursorMoz.name),
           default = Some(refinedThermoMoz),
           options = Some(Seq(mainPrecursorMoz, selectedIonMoz, refinedMoz,refinedThermoMoz))
         ),
 
         MacroNumericParam(
-          name = ParamName.PRECURSOR_MOZ_TOL,
-          description = Some("m/z tolerance used for precursor m/z value definition, in PPM\nDefault = 20"),
+          name = "Precursor m/z tolerance (ppm)",
+          description = Some("m/z tolerance used for precursor m/z value definition, in ppm\nDefault = 20"),
           isRequired = false,
           cmdFlag = "--mz_tol_ppm",
           default = Some(BigDecimal(20))
         ),
 
         MacroNumericParam(
-          name = ParamName.INTENSITY_CUTOFF,
+          name = "Intensity cutoff",
           description = Some("Optional intensity cutoff.\nDefault = 0"),
           isRequired = false,
           cmdFlag = "--intensity_cutoff",
           default = Some(BigDecimal(0))
         ),
 
-        MacroBooleanParam(
+        MacroNumericParam(
+          name = "MS level to export",
+          description = Some("The MS level to export.\nDefault = 2"),
+          isRequired = false,
+          cmdFlag = "--ms_level",
+          default = Some(BigDecimal(2))
+        )
+
+        // Handled by custom MS-Angel GUI parameter "Use Proline parsing rule"
+        /*MacroBooleanParam(
           name = "Use Proline convention for title",
           description = Some("Export TITLE using the Proline convention.\nDefault = false"),
           cmdFlag = "--proline_title",
           default = Some(false)
-        )
+        )*/
       )
     )
   }
@@ -143,22 +152,21 @@ object MzdbAccess extends IFileConversionTool {
       param match {
 
         case selection: MacroSelectionParam => {
-          require(selection.name == ParamName.PRECURSOR_MOZ)
-          cmdLineBuffer += "-precmz " + selection.cmdFlag
+          cmdLineBuffer += selection.cmdFlag + ' ' + selection.value.get.value
         }
 
         case numeric: MacroNumericParam => {
           cmdLineBuffer += numeric.cmdFlag + " " + numeric.value.get
         }
 
-        case boolean: MacroBooleanParam => {
-          if (boolean.value.get == true) cmdLineBuffer += boolean.cmdFlag
-        }
-
         case _ => throw new Exception("Invalid parameter type for this tool: " + param)
       }
     }
-
+    
+    /* Proline title */
+    if (fileConversion.useProlineRule) {
+      cmdLineBuffer += "-ptitle"
+    }
 
     /* Build and return final command string **/
     cmdLineBuffer.mkString(" ")

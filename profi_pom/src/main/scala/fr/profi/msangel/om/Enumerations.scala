@@ -349,6 +349,10 @@ object ExecutionVariable extends JsonEnumeration {
 
   val MASCOT_IDENTIFICATION_FILE_PATH = Value("mascot_identification_file_path")
   val OMSSA_IDENTIFICATION_FILE_PATH = Value("omssa_identification_file_path")
+  
+  val RESULT_SET_ID_PREFIX = Value("result_set_id_")
+  val PARENT_DATASET_ID = Value("parent_dataset_id")
+  val RSM_ID = Value("rsm_id")
 
   /** Return the entry corresponding to the given file extension **/
   def getFormatKey(fileFormat: DataFileExtension.Value): this.Value = {

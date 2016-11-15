@@ -13,15 +13,15 @@ import fr.profi.msangel.om.workflow.operation._
 object MsConvert extends IFileConversionTool {
 
   def getName(): FileConversionTool.Value = FileConversionTool.MSCONVERT
-  val successExitValue = 0
-  val canExecuteProlineParsingRule = true
-  val associatedPeaklistSoftware = Some(DefaultPeaklistSoftware.PROTEO_WIZARD_3_0)
+  lazy val supportedVersion = Some("3.0.x")
+  lazy val successExitValue = 0
+  lazy val canExecuteProlineParsingRule = true
+  lazy val associatedPeaklistSoftware = Some(DefaultPeaklistSoftware.PROTEO_WIZARD_3_0)
 
   
   /**
    * List all output formats handled by MsConvert, linked to their command flag
    */
-
   private val cmdFlagByOutputFormat = Map[DataFileExtension.Value, String](
     MZML -> "--mzML",
     MZXML -> "--mzXML",
@@ -48,24 +48,64 @@ object MsConvert extends IFileConversionTool {
 
     new ConversionToolConfig(
       tool = this.getName(),
-      //path = """C:\Program Files\ProteoWizard 3.0.7076\msconvert.exe""", //TODO : move, get from GUI
+      toolVersion = this.supportedVersion,
 
       params = Array(
         //MacroStringParam(name = "Output format", isRequired = true, cmdFlag = ""),
         //MacroStringParam(name = "Extension", isRequired = false, cmdFlag = ""),
 
-        MacroChoiceParam(name = "Binary encoding precision", default = Some(bits64), options = Some(Seq(bits64, bits32))),
-        MacroChoiceParam(name = "Binary encoding precision on m/z", default = Some(mz64), options = Some(Seq(mz64, mz32))), //mzML only
-        MacroChoiceParam(name = "Binary encoding precision on intensity", default = Some(i32), options = Some(Seq(i64, i32))), //mzML only
+        MacroChoiceParam(
+          name = "Binary encoding precision",
+          default = Some(bits64),
+          options = Some(Seq(bits64, bits32))
+        ),
+        MacroChoiceParam(
+          name = "Binary encoding precision on m/z", //mzML only
+          default = Some(mz64),
+          options = Some(Seq(mz64, mz32))
+        ),
+        MacroChoiceParam(
+          name = "Binary encoding precision on intensity", //mzML only
+          default = Some(i32),
+          options = Some(Seq(i64, i32))
+        ),
 
-        MacroBooleanParam(name = "Omit index (mzML)", cmdFlag = "--noindex", default = Some(false)),
-        MacroBooleanParam(name = "Use zlib compression", cmdFlag = "--zlib", default = Some(true)),
-        MacroBooleanParam(name = "Package in gzip", cmdFlag = "--gzip", default = Some(false)),
-        MacroBooleanParam(name = "TPP compatibility", cmdFlag = "", default = Some(false)),
+        MacroBooleanParam(
+          name = "Omit index (mzML)",
+          cmdFlag = "--noindex",
+          default = Some(false)
+        ),
+        MacroBooleanParam(
+          name = "Use zlib compression",
+          cmdFlag = "--zlib",
+          default = Some(true)
+        ),
+        MacroBooleanParam(
+          name = "Package in gzip",
+          cmdFlag = "--gzip",
+          default = Some(false)
+        ),
+        MacroBooleanParam(
+          name = "TPP compatibility",
+          cmdFlag = "",
+          default = Some(false)
+        ),
 
-        MacroBooleanParam(name = "Merge MS/MS", cmdFlag = "--merge", default = Some(false)),
-        MacroBooleanParam(name = "Write ion monitoring as spectra", cmdFlag = "--simAsSpectra", default = Some(false)),
-        MacroBooleanParam(name = "Write reaction monitoring as spectra", cmdFlag = "--srmAsSpectra", default = Some(false))
+        MacroBooleanParam(
+          name = "Merge MS/MS",
+          cmdFlag = "--merge",
+          default = Some(false)
+        ),
+        MacroBooleanParam(
+          name = "Write ion monitoring as spectra",
+          cmdFlag = "--simAsSpectra",
+          default = Some(false)
+        ),
+        MacroBooleanParam(
+          name = "Write reaction monitoring as spectra",
+          cmdFlag = "--srmAsSpectra",
+          default = Some(false)
+        )
       )
       /*,
       filters = Array(

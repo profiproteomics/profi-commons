@@ -13,9 +13,10 @@ import fr.profi.msangel.om.workflow.operation._
 object MsDataConverter extends IFileConversionTool {
 
   def getName(): FileConversionTool.Value = FileConversionTool.MS_DATA_CONVERTER
-  val successExitValue = 0
-  val canExecuteProlineParsingRule = false
-  val associatedPeaklistSoftware = Some(DefaultPeaklistSoftware.PROTEIN_PILOT)
+  lazy val supportedVersion = Some("beta")
+  lazy val successExitValue = 0
+  lazy val canExecuteProlineParsingRule = false
+  lazy val associatedPeaklistSoftware = Some(DefaultPeaklistSoftware.PROTEIN_PILOT)
 
   /**
    * List all output formats handled by MS Data Converter, linked to their command flag
@@ -30,15 +31,13 @@ object MsDataConverter extends IFileConversionTool {
   /**
    * Get MS Data Converter default configuration template
    */
-    object ParamName {
+  object ParamName {
     val PEAK_PICKING = "Peak picking"
-    //val PEAK_LIST_FORMAT = "Peak list format"
     val COMPRESSION = "Compression (mzML only)"
     val PRECISION = "Precision (mzML only)"
     val CREATE_INDEX = "Create index (mzML only)"
   }
 
-  // TODO? store into object?
   val profile = new MacroChoiceParamItem("Profile data (mzML only)", "-profile")
   val instruCentroid = new MacroChoiceParamItem("Instrument centroiding", "-centroid")
   val proteinPilotCentroid = new MacroChoiceParamItem("ProteinPilot centroiding", "-proteinpilot")
@@ -53,21 +52,22 @@ object MsDataConverter extends IFileConversionTool {
 
     new ConversionToolConfig(
       tool = this.getName(),
+      toolVersion = this.supportedVersion,
+
       params = Array(
           
-        MacroSelectionParam(
+        MacroChoiceParam(
           name = ParamName.PEAK_PICKING,
-          //default = Some(instruCentroid),
           default = Some(proteinPilotCentroid),
           value = Some(proteinPilotCentroid), //here we set the value because we chose a default value different that exe default, so it needs to be explicit
           options = Some(Seq(profile, instruCentroid, proteinPilotCentroid))
         ),
-        MacroSelectionParam(
+        MacroChoiceParam(
           name = ParamName.COMPRESSION,
           default = Some(zlib),
           options = Some(Seq(zlib, noCompression))
         ),
-        MacroSelectionParam(
+        MacroChoiceParam(
           name = ParamName.PRECISION,
           default = Some(bits64),
           options = Some(Seq(bits32, bits64))
@@ -126,7 +126,7 @@ object MsDataConverter extends IFileConversionTool {
     cmdLineBuffer += s""""$inputFilePath"""" //input file path
 
     /* Output content type */
-    val outputContentTypeOpt = paramByName(ParamName.PEAK_PICKING).asInstanceOf[MacroSelectionParam].value
+    val outputContentTypeOpt = paramByName(ParamName.PEAK_PICKING).asInstanceOf[MacroChoiceParam].value
     require(outputContentTypeOpt.isDefined, "outputContentType must be defined")
     cmdLineBuffer += outputContentTypeOpt.get.cmdFlag
     
@@ -137,30 +137,26 @@ object MsDataConverter extends IFileConversionTool {
     cmdLineBuffer += outputFormatOpt.get.cmdFlag*/
 
     /* Output file */
-    //    val fileName = new File(inputFilePath).getName
-    //    val outputFormat = DataFileExtension.getPrettyName(fileConversion.outputFileFormat)
-    //    val outputFilePath = fileConversion.outputDirectory + "/" + fileName + "." + outputFormat
     cmdLineBuffer += s""""$outputFilePath""""
 
-    /* Additional conversion parameters */
-    //these are all parameters for mzML only
-    val outputFormat = DataFileExtension.getPrettyName(fileConversion.outputFileFormat)
-    if (outputFormat == MZML) {
+    /* Additional conversion parameters (mzML only) */
+    if (fileConversion.outputFileFormat == MZML) {
       for (
         param <- fileConversion.config.params;
         if param.value.isDefined;
         if param.name != ParamName.PEAK_PICKING
       ) {
         param match {
-          
+
           case boolean: MacroBooleanParam => {
-            if (boolean.value.get == true) cmdLineBuffer += boolean.cmdFlag
+            if (boolean.value.get) cmdLineBuffer += boolean.cmdFlag
           }
-          
-          case choice: MacroSelectionParam => {
+
+          case choice: MacroChoiceParam => {
             cmdLineBuffer += choice.cmdFlag
           }
-        case _ => throw new Exception("Invalid parameter type for this tool: " + param)
+
+          case _ => throw new Exception("Invalid parameter type for this tool: " + param)
         }
       }
     }

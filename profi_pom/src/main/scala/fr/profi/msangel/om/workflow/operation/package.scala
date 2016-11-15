@@ -1,17 +1,17 @@
 package fr.profi.msangel.om.workflow
 
+import org.cvogt.play.json.implicits.optionNoError
+
 import scala.collection.mutable.HashMap
 
 import play.api.data.validation.ValidationError
 import play.api.libs.json._
 
 import fr.profi.msangel.om._
+import fr.profi.msangel.om.workflow.operation._
 import fr.profi.msangel.om.workflow.operation.conversion.MsDataConverter
 
 import julienrf.variants.Variants
-
-import org.cvogt.play.json.implicits.optionNoError
-//import org.cvogt.play.json.tuples._
 
 package object operation {
 
@@ -82,7 +82,7 @@ package object operation {
 
       JsObject(strTuples)
     }
-  } // EOF objectMapFormat
+  } // EOF stringMapFormat
   
   /*
    * *************************************************** *
@@ -92,28 +92,63 @@ package object operation {
 
   implicit val macroParamFormat: Format[MacroParam] = Json.format[MacroParam]
   implicit val macroChoiceParamItemFormat: Format[MacroChoiceParamItem] = Json.format[MacroChoiceParamItem]
+  implicit val macroSelectionParamItemFormat: Format[MacroSelectionParamItem] = Json.format[MacroSelectionParamItem]
   implicit val macroFilterParamFormat: Format[MacroFilterParam] = Json.format[MacroFilterParam]
   implicit val conversionToolConfigFormat: Format[ConversionToolConfig] = Json.format[ConversionToolConfig]
   
   implicit val cmdLineExecutionFormat: Format[CmdLineExecution] = Json.format[CmdLineExecution]
   implicit val emailNotificationFormat: Format[EMailNotification] = Json.format[EMailNotification]
   implicit val webServiceCallFormat: Format[WebServiceCall] = Json.format[WebServiceCall]
-  
+
   /**
    * ****************************************** *
    * Abstract model for all workflow operations *
    * ****************************************** *
    */
+  
   sealed trait IWorkflowOperation {
-    var executed: Boolean = false
+
+    val isJobOperation: Boolean
+
     val emailNotification: Option[EMailNotification]
     val cmdLineExecution: Option[CmdLineExecution]
     val webServiceCall: Option[WebServiceCall]
-  
-    /** Clone this workflow operation **/
+
+    /** Clone this workflow job operation **/
     def cloneMe(): IWorkflowOperation
   }
+
+  /**
+   * ***************************************************************************************** *
+   * Abstract model for all workflow operations applying on each job of the task independently *
+   * ***************************************************************************************** *
+   */
+  sealed trait IWorkflowJobOperation { this: IWorkflowOperation =>
+    val isJobOperation: Boolean = true
+  }
+
+  /**
+   * ************************************************************************************* *
+   * Abstract model for all workflow operations applying on alls jobs of the task together *
+   * ************************************************************************************* *
+   */
+  sealed trait IWorkflowTaskOperation { this: IWorkflowOperation =>
+    var status: TaskStatus.Value
+    val isJobOperation: Boolean = false
+    
+    val emailNotification: Option[EMailNotification] = None
+    val cmdLineExecution: Option[CmdLineExecution] = None
+    val webServiceCall: Option[WebServiceCall] = None
+  }
   
+  /* ***************************************************************************************************************************************************************************
+   * ***************************************************************************************************************************************************************************
+   * 
+   * 																																		JOB OPERATIONS
+   * 
+   * ***************************************************************************************************************************************************************************
+   *************************************************************************************************************************************************************************** */
+
   /**
    * ************************** *
    * Model for a FileConversion *
@@ -129,7 +164,7 @@ package object operation {
     emailNotification: Option[EMailNotification] = None,
     cmdLineExecution: Option[CmdLineExecution] = None,
     webServiceCall: Option[WebServiceCall] = None
-  ) extends IWorkflowOperation {
+  ) extends IWorkflowOperation with IWorkflowJobOperation {
   
     require(inputFileFormat != null, "Initial format must be specified")
     require(outputFileFormat != null, "Target format must be specified")
@@ -152,7 +187,7 @@ package object operation {
       }
       false
     }
-  } // EOF FileConversion
+  } // ends FileConversion
   
   
   
@@ -167,7 +202,7 @@ package object operation {
     emailNotification: Option[EMailNotification] = None,
     cmdLineExecution: Option[CmdLineExecution] = None,
     webServiceCall: Option[WebServiceCall] = None
-  ) extends IWorkflowOperation {
+  ) extends IWorkflowOperation with IWorkflowJobOperation {
   
     require(instrumentId > 0, "Invalid instrument ID for MzdbRegistration")
   
@@ -189,7 +224,7 @@ package object operation {
     emailNotification: Option[EMailNotification] = None,
     cmdLineExecution: Option[CmdLineExecution] = None,
     webServiceCall: Option[WebServiceCall] = None
-  ) extends IWorkflowOperation {
+  ) extends IWorkflowOperation with IWorkflowJobOperation {
   
     /** Clone this FileTransfer **/
     def cloneMe() = this.copy()
@@ -207,7 +242,7 @@ package object operation {
     emailNotification: Option[EMailNotification] = None,
     cmdLineExecution: Option[CmdLineExecution] = None,
     webServiceCall: Option[WebServiceCall] = None
-  ) extends IWorkflowOperation {
+  ) extends IWorkflowOperation with IWorkflowJobOperation {
   
     /** Clone this PeaklistIdentification **/
     def cloneMe() = this.copy()
@@ -230,11 +265,13 @@ package object operation {
     format: ProlineDataFileFormat.Value = ProlineDataFileFormat.MASCOT,
     protMatchDecoyRuleId: Option[Long] = None, //uds ID
     importerProperties: HashMap[String, String] = HashMap(),
+    
+    autoMapRawFiles: Boolean = true,
   
     emailNotification: Option[EMailNotification] = None,
     cmdLineExecution: Option[CmdLineExecution] = None,
     webServiceCall: Option[WebServiceCall] = None
-  ) extends IWorkflowOperation {
+  ) extends IWorkflowOperation with IWorkflowJobOperation {
   
     require(instrumentConfigId > 0, "Invalid instrumentConfig ID for ProlineImport")
     require(peaklistSoftwareId > 0, "Invalid peaklistSoftware ID for ProlineImport")
@@ -243,7 +280,53 @@ package object operation {
     def cloneMe() = this.copy()
   } // end of ProlineImport
 
+  /* ***************************************************************************************************************************************************************************
+   * ***************************************************************************************************************************************************************************
+   * 
+   * 																																		TASK OPERATIONS
+   * 
+   * ***************************************************************************************************************************************************************************
+   *************************************************************************************************************************************************************************** */
+
+  /**
+   * ********************** *
+   * Model for a Validation *
+   * ********************** *
+   */
+  /*
+  //case class Validation(config: ValidationConfig) extends IWorkflowTaskOperation {
+  case class Validation(config: JsObject) extends IWorkflowOperation with IWorkflowTaskOperation {
+
+    //require(config != null, "Validation config must be specified")
+
+    /** Clone this Validation **/
+    def cloneMe() = this.copy()
+
+  } // ends Validation
+  */
+
+  /**
+   * ************************ *
+   * Model for a Quantitation *
+   * ************************ *
+   */
+  //case class Quantitation(config: QuantitationConfig) extends IWorkflowTaskOperation {
+  case class Quantitation(
+    var status: TaskStatus.Value = TaskStatus.PENDING,
+    val name: String,
+    val config: JsObject
+  ) extends IWorkflowOperation with IWorkflowTaskOperation {
+
+    //require(config != null, "Quantitation config must be specified")
+
+    /** Clone this Quantitation **/
+    def cloneMe() = this.copy()
+
+  } // ends Quantitation
+
+
   /* JSON Format for any workflow operation */
+
   // TODO: try to upgrade JSON Variants (I hope you like to drink hot coffee)
   //implicit val workflowOperationFormat: OFormat[IWorkflowOperation] = derived.oformat //((__ \ "type").format[String]) //[IWorkflowOperation] //("type")
   implicit val workflowOperationFormat: Format[IWorkflowOperation] = Variants.format[IWorkflowOperation]("type")

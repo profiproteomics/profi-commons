@@ -42,7 +42,6 @@ case class WorkflowJob(
   
   /* Key for input file extension in execution variables */
   val INPUT_EXTENSION_KEY = "INPUT_EXTENSION_KEY"
-  
 
   /** Return true if the job is complete */
   def isComplete(): Boolean = (status == WorkflowJobStatus.SUCCEEDED || status == WorkflowJobStatus.FAILED) //TODO || status == MsiSearchStatus.KILLED)
