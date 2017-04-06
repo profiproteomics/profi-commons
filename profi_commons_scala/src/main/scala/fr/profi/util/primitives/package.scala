@@ -29,6 +29,9 @@ Pattern DOUBLE_PATTERN = Pattern.compile(
   def isZeroOrNaN( value: Float ) = value.isNaN || value == 0f
   def isZeroOrNaN( value: Double ) = value.isNaN || value == 0d
 
+  def toIntOrZero(v: Any): Int = try { toInt(v) } catch { case e: Throwable => 0 }
+  def toFloatOrMinusOne(v: Any): Float = try { toFloat(v) } catch { case e: Throwable => -1f }
+
   /**
    * Tries to cast any value to Scala Boolean primitive.
    */
