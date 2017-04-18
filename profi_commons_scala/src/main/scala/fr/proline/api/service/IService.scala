@@ -32,7 +32,7 @@ trait IService extends Runnable with HasProgress with LazyLogging {
     } else {
 
       registerOnProgressAction({
-
+        logger.debug(" In OnProgressAction "+ Thread.currentThread().getName )
         if (Thread.interrupted()) { // Check if current thread is interrupted
           throw new InterruptedException("Current thread is interrupted")
         }
@@ -75,7 +75,7 @@ trait HasProgress extends LazyLogging {
   private val onProgressActions = new ArrayBuffer[Function0[Unit]](0)
   //private var onStepActions = new Array[ArrayBuffer[Function0[Unit]]](progressPlan.length)
 
-  protected def >>>(): Unit = {
+  protected def executeOnProgress(): Unit = {
 
     // Execute all registered actions
     for (onProgressAction <- onProgressActions) {
