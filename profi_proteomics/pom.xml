@@ -20,7 +20,7 @@
   </properties>
 
 	<scm>
-	  <connection>scm:svn:https://bioproj.extra.cea.fr/svn/proline/Common-Libs/ProFI-Proteomics/trunk</connection>
+	  <connection>scm:svn:https://bioproj.extra.cea.fr/svn/proline/Common-Libs/ProFI-Proteomics/branches/0.2.0-RCandidates</connection>
 	</scm>
 
   <dependencies>
