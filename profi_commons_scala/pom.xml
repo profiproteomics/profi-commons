@@ -18,7 +18,7 @@
   </properties>
 
   <scm>
-    <connection>scm:svn:https://bioproj.extra.cea.fr/svn/proline/Common-Libs/ProFI-Commons-Scala/branches/0.6.0-RCandidates</connection>
+    <connection>scm:svn:https://bioproj.extra.cea.fr/svn/proline/Common-Libs/ProFI-Commons-Scala/trunk</connection>
   </scm>
 
   <dependencies>
