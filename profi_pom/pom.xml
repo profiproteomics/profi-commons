@@ -24,7 +24,7 @@
   </prerequisites>
 
   <scm>
-    <connection>scm:svn:https://bioproj.extra.cea.fr/svn/proline/ProFI-Pom/trunk</connection>
+    <connection>scm:svn:https://bioproj.extra.cea.fr/svn/proline/ProFI-Pom/branches/0.3.0-RCandidates</connection>
   </scm>
 
   <dependencyManagement>
