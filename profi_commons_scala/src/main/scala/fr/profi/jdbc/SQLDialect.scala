@@ -27,10 +27,19 @@ abstract class AbstractSQLDialect(
   
   var quotingChar ='\''
 
-  def format(sql: String, params: ISQLFormattable*): String = formatSeq(sql, params.toArray )
+  def format(sql: String, params: ISQLFormattable*): String = {
+    formatSeq(sql, params.toArray)
+  }
 
-  def formatSeq(sql: String, params: Array[ISQLFormattable] ): String = {
-    sql.replace("?", "%s").format( params.map(p => p.escaped(this) ): _* )
+  def formatSeq(sql: String, params: Array[ISQLFormattable]): String = {
+    if (params.isEmpty) sql
+    else {
+      sql
+        .replace("%", "%%")
+        .replace("?", "%s")
+        .format(params.map(p => p.escaped(this)): _*)
+        .replace("%%", "%")
+    }
   }
 
   /**
