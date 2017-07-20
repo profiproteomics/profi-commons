@@ -29,12 +29,12 @@ package object bytes {
     
     // wrap bytes to a byte buffer
     val byteBuf = ByteBuffer.wrap(bytes).order(endianess)
-    var floats = new ArrayBuffer[Float]()
-    while(byteBuf.hasRemaining()) {
+    val floats = Array.newBuilder[Float]
+    while (byteBuf.hasRemaining()) {
       floats += byteBuf.getFloat()
     }
 
-    floats.toArray
+    floats.result
   }
 
   def bytesTodoublesOption( bytes: Option[Array[Byte]], littleEndian: Boolean = true ): Option[Array[Double]] = {
@@ -59,13 +59,12 @@ package object bytes {
     val endianess = if(littleEndian) ByteOrder.LITTLE_ENDIAN else ByteOrder.BIG_ENDIAN
     // wrap bytes to a byte buffer
     val byteBuf = ByteBuffer.wrap(bytes).order(endianess)
-    var doubles = new ArrayBuffer[Double]()
-    while(byteBuf.hasRemaining()) {
+    val doubles = Array.newBuilder[Double]
+    while (byteBuf.hasRemaining()) {
       doubles += byteBuf.getDouble()
     }
 
-    doubles.toArray
-    
+    doubles.result
   }
   
   private val HEX_CHARS = "0123456789abcdef".toCharArray()
