@@ -1,191 +1,202 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <artifactId>ProFI-Pom</artifactId>
-    <groupId>fr.proline</groupId>
-    <version>0.3.0-SNAPSHOT</version>  <!-- Snapshot Trunk version -->
-  </parent>
+	<parent>
+		<artifactId>ProFI-Pom</artifactId>
+		<groupId>fr.proline</groupId>
+		<version>0.4.0-SNAPSHOT</version>  <!-- Snapshot Trunk version -->
+	</parent>
 
-  <groupId>fr.proline.util</groupId>
-  <artifactId>ProFI-Commons-Scala</artifactId>
-  <version>0.7.0-SNAPSHOT</version>
+	<groupId>fr.proline.util</groupId>
+	<artifactId>ProFI-Commons-Scala</artifactId>
+	<version>0.7.0-SNAPSHOT</version>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <version.path>${basedir}/src/main/scala/fr/proline/util</version.path>
-  </properties>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<version.path>${basedir}/src/main/scala/fr/proline/util</version.path>
+	</properties>
 
-  <scm>
-    <connection>scm:svn:https://bioproj.extra.cea.fr/svn/proline/Common-Libs/ProFI-Commons-Scala/trunk</connection>
-  </scm>
+	<scm>
+		<connection>scm:svn:https://bioproj.extra.cea.fr/svn/proline/Common-Libs/ProFI-Commons-Scala/trunk</connection>
+	</scm>
 
-  <dependencies>
-  
-    <!-- ProFi Commons (Java) -->
-    <dependency>
-      <groupId>fr.proline.util</groupId>
-      <artifactId>ProFI-Commons-Java</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
-    </dependency>
+	<dependencies>
 
-    <!-- Scala -->
-    <dependency>
-      <groupId>org.scala-lang</groupId>
-      <artifactId>scala-library</artifactId>
-      <!-- Version inherited from ProFI-Pom -->
-    </dependency>
+		<!-- ProFi Commons (Java) -->
+		<dependency>
+			<groupId>fr.proline.util</groupId>
+			<artifactId>ProFI-Commons-Java</artifactId>
+			<version>0.6.0.a-SNAPSHOT</version>
+		</dependency>
 
-      <dependency>
-		<groupId>org.scala-lang.modules</groupId>
-  		<artifactId>scala-xml_${scala.version}</artifactId>
-        <!-- Version inherited from ProFI-Pom -->
-	 </dependency>
+		<!-- Scala -->
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-library</artifactId>
+			<!-- Version inherited from ProFI-Pom -->
+		</dependency>
+
+		<dependency>
+			<groupId>org.scala-lang.modules</groupId>
+			<artifactId>scala-xml_${scala.version}</artifactId>
+			<!-- Version inherited from ProFI-Pom -->
+		</dependency>
 
 
-    <!-- Logging -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <!-- Version inherited from ProFI-Pom -->
-    </dependency>
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<!-- Version inherited from ProFI-Pom -->
+		</dependency>
 
-    <dependency>
-      <groupId>com.typesafe.scala-logging</groupId>
-      <artifactId>scala-logging_${scala.version}</artifactId>
-      <!-- Version inherited from ProFI-Pom ${scala.version} -->
-    </dependency>
+		<dependency>
+			<groupId>com.typesafe.scala-logging</groupId>
+			<artifactId>scala-logging_${scala.version}</artifactId>
+			<!-- Version inherited from ProFI-Pom ${scala.version} -->
+		</dependency>
 
-    <!-- Date and Time -->
-    <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
-      <!-- Version inherited from ProFI-Pom -->
-    </dependency>
+		<!-- Date and Time -->
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<!-- Version inherited from ProFI-Pom -->
+		</dependency>
 
-    <!-- joda-time 2.2 requires joda-convert to compile Scala projects -->
-    <dependency>
-      <groupId>org.joda</groupId>
-      <artifactId>joda-convert</artifactId>
-      <!-- Version inherited from ProFI-Pom -->
-    </dependency>
+		<!-- joda-time 2.2 requires joda-convert to compile Scala projects -->
+		<dependency>
+			<groupId>org.joda</groupId>
+			<artifactId>joda-convert</artifactId>
+			<!-- Version inherited from ProFI-Pom -->
+		</dependency>
 
-    <!-- JSON and MsgPack Serialization -->
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-      <!-- Version inherited from ProFI-Pom -->
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <!-- Version inherited from ProFI-Pom -->
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.module</groupId>
-      <artifactId>jackson-module-scala_${scala.version}</artifactId>
-      <!-- Version inherited from ProFI-Pom -->
-    </dependency>
-    <dependency>
-      <groupId>org.msgpack</groupId>
-      <artifactId>jackson-dataformat-msgpack</artifactId>
-      <!-- Version inherited from ProFI-Pom -->
-    </dependency>
-    <dependency>
-      <groupId>org.msgpack</groupId>
-      <artifactId>msgpack-core</artifactId>
-      <!-- Version inherited from ProFI-Pom -->
-    </dependency>
+		<!-- JSON and MsgPack Serialization -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<!-- Version inherited from ProFI-Pom -->
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<!-- Version inherited from ProFI-Pom -->
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.module</groupId>
+			<artifactId>jackson-module-scala_${scala.version}</artifactId>
+			<!-- Version inherited from ProFI-Pom -->
+		</dependency>
+		<dependency>
+			<groupId>org.msgpack</groupId>
+			<artifactId>jackson-dataformat-msgpack</artifactId>
+			<!-- Version inherited from ProFI-Pom -->
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<!-- Version inherited from ProFI-Pom -->
+		</dependency>
 
-    <!-- Commons -->
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-math3</artifactId>
-      <!-- Version inherited from ProFI-Pom -->
-    </dependency>
+		<!-- Commons -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<!-- Version inherited from ProFI-Pom -->
+		</dependency>
 
-    <!-- Test -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <!-- Version and scope inherited from ProFI-Pom -->
-    </dependency>
+		<!-- Test -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<!-- Version and scope inherited from ProFI-Pom -->
+		</dependency>
 
-    <dependency>
-      <groupId>org.scalatest</groupId>
-      <artifactId>scalatest_${scala.version}</artifactId>
-      <!-- Version and scope inherited from ProFI-Pom -->
-    </dependency>
+		<dependency>
+			<groupId>org.scalatest</groupId>
+			<artifactId>scalatest_${scala.version}</artifactId>
+			<!-- Version and scope inherited from ProFI-Pom -->
+		</dependency>
 
-    <dependency>
-      <groupId>org.xerial</groupId>
-      <artifactId>sqlite-jdbc</artifactId>
-      <scope>test</scope>
-      <!-- Version inherited from ProFI-Pom -->
-    </dependency>
 
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <!-- Version inherited from ProFI-Pom -->
-      <scope>test</scope>
-    </dependency>
+		<dependency>
+			<groupId>org.scalactic</groupId>
+			<artifactId>scalactic_${scala.version}</artifactId>
+			<version>3.0.3</version>
+			<scope>test</scope>
+			<!-- Version and scope inherited from ProFI-Pom -->
+		</dependency>
 
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-core</artifactId>
-      <!-- Version inherited from ProFI-Pom -->
-      <scope>test</scope>
-    </dependency>
+		<dependency>
+			<groupId>org.xerial</groupId>
+			<artifactId>sqlite-jdbc</artifactId>
+			<scope>test</scope>
+			<!-- Version inherited from ProFI-Pom -->
+		</dependency>
 
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <!-- Version inherited from ProFI-Pom -->
-      <scope>test</scope>
-    </dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<!-- Version inherited from ProFI-Pom -->
+			<scope>test</scope>
+		</dependency>
 
-  </dependencies>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<!-- Version inherited from ProFI-Pom -->
+			<scope>test</scope>
+		</dependency>
 
-  <build>
-    <sourceDirectory>src/main/scala</sourceDirectory>
-    <testSourceDirectory>src/test/scala</testSourceDirectory>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<!-- Version inherited from ProFI-Pom -->
+			<scope>test</scope>
+		</dependency>
 
-    <plugins>
-    
-      <!-- Scala build -->
-      <plugin>
-        <groupId>net.alchim31.maven</groupId>
-        <artifactId>scala-maven-plugin</artifactId>
-        <!-- Version and configuration inherited from ProFI-Pom -->
-      </plugin>
+	</dependencies>
 
-      <!-- Used to replace strings in text files (generate Version.java and Version.scala from templates) -->
-      <plugin>
-        <groupId>com.google.code.maven-replacer-plugin</groupId>
-        <artifactId>replacer</artifactId>
-        <!-- Version inherited from ProFI-Pom -->
+	<build>
+		<sourceDirectory>src/main/scala</sourceDirectory>
+		<testSourceDirectory>src/test/scala</testSourceDirectory>
 
-        <executions>
-          <execution>
-            <id>scala-version-generation</id>
-            <phase>generate-sources</phase>
-            <!-- Execution and configuration inherited from ProFI-Pom -->
-            <configuration>
-              <skip>false</skip>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+		<plugins>
 
-      <!-- Maven Release for branches and tags -->
-      <plugin>
-        <artifactId>maven-release-plugin</artifactId>
-        <!-- Version and configuration inherited from parent POM -->
-      </plugin>
-      
-    </plugins>
-  </build>
+			<!-- Scala build -->
+			<plugin>
+				<groupId>net.alchim31.maven</groupId>
+				<artifactId>scala-maven-plugin</artifactId>
+				<!-- Version and configuration inherited from ProFI-Pom -->
+			</plugin>
+
+			<!-- Used to replace strings in text files (generate Version.java and 
+				Version.scala from templates) -->
+			<plugin>
+				<groupId>com.google.code.maven-replacer-plugin</groupId>
+				<artifactId>replacer</artifactId>
+				<!-- Version inherited from ProFI-Pom -->
+
+				<executions>
+					<execution>
+						<id>scala-version-generation</id>
+						<phase>generate-sources</phase>
+						<!-- Execution and configuration inherited from ProFI-Pom -->
+						<configuration>
+							<skip>false</skip>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Maven Release for branches and tags -->
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<!-- Version and configuration inherited from parent POM -->
+			</plugin>
+
+		</plugins>
+	</build>
 
 </project>

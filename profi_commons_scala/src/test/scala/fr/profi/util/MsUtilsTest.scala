@@ -2,14 +2,15 @@ package fr.profi.util
 
 import org.junit.Test
 import org.scalatest.junit.JUnitSuite
-
 import fr.profi.util.ms._
+import org.scalactic.TripleEquals._
+
 
 @Test
-class MsUtilsTest extends JUnitSuite {
+class MsUtilsTest {
   
   @Test
-  def testMozToMass() = {
+  def testMozToMass() : Unit = {
     assert( mozToMass( 482.2, 1 ) === 481.192723533188 )
     assert( mozToMass( 482.2, 2 ) === 962.385447066376 )
     assert( mozToMass( 482.2, 3 ) === 1443.578170599564 )

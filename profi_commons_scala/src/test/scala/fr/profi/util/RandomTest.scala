@@ -40,7 +40,7 @@ class RandomTest extends AssertionsForJUnit {
   }
 
   @Test
-  def testRandomGaussian() = {
+  def testRandomGaussian() :Unit = {
     val randNumber: Double = randomGaussian(-10, 20,100)
     assert( randNumber >= -10 )
     assert( randNumber <= 20 )
