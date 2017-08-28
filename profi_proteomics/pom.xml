@@ -4,7 +4,7 @@
   <parent>
     <artifactId>ProFI-Pom</artifactId>
     <groupId>fr.proline</groupId>
-    <version>0.3.0-SNAPSHOT</version>
+    <version>0.4.0-SNAPSHOT</version>
     <relativePath />
   </parent>
 
@@ -25,13 +25,17 @@
 
   <dependencies>
 
-    <!-- ProFI commons Scala -->
+    <!-- ProFI commons  -->
     <dependency>
       <groupId>fr.proline.util</groupId>
       <artifactId>ProFI-Commons-Scala</artifactId>
       <version>0.7.0-SNAPSHOT</version>
     </dependency>
-
+    <dependency>
+      <groupId>fr.proline.util</groupId>
+      <artifactId>ProFI-Commons-Java</artifactId>
+      <version>0.6.0-SNAPSHOT</version>
+    </dependency>
     <!-- Scala -->
     <dependency>
       <groupId>org.scala-lang</groupId>
@@ -58,12 +62,6 @@
       <!-- Version and scope inherited from ProFI-Pom -->
     </dependency>
 
-    <dependency>
-      <groupId>org.scalatest</groupId>
-      <artifactId>scalatest_${scala.version}</artifactId>
-      <!-- Version and scope inherited from ProFI-Pom -->
-    </dependency>
-    
   </dependencies>
 
   <build>
