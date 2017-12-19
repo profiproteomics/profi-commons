@@ -1,0 +1,13 @@
+compiler.compileOnSave=true
+compiler.mapSourceFiles=true
+eclipse.preferences.version=1
+editor.indentSize=2
+tabWidth=2
+syntaxColoring.comment.color=63,127,95
+syntaxColoring.identifier.color=0,0,255
+syntaxColoring.keyword.color=127,0,85
+syntaxColoring.numberLiteral.color=196,140,255
+syntaxColoring.operator.color=0,0,0
+syntaxColoring.punctuation.color=0,0,0
+syntaxColoring.regExpLiteral.color=128,64,64
+syntaxColoring.stringLiteral.color=128,0,0

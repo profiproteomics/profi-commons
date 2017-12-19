@@ -1,0 +1,13 @@
+#Organize Import Order
+#Fri Jul 24 17:32:06 CEST 2015
+9=fr
+8=play
+7=reactivemongo
+6=org
+5=com
+4=scalafx
+3=scala
+2=javax
+10=application
+1=javafx
+0=java
