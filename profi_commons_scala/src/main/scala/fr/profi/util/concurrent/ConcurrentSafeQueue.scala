@@ -12,11 +12,12 @@ import scala.util.control.Breaks._
 
 import com.typesafe.scalalogging.LazyLogging
 
-
 /** Concurrent safe queue **/
 
 // Code inspired from: http://studio.cs.hut.fi/snippets/producer.html
 abstract class ConcurrentSafeQueue[T] extends LazyLogging {
+  
+  private def me = this
   
   def priorityQueueOrdering: Option[Ordering[T]]
   
@@ -24,7 +25,18 @@ abstract class ConcurrentSafeQueue[T] extends LazyLogging {
     def dequeue(): T
     def enqueue(elems: T*): Unit
   }
-  protected class InternalPriorityQueue[T]()(implicit ord: Ordering[T]) extends PriorityQueue[T]() with InternalQueueOps[T]
+  protected class InternalPriorityQueue[T]()(implicit ord: Ordering[T]) extends PriorityQueue[T]() with InternalQueueOps[T] {
+    override def dequeue() = {
+      me.synchronized {
+        // Clone all elements before dequeue
+        val queueClone = this.clone()
+        this.clear()
+        queueClone.iterator.foreach( this.enqueue(_) )
+        
+        super.dequeue()
+      }
+    }
+  }
   protected class InternalQueue[T]() extends Queue[T]() with InternalQueueOps[T]
 
   // To be defined by implementations
@@ -32,11 +44,11 @@ abstract class ConcurrentSafeQueue[T] extends LazyLogging {
 
   private var isStopped = false
 
-  // Here is the queue - not nothing fancy about it. Just a normal scala.collection.mutable.queue
+  // Here is the queue - nothing fancy about it. Just a normal scala.collection.mutable.queue
   // In addition to being a queue, it is also the lock for our AbstractQueue
   // It is also the resource we are trying to protect using our AbstractQueue
   protected lazy val internalQueue = {
-    if( priorityQueueOrdering.isDefined )
+    if (priorityQueueOrdering.isDefined)
       new InternalPriorityQueue[T]()(priorityQueueOrdering.get)
     else
       new InternalQueue[T]()
@@ -116,6 +128,10 @@ abstract class ConcurrentSafeQueue[T] extends LazyLogging {
   def enqueueException(t: Throwable): Unit = exceptionQueue.synchronized {
     exceptionQueue.notifyAll()
     exceptionQueue.enqueue(t)
+  }
+  
+  override def toString(): String = {
+    internalQueue.toString()
   }
 }
 
