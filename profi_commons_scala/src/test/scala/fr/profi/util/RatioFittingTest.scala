@@ -8,9 +8,9 @@ import fr.profi.util.math._
 
 @Test
 class RatioFittingTest extends AssertionsForJUnit {
-  
-       @Test
-  def summarizeCBy {
+
+  @Test
+  def summarize {
         
     val matrix = Array(
       Array(Float.NaN   ,Float.NaN,3363.449951f,Float.NaN,4048.209473f,8135.1875f,67534.57031f,135369.2188f,371872.2188f,739425.625f ,1185.227295f,Float.NaN,Float.NaN,Float.NaN,5591.858887f,15660.9502f,66991.46875f,171569.125f ,440577f     ,920273.875f ,Float.NaN,Float.NaN   ,4702.259766f,6555.999512f,5565.342285f,20784.26758f,73084.47656f,168318.2344f,452562.4375f,975477f     ,Float.NaN,Float.NaN,3954.012451f,4004.141357f,6415.609375f,15904.85938f,70523.82031f,151799f     ,360053.5938f,760401f),
@@ -22,5 +22,17 @@ class RatioFittingTest extends AssertionsForJUnit {
        val abundances = RatioFitting.fitWithCountPredicate(matrix, 3)
        println("RatioFitting Summarizer = "+abundances.mkString(","))
     }
-  
+
+  @Test
+  def summarizeNaN {
+
+    val matrix = Array(
+      Array(Float.NaN   ,Float.NaN  , 1000.0f ,Float.NaN ),
+      Array(Float.NaN   ,Float.NaN  , 1000.0f ,Float.NaN )
+    )
+
+    val abundances = RatioFitting.fitWithoutImputation(matrix)
+    println("RatioFitting Summarizer with NaN  = "+abundances.mkString(","))
+  }
+
 }

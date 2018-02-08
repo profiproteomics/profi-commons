@@ -37,15 +37,16 @@ object RatioFitting extends LazyLogging {
   }
 
 
-  private def _fit(abundanceMatrix: Array[Array[Float]], r: Array[Array[Double]], valuesCountByColumns: Array[Int]): Array[Float] = {
-    val ratios = rowMedian(r)
+  private def _fit(abundanceMatrix: Array[Array[Float]], imputedRatioMatrixr: Array[Array[Double]], valuesCountByColumns: Array[Int]): Array[Float] = {
+    val ratios = rowMedian(imputedRatioMatrixr)
     val logRatios = ratios.map { Math.log(_) }
     val naNRatiosIndexes = logRatios.zipWithIndex.filter(p => p._1.isNaN).map(_._2)
     val filteredLogRatios = logRatios.filter { !_.isNaN() }
 
     if (filteredLogRatios.isEmpty) {
       logger.warn("No eligible columns for ratios computation")
-      return Array.fill(abundanceMatrix.head.length)(Float.NaN)
+      return abundanceMatrix.transpose.map{ _calcAbundanceSum( _ ) }
+//      return Array.fill(abundanceMatrix.head.length)(Float.NaN)
     }
 
     val gc = buildCoefficientMatrix(abundanceMatrix, naNRatiosIndexes)
@@ -138,6 +139,10 @@ object RatioFitting extends LazyLogging {
       medians(col) = filteredMedian(colValues)
     }
     medians
-  }    
+  }
 
+  private def _calcAbundanceSum(abundances: Array[Float]): Float = {
+    val defAbundances = abundances.filter( isZeroOrNaN(_) == false )
+    if( defAbundances.length == 0 ) Float.NaN else defAbundances.sum
+  }
 }
