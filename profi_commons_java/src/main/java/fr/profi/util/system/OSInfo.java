@@ -22,6 +22,8 @@ public final class OSInfo {
 
 	private static final String LINUX = "linux"; // Normalized to lower case
 
+	private static final String MAC = "mac"; // Normalized to lower case
+
 	private static final String OS_ARCH_KEY = "os.arch";
 
 	private static final String SUN_ARCH_DATA_MODEL_KEY = "sun.arch.data.model";
@@ -57,7 +59,7 @@ public final class OSInfo {
 
 	/* Public class methods */
 	/**
-	 * Retrieves type of OS (Linux and Windows supported) and architecture (amd64 or x86/i386) of the plateform of the running JVM.
+	 * Retrieves type of OS (Mac, Linux and Windows supported) and architecture (amd64 or x86/i386) of the plateform of the running JVM.
 	 * 
 	 * @return OS Type and arch or <code>null</code> if it cannot be retrieved.
 	 */
@@ -99,6 +101,21 @@ public final class OSInfo {
 
 				default:
 					LOG.warn("Unknown Windows arch (amd64 / x86) type");
+				}
+
+			} else if (normalizedOsName.contains(MAC)) {
+
+				switch (getArch()) {
+				case X86:
+					result = OSType.MAC_I386;
+					break;
+
+				case AMD64:
+					result = OSType.MAC_AMD64;
+					break;
+
+				default:
+					LOG.warn("Unknown Mac arch (amd64 / x86) type");
 				}
 
 			} else {
