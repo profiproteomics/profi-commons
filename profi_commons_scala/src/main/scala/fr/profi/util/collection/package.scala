@@ -12,24 +12,26 @@ import scala.language.implicitConversions
 package object collection {
   
   trait LongMapBuilder extends Any {
-    @inline final protected def initLongMap[A, V](xs: TraversableOnce[A]): LongMap[V] = {
+    @inline final def initLongMap[A, V](xs: TraversableOnce[A]): LongMap[V] = {
       if (xs.isTraversableAgain) new LongMap[V](xs.size) else new LongMap[V]()
     }
   }
-
+  
   trait LongMapBuilderFromTuplesOps extends Any with LongMapBuilder {
-    @inline final protected def fillLongMap[V](xs: TraversableOnce[(Long, V)], longMap: LongMap[V]) = {
+    @inline final def fillLongMap[V](xs: TraversableOnce[(Long, V)], longMap: LongMap[V]) = {
       longMap ++= xs
     }
-    @inline final protected def toLongMap[V](xs: TraversableOnce[(Long, V)]): LongMap[V] = {
+    @inline final def toLongMap[V](xs: TraversableOnce[(Long, V)]): LongMap[V] = {
       val longMap = this.initLongMap[(Long, V), V](xs)
       this.fillLongMap(xs, longMap)
       longMap
     }
   }
   
-  class LongMapBuilderFromTraversableTuples[A](val xs: TraversableOnce[(Long, A)]) extends AnyVal with LongMapBuilderFromTuplesOps {
-    def toLongMap(): LongMap[A] = this.toLongMap(xs)
+  object LongMapBuilderFromTraversableTuples extends LongMapBuilderFromTuplesOps
+  
+  class LongMapBuilderFromTraversableTuples[A](val xs: TraversableOnce[(Long, A)]) extends AnyVal {
+    def toLongMap(): LongMap[A] = LongMapBuilderFromTraversableTuples.toLongMap(xs)
   }
   implicit def traversableTuples2longMapBuilder[A]( xs: TraversableOnce[(Long, A)] ): LongMapBuilderFromTraversableTuples[A] = {
     new LongMapBuilderFromTraversableTuples[A](xs)
@@ -40,7 +42,7 @@ package object collection {
 
   trait LongMapBuilderFromTraversableOnceOps extends Any with LongMapBuilder {
     
-    @inline final protected def toLongMap[A, V](xs: TraversableOnce[A], kvMapping: A => (Long, V)): LongMap[V] = {
+    @inline final def toLongMap[A, V](xs: TraversableOnce[A], kvMapping: A => (Long, V)): LongMap[V] = {
       val longMap = this.initLongMap[A, V](xs)
 
       val xsIter = xs.toIterator
@@ -50,18 +52,20 @@ package object collection {
 
       longMap
     }
-    @inline final protected def mapByLong[A](xs: TraversableOnce[A], byKey: A => Long): LongMap[A] = {
+    @inline final def mapByLong[A](xs: TraversableOnce[A], byKey: A => Long): LongMap[A] = {
       this.toLongMap(xs, { x: A => (byKey(x), x) })
     }
   }
+  
+  object LongMapBuilderFromTraversableOnce extends LongMapBuilderFromTraversableOnceOps
 
-  class LongMapBuilderFromTraversableOnce[A](val xs: TraversableOnce[A]) extends AnyVal with LongMapBuilderFromTraversableOnceOps {
+  class LongMapBuilderFromTraversableOnce[A](val xs: TraversableOnce[A]) extends AnyVal {
     def mapByLong(byKey: A => Long): LongMap[A] = {
-      this.mapByLong(xs, byKey)
+      LongMapBuilderFromTraversableOnce.mapByLong(xs, byKey)
     }
     
     def toLongMapWith[V](kvMapping: A => (Long, V)): LongMap[V] = {
-      this.toLongMap(xs, kvMapping)
+      LongMapBuilderFromTraversableOnce.toLongMap(xs, kvMapping)
     }
   }
   // Note this conversion is conlicting filterMonadic2longMapBuilder
@@ -74,13 +78,15 @@ package object collection {
     new LongMapBuilderFromTraversableOnce[A](xs)
   }
   
-  class LongMapBuilderFromFilterMonadic[A, Repr](val fm: FilterMonadic[A, Repr]) extends AnyVal with LongMapBuilder {
+  object LongMapBuilderFromFilterMonadic extends LongMapBuilder
+  
+  class LongMapBuilderFromFilterMonadic[A, Repr](val fm: FilterMonadic[A, Repr]) extends AnyVal {
     
     protected def buildLongMapFromLongMapping[V](longMapping: A => (Long, V)): LongMap[V] = {
       
       // Initialize the map
       val longMap = fm match {
-        case xs: TraversableOnce[A] => this.initLongMap[A, V](xs)
+        case xs: TraversableOnce[A] => LongMapBuilderFromFilterMonadic.initLongMap[A, V](xs)
         case _ => new LongMap[V]
       }
 
@@ -106,7 +112,7 @@ package object collection {
   }
 
   trait LongMapGrouperFromTraversableLikeOps extends Any {
-    @inline final protected def groupByLong[A, Repr](xs: TraversableLike[A, Repr], byLong: A => Long): LongMap[Repr] = {
+    @inline final def groupByLong[A, Repr](xs: TraversableLike[A, Repr], byLong: A => Long): LongMap[Repr] = {
 
       val tmpMap = xs.groupBy(byLong(_))
 
@@ -116,10 +122,12 @@ package object collection {
       longMap
     }
   }
+  
+  object LongMapGrouperFromTraversableLike extends LongMapGrouperFromTraversableLikeOps
 
-  class LongMapGrouperFromTraversableLike[A, Repr](val xs: TraversableLike[A, Repr]) extends AnyVal with LongMapGrouperFromTraversableLikeOps {
+  class LongMapGrouperFromTraversableLike[A, Repr](val xs: TraversableLike[A, Repr]) extends AnyVal {
     def groupByLong(byLong: A => Long): LongMap[Repr] = {
-      this.groupByLong(xs, byLong)
+      LongMapGrouperFromTraversableLike.groupByLong(xs, byLong)
     }
   }
   implicit def traversableOnce2longMapGrouper[A,Repr]( xs: TraversableLike[A, Repr] ): LongMapGrouperFromTraversableLike[A, Repr] = {
