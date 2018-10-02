@@ -8,7 +8,7 @@
   <packaging>pom</packaging>
 
   <name>${project.artifactId}</name>
-  <description>Master Maven POM for all ProFI projects</description>
+  <description>Master Maven POM for all ProFI projects: Commons, Core and IHM</description>
 <!-- Lastest version checkes : 19/06/2017 -->
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
