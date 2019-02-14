@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>fr.proline</groupId>
-  <artifactId>ProFI-Pom</artifactId>
+    <artifactId>profi-pom</artifactId>
   <version>0.5.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
@@ -361,7 +361,7 @@
                 <replacements>
                   <replacement>
                     <token>@moduleName@</token>
-                    <value>${project.artifactId}</value>
+                    <value>${project.name}</value>
                   </replacement>
                   <replacement>
                     <token>@version@</token>
@@ -384,7 +384,7 @@
                 <replacements>
                   <replacement>
                     <token>@moduleName@</token>
-                    <value>${project.artifactId}</value>
+                    <value>${project.name}</value>
                   </replacement>
                   <replacement>
                     <token>@version@</token>
