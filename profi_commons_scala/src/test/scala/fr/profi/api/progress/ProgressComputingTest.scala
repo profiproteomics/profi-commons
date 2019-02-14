@@ -1,8 +1,7 @@
-package fr.proline.api.progress
+package fr.profi.api.progress
 
 import org.junit.Assert._
 import org.junit.Test
-import scala.collection.immutable.TreeMap
 
 class ProgressComputingTest {
  

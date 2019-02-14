@@ -3,18 +3,18 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<artifactId>ProFI-Pom</artifactId>
+		<artifactId>profi-pom</artifactId>
 		<groupId>fr.proline</groupId>
-		<version>0.4.0-SNAPSHOT</version>  <!-- Snapshot Trunk version -->
+		<version>0.5.0-SNAPSHOT</version>  <!-- Snapshot Trunk version -->
 	</parent>
 
 	<groupId>fr.proline.util</groupId>
-	<artifactId>ProFI-Commons-Scala</artifactId>
+	<artifactId>profi-commons-scala</artifactId>
 	<version>0.8.0-SNAPSHOT</version>
-
+	<name>ProFI-Commons-Scala</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<version.path>${basedir}/src/main/scala/fr/proline/util</version.path>
+		<version.path>${basedir}/src/main/scala/fr/profi/util</version.path>
 	</properties>
 
 	<scm>
@@ -26,7 +26,7 @@
 		<!-- ProFi Commons (Java) -->
 		<dependency>
 			<groupId>fr.proline.util</groupId>
-			<artifactId>ProFI-Commons-Java</artifactId>
+			<artifactId>profi-commons-java</artifactId>
 			<version>0.7.0-SNAPSHOT</version>
 		</dependency>
 

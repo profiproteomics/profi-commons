@@ -1,4 +1,4 @@
-package fr.proline.api.service
+package fr.profi.api.service
 
 import scala.collection.mutable.ArrayBuffer
 

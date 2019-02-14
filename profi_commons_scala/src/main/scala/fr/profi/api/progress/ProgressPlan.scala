@@ -1,4 +1,4 @@
-package fr.proline.api.progress
+package fr.profi.api.progress
 
 import java.util.concurrent.atomic.AtomicInteger
 import scala.collection.mutable.ArrayBuffer

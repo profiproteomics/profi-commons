@@ -1,4 +1,4 @@
-package fr.proline.api.progress
+package fr.profi.api.progress
 
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.mutable.HashMap
