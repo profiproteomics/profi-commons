@@ -1,4 +1,4 @@
-package fr.proline.util.version;
+package fr.profi.util.version;
 
 /**
  * Exposes version of a Proline Module.

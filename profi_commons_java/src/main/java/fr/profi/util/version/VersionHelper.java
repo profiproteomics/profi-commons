@@ -1,4 +1,4 @@
-package fr.proline.util.version;
+package fr.profi.util.version;
 
 import java.util.ArrayList;
 import java.util.Iterator;

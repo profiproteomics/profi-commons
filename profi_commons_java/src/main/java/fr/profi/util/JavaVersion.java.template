@@ -1,6 +1,6 @@
-package fr.proline.util;
+package fr.profi.util;
 
-import fr.proline.util.version.IVersion;
+import fr.profi.util.version.IVersion;
 
 public class JavaVersion implements IVersion {
 
