@@ -12,7 +12,7 @@ But before that, we provide a tar.gz containing the source files for all reposit
 
 # ProFI Commons 
 
-This repository contains 4 utilities projects used by differents other projects of ProfiProteomics
+This repository contains 4 utilities projects used by different other projects of ProfiProteomics
 
 ## ProFI-Pom
 
