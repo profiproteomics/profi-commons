@@ -4,9 +4,8 @@
 ## Note
 
 :warning:
+We are currently migrating Proline source code from our legacy SVN repository to GitHub. In the meantime, we provide the source files of the different projects as a tar.gz file in the release section.
 
-Our goal is to migrate all our source code from out actual SVN to Git.
-But before that, we provide a tar.gz containing the source files for all repository's project.
 
 ---
 
