@@ -32,3 +32,6 @@ ProFI-Commons Java project contains utilities used by other ProfiProteomics Java
 
 Contains scala utility classes to manipulate MS and chemistry data.
 
+# License
+
+This project is licensed under the CeCILL License - see the Licence_CeCILL_V2.1-en.txt file for details
