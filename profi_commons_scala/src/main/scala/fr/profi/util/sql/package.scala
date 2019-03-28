@@ -57,8 +57,6 @@ package object sql {
    */
   def encodeRecordForPgCopy( record: List[Any], escape: Boolean = true ): Array[Byte] = {
     
-    import fr.profi.util.StringUtils.isEmpty
-    
     def stringify( value: Any ): String = {
       value match {
         case s:String => if( escape ) escapeStringForPgCopy(s) else s
@@ -79,7 +77,7 @@ package object sql {
     (recordStrings.mkString("\t") + "\n").getBytes("UTF-8")
   }
   
-  import java.text.{DecimalFormat,DecimalFormatSymbols}
+  import java.text.{DecimalFormat, DecimalFormatSymbols}
   private val decimalSymbols = new DecimalFormatSymbols()
   decimalSymbols.setDecimalSeparator('.')
   decimalSymbols.setGroupingSeparator(0)

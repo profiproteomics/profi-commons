@@ -1,9 +1,6 @@
 package fr.profi.api.service
 
-import scala.collection.mutable.ArrayBuffer
-
 import com.typesafe.scalalogging.LazyLogging
-
 import fr.profi.util.ThreadLogger
 
 trait IService extends Runnable with HasProgress with LazyLogging {
