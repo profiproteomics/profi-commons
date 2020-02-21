@@ -3,8 +3,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>fr.proline</groupId>
-    <artifactId>profi-pom</artifactId>
-  <version>0.6.0-SNAPSHOT</version>
+  <artifactId>profi-pom</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>${project.artifactId}</name>
@@ -23,10 +23,6 @@
    <prerequisites> 
      <maven>3.0.5</maven><!--  Latest release is 3.0 on 28 July 2015 (not up-to-date in Jenkins) -->
   </prerequisites>
-
-  <scm>
-    <connection>scm:svn:https://bioproj.extra.cea.fr/svn/proline/ProFI-Pom/trunk</connection>
-  </scm>
 
   <!-- Latest version checked on  July 2017 -->
   <dependencyManagement>

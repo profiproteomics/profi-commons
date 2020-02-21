@@ -2,20 +2,18 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>profi-pom</artifactId>
-    <groupId>fr.proline</groupId>
-    <version>0.6.0-SNAPSHOT</version>
+    <artifactId>profi-commons-pom</artifactId>
+    <groupId>fr.profi</groupId>
+    <version>1.0.0-SNAPSHOT</version>
   </parent>
 
   <groupId>fr.profi.util</groupId>
   <artifactId>profi-commons-java</artifactId>
-  <version>0.9.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>ProFI-Commons-Java</name>
 
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <version.path>${basedir}/src/main/java/fr/profi/util</version.path>
   </properties>
 

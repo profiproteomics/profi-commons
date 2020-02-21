@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>profi-pom</artifactId>
+        <groupId>fr.proline</groupId>
+        <version>1.0.0-SNAPSHOT</version>  <!-- Snapshot Trunk version -->
+    </parent>
+
+    <groupId>fr.profi</groupId>
+    <artifactId>profi-commons-pom</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>Proline-Commons_POM</name>
+    <description>Parent pom for commons projects used by different other projects of ProfiProteomics</description>
+    <modules>
+        <module>profi_commons_java</module>
+        <module>profi_commons_scala</module>
+        <module>profi_proteomics</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <core.version>2.2.0-SNAPSHOT</core.version> <!-- Snapshot Trunk version -->
+    </properties>
+    <scm>
+        <connection>scm:git:https://github.com/profiproteomics/proline-commons.git</connection>
+    </scm>
+
+</project>
