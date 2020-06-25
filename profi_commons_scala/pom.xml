@@ -17,9 +17,6 @@
 		<version.path>${basedir}/src/main/scala/fr/profi/util</version.path>
 	</properties>
 
-	<scm>
-		<connection>scm:svn:https://bioproj.extra.cea.fr/svn/proline/Common-Libs/ProFI-Commons-Scala/trunk</connection>
-	</scm>
 
 	<dependencies>
 

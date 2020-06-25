@@ -14,7 +14,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <scala.version>2.11</scala.version> <!-- Scala major version -->
     <scala-library.version>2.11.11</scala-library.version> <!-- Scala library version -->
-    <jackson.version>2.9.10</jackson.version>
+    <jackson.version>2.10.0</jackson.version>
     <sqlite4java.version>1.0.392</sqlite4java.version>
     <msgpack.version>0.8.13</msgpack.version>
     <hibernate.version>5.2.10.Final</hibernate.version>
@@ -23,10 +23,6 @@
    <prerequisites> 
      <maven>3.0.5</maven><!--  Latest release is 3.0 on 28 July 2015 (not up-to-date in Jenkins) -->
   </prerequisites>
-
-  <scm>
-    <connection>scm:svn:https://bioproj.extra.cea.fr/svn/proline/ProFI-Pom/trunk</connection>
-  </scm>
 
   <!-- Latest version checked on  July 2017 -->
   <dependencyManagement>
