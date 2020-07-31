@@ -4,7 +4,7 @@
   <parent>
     <artifactId>profi-commons-pom</artifactId>
     <groupId>fr.profi</groupId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.0_jdk11-SNAPSHOT</version>
   </parent>
 
   <groupId>fr.profi.util</groupId>
@@ -56,9 +56,7 @@
   </dependencies>
 
   <build>
-
     <plugins>
-
       <plugin>
         <groupId>com.google.code.maven-replacer-plugin</groupId>
         <artifactId>replacer</artifactId>
@@ -74,14 +72,8 @@
             </configuration>
           </execution>
         </executions>
-
       </plugin>
-
     </plugins>
-
   </build>
 
-  <scm>
-  	<connection>scm:svn:https://bioproj.extra.cea.fr/svn/proline/Common-Libs/ProFI-Commons-Java/trunk</connection>
-  </scm>
 </project>
