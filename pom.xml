@@ -5,15 +5,15 @@
     <parent>
         <artifactId>profi-pom</artifactId>
         <groupId>fr.proline</groupId>
-        <version>1.0.0-SNAPSHOT</version>  <!-- Snapshot Trunk version -->
+        <version>1.0.0_jdk11-SNAPSHOT</version>  <!-- Snapshot Trunk version -->
     </parent>
 
     <groupId>fr.profi</groupId>
-    <artifactId>profi-commons-pom</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <artifactId>profi-commons</artifactId>
+    <version>1.0.0_jdk11-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Proline-Commons_POM</name>
+    <name>Proline-Commons</name>
     <description>Parent pom for commons projects used by different other projects of ProfiProteomics</description>
     <modules>
         <module>profi_commons_java</module>
@@ -23,7 +23,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <core.version>2.2.0-SNAPSHOT</core.version> <!-- Snapshot Trunk version -->
+        <core.version>2.2.0_jdk11-SNAPSHOT</core.version> <!-- Snapshot Trunk version -->
     </properties>
     <scm>
         <connection>scm:git:https://github.com/profiproteomics/proline-commons.git</connection>

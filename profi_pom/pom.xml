@@ -4,7 +4,7 @@
 
   <groupId>fr.proline</groupId>
   <artifactId>profi-pom</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0_jdk11-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>${project.artifactId}</name>
@@ -12,19 +12,15 @@
 <!-- Lastest version checkes : 19/06/2017 -->
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <scala.version>2.11</scala.version> <!-- Scala major version -->
-    <scala-library.version>2.11.11</scala-library.version> <!-- Scala library version -->
+    <scala.version>2.12.11</scala.version> <!-- Scala version -->
+    <scala.compat.version>2.12</scala.compat.version> <!-- Scala library version -->
     <jackson.version>2.10.0</jackson.version>
     <sqlite4java.version>1.0.392</sqlite4java.version>
     <msgpack.version>0.8.13</msgpack.version>
-    <hibernate.version>5.2.10.Final</hibernate.version>
+    <hibernate.version>5.4.10.Final</hibernate.version>
   </properties>
 
-   <prerequisites> 
-     <maven>3.0.5</maven><!--  Latest release is 3.0 on 28 July 2015 (not up-to-date in Jenkins) -->
-  </prerequisites>
-
-  <!-- Latest version checked on  July 2017 -->
+  <!-- Latest version checked on  July 2020 -->
   <dependencyManagement>
     <dependencies>
     
@@ -32,19 +28,23 @@
       <dependency>
         <groupId>org.scala-lang</groupId>
         <artifactId>scala-library</artifactId>
-        <version>${scala-library.version}</version>
+        <version>${scala.version}</version>
       </dependency>
-
       <dependency>
         <groupId>org.scala-lang</groupId>
         <artifactId>scala-reflect</artifactId>
-        <version>${scala-library.version}</version>
+        <version>${scala.version}</version>
       </dependency>
       <dependency>
 		<groupId>org.scala-lang.modules</groupId>
-  		<artifactId>scala-xml_${scala.version}</artifactId>
-  		<version>1.0.6</version>
+  		<artifactId>scala-xml_${scala.compat.version}</artifactId>
+  		<version>1.1.1</version>
 	 </dependency>
+      <dependency>
+        <groupId>org.scala-lang.modules</groupId>
+        <artifactId>scala-parser-combinators_${scala.compat.version}</artifactId>
+        <version>1.1.1</version>
+      </dependency>
 
 
       <!-- Logging -->
@@ -56,8 +56,8 @@
 
       <dependency>
         <groupId>com.typesafe.scala-logging</groupId>
-        <artifactId>scala-logging_${scala.version}</artifactId>
-        <version>3.7.2</version>
+        <artifactId>scala-logging_${scala.compat.version}</artifactId>
+        <version>3.9.2</version>
       </dependency>
 
       <!-- Bridge Apache commons-logging over SLF4J -->
@@ -145,7 +145,7 @@
 
       <dependency>
         <groupId>com.fasterxml.jackson.module</groupId>
-        <artifactId>jackson-module-scala_${scala.version}</artifactId>
+        <artifactId>jackson-module-scala_${scala.compat.version}</artifactId>
         <version>${jackson.version}</version>
       </dependency>
       
@@ -212,7 +212,14 @@
       <!-- Scala tests -->
       <dependency>
         <groupId>org.scalatest</groupId>
-        <artifactId>scalatest_${scala.version}</artifactId>
+        <artifactId>scalatest_${scala.compat.version}</artifactId>
+        <version>3.0.3</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.scalactic</groupId>
+        <artifactId>scalactic_${scala.compat.version}</artifactId>
         <version>3.0.3</version>
         <scope>test</scope>
       </dependency>
@@ -222,6 +229,7 @@
         <groupId>org.dbunit</groupId>
         <artifactId>dbunit</artifactId>
         <version>2.5.3</version>
+        <scope>test</scope>
         <!-- Exclude slf4j which is an older version than the logback dependency -->
         <exclusions>
           <exclusion>
@@ -234,6 +242,14 @@
     </dependencies>
   </dependencyManagement>
 
+  <licenses>
+    <license>
+      <name>CeCILL License v2.1</name>
+      <url>http://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html</url>
+      <comments/>
+    </license>
+  </licenses>
+
   <build>
     <pluginManagement><!-- Latest version checked on July 2017 -->
       <plugins>
@@ -242,16 +258,17 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.6.1</version>
+          <version>3.3</version>
           <configuration>
-            <source>1.8</source> <!-- Java version 8 -->
-            <target>1.8</target>
+            <source>11</source>
+            <target>11</target>
           </configuration>
         </plugin>
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.20</version>
+          <version>3.0.0-M5</version>
           <configuration>
           	 <includes>          		          		
 				<include>%regex[.*[Test|Spec].*]</include>
@@ -264,84 +281,29 @@
           <groupId>net.alchim31.maven</groupId>
           <artifactId>scala-maven-plugin</artifactId>
           <version>3.2.2</version>
-          <configuration>
-            <recompileMode>incremental</recompileMode>
-            <javacArgs>
-              <javacArg>-Xlint:unchecked</javacArg>
-              <javacArg>-Xlint:deprecation</javacArg>
-            </javacArgs>
-          </configuration>
           <executions>
             <execution>
-              <id>scala-compile-first</id>
-              <phase>process-resources</phase>
               <goals>
-                <goal>add-source</goal>
                 <goal>compile</goal>
-              </goals>
-            </execution>
-            <execution>
-              <id>scala-test-compile</id>
-              <phase>process-test-resources</phase>
-              <goals>
                 <goal>testCompile</goal>
               </goals>
             </execution>
           </executions>
-        </plugin>
-
-        <!-- For Eclipse build -->
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
           <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-dependency-plugin</artifactId>
-                    <versionRange>[2.8,)</versionRange>
-                    <goals>
-                      <goal>copy</goal>
-                      <goal>copy-dependencies</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <execute />
-                  </action>
-                </pluginExecution>
-
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>com.google.code.maven-replacer-plugin</groupId>
-                    <artifactId>replacer</artifactId>
-                    <versionRange>[1.5.2,)</versionRange>
-                    <goals>
-                      <goal>replace</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <execute>
-                      <runOnIncremental>false</runOnIncremental>
-                    </execute>
-                  </action>
-                </pluginExecution>
-
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
+            <args>
+              <!-- work-around for https://issues.scala-lang.org/browse/SI-8358 -->
+              <arg>-nobootcp</arg>
+            </args>
           </configuration>
         </plugin>
-        
+
         <!-- Used to replace strings in text files (generate Version.java and Version.scala from templates) -->
         <!-- Version 1.6 exist but not available in repo ... -->
         <plugin>
           <groupId>com.google.code.maven-replacer-plugin</groupId>
           <artifactId>replacer</artifactId>
           <version>1.5.3</version>
-          
+
           <executions>
             <execution>
               <id>java-version-generation</id>
@@ -349,41 +311,42 @@
               <goals>
                 <goal>replace</goal>
               </goals>
-          
+              <!-- ${version.path} must be defined in child pom inheriting from this parent pom  -->
               <configuration>
                 <skip>true</skip>
                 <file>${version.path}/JavaVersion.java.template</file>
                 <outputFile>${version.path}/JavaVersion.java</outputFile>
                 <replacements>
                   <replacement>
-                    <token>@moduleName@</token>
+                    <token>_moduleName_</token>
                     <value>${project.name}</value>
                   </replacement>
                   <replacement>
-                    <token>@version@</token>
+                    <token>_version_</token>
                     <value>${project.version}_${maven.build.timestamp}_${user.name}</value>
                   </replacement>
                 </replacements>
               </configuration>
             </execution>
-          
+
             <execution>
               <id>scala-version-generation</id>
               <goals>
                 <goal>replace</goal>
               </goals>
-              
+
+              <!-- ${version.path} must be defined in child pom inheriting from this one -->
               <configuration>
                 <skip>true</skip>
                 <file>${version.path}/ScalaVersion.scala.template</file>
                 <outputFile>${version.path}/ScalaVersion.scala</outputFile>
                 <replacements>
                   <replacement>
-                    <token>@moduleName@</token>
+                    <token>_moduleName_</token>
                     <value>${project.name}</value>
                   </replacement>
                   <replacement>
-                    <token>@version@</token>
+                    <token>_version_</token>
                     <value>${project.version}_${maven.build.timestamp}_${user.name}</value>
                   </replacement>
                 </replacements>
@@ -395,45 +358,25 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>3.0.2</version>
+          <version>3.2.0</version>
         </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>3.0.2</version>
+          <version>3.1.0</version>
         </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
-          <version>3.0.1</version>
+          <version>3.1.2</version>
         </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
-          <version>3.0.0</version> <!-- Latest version checked on 28 July 2015 -->
-        </plugin>
-        
-        <!-- Maven Release for branches and tags -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-release-plugin</artifactId>
-          <version>2.5.3</version>
-          <configuration>
-            <providerImplementations>
-              <svn>javasvn</svn>
-            </providerImplementations>
-          </configuration>
-          <dependencies>
-            <dependency>
-              <groupId>com.google.code.maven-scm-provider-svnjava</groupId>
-              <artifactId>maven-scm-provider-svnjava</artifactId>
-              <version>2.1.1</version>
-              <scope>compile</scope>
-            </dependency>
-          </dependencies>
+          <version>3.3.0</version>
         </plugin>
        
         <!-- Creates a runnable script allowing to start the application -->
@@ -452,6 +395,34 @@
             <findbugsXmlOutput>true</findbugsXmlOutput>
             <xmlOutput>true</xmlOutput>
           </configuration>
+        </plugin>
+
+        <!-- Flatten plugin to deploy flatten pom -->
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>flatten-maven-plugin</artifactId>
+          <version>1.2.2</version>
+          <configuration>
+            <flattenMode></flattenMode>
+          </configuration>
+          <executions>
+            <!-- enable flattening -->
+            <execution>
+              <id>flatten</id>
+              <phase>process-resources</phase>
+              <goals>
+                <goal>flatten</goal>
+              </goals>
+            </execution>
+            <!-- ensure proper cleanup -->
+            <execution>
+              <id>flatten.clean</id>
+              <phase>clean</phase>
+              <goals>
+                <goal>clean</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
 
         <!-- Cobertura plugin, format xml -->
@@ -481,8 +452,46 @@
           <version>0.7.4.201502262128</version> <!-- Latest version checked on 28 July 2015. Do not use 0.7.5, not compatible with Jenkins Jacoco plugin -->
         </plugin>
 
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>3.0.0-M2</version>
+        </plugin>
       </plugins>
+
     </pluginManagement>
+
+    <plugins>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-maven</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <banDuplicatePomDependencyVersions/>
+                <requireMavenVersion>
+                  <version>3.6</version>
+                </requireMavenVersion>
+                <requireJavaVersion>
+                  <version>11</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+
   </build>
 
 </project>

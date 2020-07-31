@@ -5,11 +5,11 @@ import fr.profi.util.version.IVersion;
 public class JavaVersion implements IVersion {
 
     public String getModuleName() {
-	return "@moduleName@";
+	return "_moduleName_";
     }
 
     public String getVersion() {
-	return "@version@";
+	return "_version_";
     }
 
 }
