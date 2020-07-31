@@ -1,7 +1,6 @@
 package fr.profi.util
 
 import org.junit.Test
-import org.scalatest.junit.JUnitSuite
 import fr.profi.util.ms._
 import org.scalactic.TripleEquals._
 
