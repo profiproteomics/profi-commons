@@ -9,7 +9,7 @@
     </parent>
 
     <groupId>fr.profi</groupId>
-    <artifactId>profi-commons-pom</artifactId>
+   <artifactId>profi-commons-pom</artifactId>
     <version>1.1.0_jdk11-SNAPSHOT</version>
     <packaging>pom</packaging>
 
