@@ -78,7 +78,7 @@ object IsotopeDistributionComputer {
     val lastProb = lastCombination.probability
     val filteredIsotopesCombinations = matchingIsotopeCombinations.filter(_.probability * lastProb >= minProba)
     val finalIsotopesCombinations = if (filteredIsotopesCombinations.isEmpty) {
-      Array(matchingIsotopeCombinations.maxBy(_.probability))
+      Array(matchingIsotopeCombinations.maxBy(_.probability)) //VDS Warning maxBy may return wrong value if probability contains NaN
     } else {
       matchingIsotopeCombinations
     }
