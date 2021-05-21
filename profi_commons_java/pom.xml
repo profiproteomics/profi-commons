@@ -4,7 +4,7 @@
   <parent>
     <artifactId>profi-commons-pom</artifactId>
     <groupId>fr.profi</groupId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
   </parent>
 
   <groupId>fr.profi.util</groupId>
@@ -81,7 +81,4 @@
 
   </build>
 
-  <scm>
-  	<connection>scm:svn:https://bioproj.extra.cea.fr/svn/proline/Common-Libs/ProFI-Commons-Java/trunk</connection>
-  </scm>
 </project>
