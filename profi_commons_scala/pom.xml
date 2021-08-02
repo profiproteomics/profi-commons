@@ -112,16 +112,25 @@
 			<artifactId>scalatest_${scala.compat.version}</artifactId>
 			<!-- Version and scope inherited from ProFI-Pom -->
 		</dependency>
-
+		<dependency>
+			<groupId>org.scalatest</groupId>
+			<artifactId>scalatest-funsuite_${scala.compat.version}</artifactId>
+			<!-- Version and scope inherited from ProFI-Pom -->
+		</dependency>
+		<dependency>
+			<groupId>org.scalatest</groupId>
+			<artifactId>scalatest-shouldmatchers_${scala.compat.version}</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.scalactic</groupId>
 			<artifactId>scalactic_${scala.compat.version}</artifactId>
-			<version>3.0.3</version>
-			<scope>test</scope>
 			<!-- Version and scope inherited from ProFI-Pom -->
 		</dependency>
-
+		<dependency>
+			<groupId>org.scalatestplus</groupId>
+			<artifactId>junit-4-13_${scala.compat.version}</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.xerial</groupId>
 			<artifactId>sqlite-jdbc</artifactId>
