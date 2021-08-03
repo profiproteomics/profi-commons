@@ -57,6 +57,7 @@
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
 			<!-- Version inherited from ProFI-Pom -->
+			<scope>compile</scope>
 		</dependency>
 
 		<!-- joda-time 2.2 requires joda-convert to compile Scala projects -->
@@ -118,9 +119,9 @@
 			<!-- Version and scope inherited from ProFI-Pom -->
 		</dependency>
 		<dependency>
-			<groupId>org.scalatest</groupId>
-			<artifactId>scalatest-shouldmatchers_${scala.compat.version}</artifactId>
-		</dependency>
+		<groupId>org.scalatest</groupId>
+		<artifactId>scalatest-shouldmatchers_${scala.compat.version}</artifactId>
+	</dependency>
 
 		<dependency>
 			<groupId>org.scalactic</groupId>
