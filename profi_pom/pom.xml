@@ -83,7 +83,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.6</version>
+        <version>3.12.0</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -185,7 +185,7 @@
       <dependency>
         <groupId>com.h2database</groupId>
         <artifactId>h2</artifactId>
-        <version>1.4.200</version>
+        <version>1.4.199</version>
       </dependency>
 
       <dependency>
@@ -223,12 +223,21 @@
         <version>3.2.9</version>
         <scope>test</scope>
       </dependency>
+
       <dependency>
         <groupId>org.scalatest</groupId>
         <artifactId>scalatest-shouldmatchers_${scala.compat.version}</artifactId>
         <version>3.2.9</version>
         <scope>test</scope>
       </dependency>
+
+      <dependency>
+        <groupId>org.scalatest</groupId>
+        <artifactId>scalatest-mustmatchers_${scala.compat.version}</artifactId>
+        <version>3.2.9</version>
+        <scope>test</scope>
+      </dependency>
+
       <dependency>
         <groupId>org.scalatestplus</groupId>
         <artifactId>junit-4-13_${scala.compat.version}</artifactId>
