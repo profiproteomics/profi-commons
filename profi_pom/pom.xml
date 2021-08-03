@@ -260,6 +260,34 @@
         <scope>test</scope>
       </dependency>
 
+      <dependency>
+        <groupId>org.scalatest</groupId>
+        <artifactId>scalatest-matchers-core_${scala.compat.version}</artifactId>
+        <version>3.2.9</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.scalatest</groupId>
+        <artifactId>scalatest-compatible</artifactId>
+        <version>3.2.9</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.scalatest</groupId>
+        <artifactId>scalatest-core_${scala.compat.version}</artifactId>
+        <version>3.2.9</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.scalatest</groupId>
+        <artifactId>scalatest-funspec_${scala.compat.version}</artifactId>
+        <version>3.2.9</version>
+        <scope>test</scope>
+      </dependency>
+
       <!-- Database tests -->
       <dependency>
         <groupId>org.dbunit</groupId>
