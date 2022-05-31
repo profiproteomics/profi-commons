@@ -489,6 +489,34 @@
           </executions>
         </plugin>
 
+        <!-- Flatten plugin to deploy flatten pom -->
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>flatten-maven-plugin</artifactId>
+          <version>1.2.2</version>
+          <configuration>
+            <flattenMode></flattenMode>
+          </configuration>
+          <executions>
+            <!-- enable flattening -->
+            <execution>
+              <id>flatten</id>
+              <phase>process-resources</phase>
+              <goals>
+                <goal>flatten</goal>
+              </goals>
+            </execution>
+            <!-- ensure proper cleanup -->
+            <execution>
+              <id>flatten.clean</id>
+              <phase>clean</phase>
+              <goals>
+                <goal>clean</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
         <!-- Cobertura plugin, format xml -->
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
