@@ -1,11 +1,5 @@
 package fr.profi.jdbc
 
-import java.sql.Date
-import java.sql.Timestamp
-
-import org.joda.time.DateTime
-import org.joda.time.Duration
-
 object SupportedTypes extends Enumeration {
   val BOOLEAN, INTEGER, LONG, FLOAT, DOUBLE, BYTES, STRING, DATE, TIMESTAMP, DATETIME, DURATION = Value
 }
