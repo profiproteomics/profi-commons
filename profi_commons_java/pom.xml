@@ -4,7 +4,7 @@
   <parent>
     <artifactId>profi-commons-pom</artifactId>
     <groupId>fr.profi</groupId>
-    <version>1.1.0_jdk11-SNAPSHOT</version>
+    <version>1.1.0_jdk17-SNAPSHOT</version>
   </parent>
 
   <groupId>fr.profi.util</groupId>

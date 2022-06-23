@@ -4,7 +4,7 @@
 
   <groupId>fr.proline</groupId>
   <artifactId>profi-pom</artifactId>
-  <version>1.1.0_jdk11-SNAPSHOT</version>
+  <version>1.1.0_jdk17-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>${project.artifactId}</name>
@@ -17,7 +17,7 @@
     <jackson.version>2.12.4</jackson.version>
     <sqlite4java.version>1.0.392</sqlite4java.version>
     <msgpack.version>0.9.1</msgpack.version>
-    <hibernate.version>5.2.12.Final</hibernate.version>
+    <hibernate.version>5.4.10.Final</hibernate.version>
   </properties>
 
   <!-- Latest version checked on  July 2020 -->
@@ -489,34 +489,6 @@
           </executions>
         </plugin>
 
-        <!-- Flatten plugin to deploy flatten pom -->
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>flatten-maven-plugin</artifactId>
-          <version>1.2.2</version>
-          <configuration>
-            <flattenMode></flattenMode>
-          </configuration>
-          <executions>
-            <!-- enable flattening -->
-            <execution>
-              <id>flatten</id>
-              <phase>process-resources</phase>
-              <goals>
-                <goal>flatten</goal>
-              </goals>
-            </execution>
-            <!-- ensure proper cleanup -->
-            <execution>
-              <id>flatten.clean</id>
-              <phase>clean</phase>
-              <goals>
-                <goal>clean</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-
         <!-- Cobertura plugin, format xml -->
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
@@ -556,9 +528,9 @@
     <plugins>
 
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>flatten-maven-plugin</artifactId>
-      </plugin>
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>flatten-maven-plugin</artifactId>
+    </plugin>
 
       <plugin>
         <artifactId>maven-enforcer-plugin</artifactId>
