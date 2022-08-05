@@ -40,11 +40,6 @@
 
 
 		<!-- Logging -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<!-- Version inherited from ProFI-Pom -->
-		</dependency>
 
 		<dependency>
 			<groupId>com.typesafe.scala-logging</groupId>
@@ -103,12 +98,6 @@
 
 		<!-- Test -->
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<!-- Version and scope inherited from ProFI-Pom -->
-		</dependency>
-
-		<dependency>
 			<groupId>org.scalatest</groupId>
 			<artifactId>scalatest_${scala.compat.version}</artifactId>
 			<!-- Version and scope inherited from ProFI-Pom -->
@@ -146,19 +135,7 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-			<!-- Version inherited from ProFI-Pom -->
-			<scope>test</scope>
-		</dependency>
 
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<!-- Version inherited from ProFI-Pom -->
-			<scope>test</scope>
-		</dependency>
 
 	</dependencies>
 
