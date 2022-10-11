@@ -242,6 +242,14 @@
     </dependencies>
   </dependencyManagement>
 
+  <distributionManagement>
+    <repository>
+      <id>bioproj.repo</id>
+      <name>BioProj Repository</name>
+      <url>https://bioproj.extra.cea.fr/proline/artifactory/libs-release-local</url>
+    </repository>
+  </distributionManagement>
+
   <build>
     <pluginManagement><!-- Latest version checked on July 2017 -->
       <plugins>
