@@ -7,6 +7,13 @@ object MassPrecision extends EnhancedEnum {
   val AVERAGE, MONOISOTOPIC = Value
 }
 
+object MassUtil {
+
+  def getProteinogenicMass(sequence : String) : Double = {
+    val massComputer = new MassComputer(ProteinogenicAminoAcidTable)
+    massComputer.computeMass(sequence)
+  }
+}
 /**
  * @author David Bouyssie
  *
