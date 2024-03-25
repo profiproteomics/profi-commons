@@ -17,7 +17,8 @@ class RegexTest {
     assertFalse("no partial match check", "hello" ~~ """\w+\s\w+""" )
     
     assertEquals( "group capture success", "hello", ("hello world" =# """\w+""").get.group(0) )
-    assertEquals( "group capture failure", None, "hello world" =# """\d+""" )    
+    assertEquals( "group capture failure", None, "hello world" =# """\d+""" )
+    assertEquals( "group capture 2", 2.01, ("pif:2.01" =# """pif:(\d+\.\d+)""").get.group(1).toFloat, 0.001 )
   }
   
   @Test
