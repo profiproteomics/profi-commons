@@ -2,21 +2,19 @@ package fr.profi.jdbc
 
 import java.sql.SQLException
 
-import scala.language.postfixOps
-import scala.collection.mutable.ArrayBuffer
-
-import org.scalatest.FunSpec
-import org.scalatest.Matchers
-import org.scalatest.BeforeAndAfterEach
-
+import fr.profi.jdbc.easy._
 import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
+import org.scalatestplus.junit.JUnitRunner
 
-import easy._
+import scala.collection.mutable.ArrayBuffer
+import scala.language.postfixOps
 
 
 @RunWith(classOf[JUnitRunner])
-class SQLQueryExecutionSpec extends FunSpec with Matchers with BeforeAndAfterEach {
+class SQLQueryExecutionSpec extends AnyFunSpec with Matchers with BeforeAndAfterEach {
   
   val eDBC = eDbcH2TestInstance
   

@@ -1,14 +1,10 @@
 package fr.profi.ms
 
-import scala.collection.mutable.HashMap
-import org.junit.Before
-import org.junit.FixMethodOrder
-import org.junit.Test
-import org.junit.runners.MethodSorters
 import com.typesafe.scalalogging.StrictLogging
-import fr.profi.chemistry.model.BiomoleculeAtomTable
-import fr.profi.chemistry.model.HumanAminoAcidTable
+import fr.profi.chemistry.model.{BiomoleculeAtomTable, HumanAminoAcidTable}
 import fr.profi.ms.algo._
+import org.junit.{FixMethodOrder, Test}
+import org.junit.runners.MethodSorters
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class IsotopePatternTest extends StrictLogging {

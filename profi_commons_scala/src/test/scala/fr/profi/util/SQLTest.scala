@@ -2,7 +2,7 @@ package fr.profi.util
 
 import org.junit.Test
 import org.junit.Assert._
-import org.scalatest.junit.AssertionsForJUnit
+import org.scalatestplus.junit.AssertionsForJUnit
 
 import sql._
 

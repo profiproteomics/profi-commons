@@ -1,5 +1,6 @@
 package fr.profi.util
 
+import scala.language.implicitConversions
 import scala.math.abs
 
 package object ms {

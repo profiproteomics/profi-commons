@@ -2,7 +2,7 @@ package fr.profi.util
 
 import org.junit.Assert._
 import org.junit.Test
-import org.scalatest.junit.AssertionsForJUnit
+import org.scalatestplus.junit.AssertionsForJUnit
 
 import fr.profi.util.random._
 

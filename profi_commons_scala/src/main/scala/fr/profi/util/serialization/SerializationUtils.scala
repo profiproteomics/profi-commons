@@ -1,23 +1,14 @@
 package fr.profi.util.serialization
 
-import java.lang.reflect.{Type, ParameterizedType}
-import com.fasterxml.jackson.annotation._
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility
-import com.fasterxml.jackson.annotation.JsonInclude.Include
-import com.fasterxml.jackson.core.JsonGenerator
+import com.fasterxml.jackson.annotation._
+import com.fasterxml.jackson.core.{JsonGenerator, Version}
 import com.fasterxml.jackson.core.json.JsonWriteContext
-import com.fasterxml.jackson.core.`type`.TypeReference
-import com.fasterxml.jackson.core.Version
 import com.fasterxml.jackson.databind._
 import com.fasterxml.jackson.databind.module.SimpleModule
-import com.fasterxml.jackson.databind.jsontype.TypeSerializer
-import com.fasterxml.jackson.databind.ser.std.NonTypedScalarSerializerBase
-import com.fasterxml.jackson.databind.ser.std.StdArraySerializers
-import com.fasterxml.jackson.databind.ser.ContainerSerializer
-import com.fasterxml.jackson.databind.`type`.TypeFactory
+import com.fasterxml.jackson.databind.ser.std.{ StdArraySerializers, StdScalarSerializer}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import com.fasterxml.jackson.module.scala.JsonScalaEnumeration
-import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
+import com.fasterxml.jackson.module.scala.ScalaObjectMapper
 import org.msgpack.jackson.dataformat.MessagePackFactory
 
 trait ObjectMapperContainer {
@@ -73,7 +64,7 @@ trait ProfiJsonSerialization extends ProfiJacksonSerialization[String] {
     // Configure the property naming strategy with the Proline convention
     //println("mapper conf called")
     mapper.setPropertyNamingStrategy(
-      PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES
+      PropertyNamingStrategies.SNAKE_CASE
     )
     
     // Disable Exceptions for unknown properties
@@ -148,7 +139,7 @@ object ProfiMsgPack extends ProfiMsgPackSerialization
 
 private[this] object CustomDoubleSerializer {
   
-  import java.text.{DecimalFormat,DecimalFormatSymbols}
+  import java.text.{DecimalFormat, DecimalFormatSymbols}
   private val decimalSymbols = new DecimalFormatSymbols()
   decimalSymbols.setDecimalSeparator('.')
   decimalSymbols.setGroupingSeparator(0)
@@ -161,8 +152,8 @@ private[this] object CustomDoubleSerializer {
   
 }
 
-private[this] class CustomDoubleSerializer() extends NonTypedScalarSerializerBase[java.lang.Double]( classOf[java.lang.Double] ) {
- 
+private[this] class CustomDoubleSerializer() extends StdScalarSerializer[java.lang.Double]( classOf[java.lang.Double] ) {
+
   /*override def serializeWithType( value: Double, jgen: JsonGenerator, provider: SerializerProvider, typeSer: TypeSerializer ) {
     this.serialize( value, jgen, provider )
   }*/

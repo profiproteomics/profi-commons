@@ -1,10 +1,8 @@
 package fr.profi.chemistry.model
 
-import scala.collection.mutable.HashMap
-import scala.collection.mutable.LongMap
-import scala.collection.MapLike
-import implicits._
-import MolecularConstants._
+import fr.profi.chemistry.model.MolecularConstants._
+
+import scala.collection.mutable.{HashMap, LongMap}
 
 object AbundanceMapOps {
 
@@ -145,19 +143,13 @@ abstract class AbstractMolecularEntityComposition[M <: IMolecularEntity] {
 
     val strings = for (
       entity <- sortedAtoms;
-      abundance <- this.abundanceMap.get(entity).map(_.toInt);
+      abundance <- this.abundanceMap.get(entity).map(math.round(_));
       if abundance != 0
     ) yield {
       val sb = new StringBuilder()
 
       if (abundance != 0) {
-        sb.append(entity.symbol)
-
-        if (abundance != 1) {
-          sb.append("(")
-            .append(abundance)
-            .append(")")
-        }
+        sb.append(entity.symbol).append("(").append(abundance).append(")")
       }
 
       sb.toString

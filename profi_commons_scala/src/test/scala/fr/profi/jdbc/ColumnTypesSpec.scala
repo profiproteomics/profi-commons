@@ -1,15 +1,13 @@
 package fr.profi.jdbc
 
-import java.sql.SQLException
-
 import org.joda.time.DateTime
 import org.joda.time.Duration
 import org.junit.runner.RunWith
-import org.scalatest.Matchers
-import org.scalatest.FunSpec
-import org.scalatest.junit.JUnitRunner
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatestplus.junit.JUnitRunner
 
-trait ColumnTypeSpec[T] extends FunSpec with Matchers {
+trait ColumnTypeSpec[T] extends AnyFunSpec with Matchers {
 
   val testIdentifier = columnTypeFactory.getClass.getSimpleName.replace("$", "")
 

@@ -1,13 +1,6 @@
 package fr.profi.jdbc
 
-import java.util.Date
-import java.sql.Timestamp
-
-import org.joda.time.DateTime
-import org.joda.time.Duration
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
-import org.joda.time.format.ISODateTimeFormat
+import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
 
 /**
  * Currently a private class responsible for formatting SQL used in

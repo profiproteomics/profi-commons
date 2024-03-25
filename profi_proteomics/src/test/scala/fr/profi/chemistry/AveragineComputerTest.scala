@@ -1,10 +1,8 @@
 package fr.profi.chemistry
 
 import com.typesafe.scalalogging.StrictLogging
+import fr.profi.chemistry.model.{BiomoleculeAtomTable, HumanAminoAcidTable}
 import org.junit._
-import fr.profi.ms.algo.IsotopePatternInterpolator
-import fr.profi.chemistry.model.HumanAminoAcidTable
-import fr.profi.chemistry.model.BiomoleculeAtomTable
 
 class AveragineComputerTest extends StrictLogging {
 
@@ -33,10 +31,16 @@ class AveragineComputerTest extends StrictLogging {
   def computeChemistryAveragine() = {
     val computer = new fr.profi.chemistry.algo.AveragineComputer(HumanAminoAcidTable, BiomoleculeAtomTable)
     val composition = computer.computeAveragine(2600.0, adjustAbundances = false)._1
-    logger.info("formula = " + composition.toFormula)
 
+    composition.roundAbundances()
+
+    logger.info("formula = " + composition.toFormula)
+    logger.info("Averagine composition = " + HumanAminoAcidTable.getAverageAtomComposition(BiomoleculeAtomTable).toFormula)
     val m = composition.getMonoMass
     logger.info("mass = " + m)
+
+    logger.info("Composition C = " + composition.abundanceMap(BiomoleculeAtomTable.getAtom("C")).toInt)
+
     Assert.assertEquals(2600.0, m, 1.0)
 
   }

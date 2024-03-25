@@ -2,16 +2,16 @@ package fr.profi.jdbc
 
 import org.joda.time.Duration
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatestplus.junit.JUnitRunner
 
 import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 
 import easy._
 
 @RunWith(classOf[JUnitRunner])
-class SQLDialectSpec extends FunSpec with Matchers {
+class SQLDialectSpec extends AnyFunSpec with Matchers {
 
   describe("DefaultSQLDialect") {
     it("should combine the parameters with the query") {
