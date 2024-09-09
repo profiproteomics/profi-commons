@@ -1,24 +1,16 @@
 package fr.profi.jdbc
 
 import java.util.Date
-import java.sql.SQLException
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers
-import org.scalatest.BeforeAndAfterEach
-
-import org.joda.time.DateTime
-import org.joda.time.Duration
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
-
+import fr.profi.jdbc.easy._
 import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
-
-import easy._
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
+import org.scalatestplus.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class ResultSetRowSpec extends FunSpec with Matchers with BeforeAndAfterEach {
+class ResultSetRowSpec extends AnyFunSpec with Matchers with BeforeAndAfterEach {
 
   val eDBC = eDbcH2TestInstance
   

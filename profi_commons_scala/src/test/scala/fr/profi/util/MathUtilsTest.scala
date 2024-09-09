@@ -1,10 +1,8 @@
 package fr.profi.util
 
-import org.junit.Assert._
-import org.junit.Test
-import org.scalatest.junit.AssertionsForJUnit
-
 import fr.profi.util.math._
+import org.junit.Test
+import org.scalatestplus.junit.AssertionsForJUnit
 
 @Test
 class MathUtilsTest extends AssertionsForJUnit {
