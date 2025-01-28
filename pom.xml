@@ -19,6 +19,7 @@
         <module>profi_commons_java</module>
         <module>profi_commons_scala</module>
         <module>profi_proteomics</module>
+        <module>profi_proteomics_java</module>
     </modules>
 
     <properties>
