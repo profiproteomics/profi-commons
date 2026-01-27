@@ -6,7 +6,7 @@
     <parent>
         <groupId>fr.profi</groupId>
         <artifactId>profi-commons-pom</artifactId>
-        <version>1.3.0-SNAPSHOT</version>
+        <version>1.3.1-SNAPSHOT</version>
     </parent>
 
     <name>ProFI-Proteomics-Java</name>
