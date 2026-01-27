@@ -1,0 +1,15 @@
+package fr.profi.ms;
+
+import fr.profi.util.version.IVersion;
+
+public class JavaVersion implements IVersion {
+
+    public String getModuleName() {
+	return "_moduleName_";
+    }
+
+    public String getVersion() {
+	return "_version_";
+    }
+
+}

@@ -5,20 +5,21 @@
     <parent>
         <artifactId>profi-pom</artifactId>
         <groupId>fr.proline</groupId>
-        <version>1.2.0</version>  <!-- Snapshot Trunk version -->
+        <version>1.3.1-SNAPSHOT</version>  <!-- Snapshot Trunk version -->
     </parent>
 
     <groupId>fr.profi</groupId>
     <artifactId>profi-commons-pom</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Proline-Commons_POM</name>
-    <description>Parent pom for commons projects used by different other projects of ProfiProteomics</description>
+    <description>Parent pom for ProfiProteomics projects to use commons packages versions</description>
     <modules>
         <module>profi_commons_java</module>
         <module>profi_commons_scala</module>
         <module>profi_proteomics</module>
+        <module>profi_proteomics_java</module>
     </modules>
 
     <properties>
