@@ -1,12 +1,10 @@
 package fr.profi.util.math
 
-import org.apache.commons.math3.util.CombinatoricsUtils
-import scala.collection.mutable.ArrayBuffer
-import org.apache.commons.math3.linear.Array2DRowRealMatrix
-import org.apache.commons.math3.linear.ArrayRealVector
-import org.apache.commons.math3.linear.SingularValueDecomposition
 import com.typesafe.scalalogging.LazyLogging
 import fr.profi.util.primitives.isZeroOrNaN
+import org.apache.commons.math3.linear.{Array2DRowRealMatrix, ArrayRealVector, SingularValueDecomposition}
+
+import scala.collection.mutable.ArrayBuffer
 
 
 object RatioFitting extends LazyLogging {
@@ -67,7 +65,7 @@ object RatioFitting extends LazyLogging {
     abundances
   }
     
-  private def buildImputedRatioMatrix(pep: Array[Array[Float]], min: Array[Float], valuesColumnCount: Array[Int]): Array[Array[Double]] = {
+   def buildImputedRatioMatrix(pep: Array[Array[Float]], min: Array[Float], valuesColumnCount: Array[Int]): Array[Array[Double]] = {
     var ratiosMatrix = buildRatioMatrix(pep)
     val nonNullRatiosCount = ratiosMatrix.transpose.map{col => col.count(!_.isNaN())}
     var rowIdx = 0
@@ -89,9 +87,9 @@ object RatioFitting extends LazyLogging {
     ratiosMatrix
   }
     
-  private def buildRatioMatrix(pep: Array[Array[Float]]): Array[Array[Double]] = {
-    // Compute the number of combination of 2 items among pep(0).length : n!/(n-p)!p! with p = 2  
-    // previous formula was CombinatoricsUtils.factorial(pep(0).length) / (2 * CombinatoricsUtils.factorial(pep(0).length - 2))
+   def buildRatioMatrix(pep: Array[Array[Float]]): Array[Array[Double]] = {
+    // Compute the number of combination of 2 items among logPepAbundances(0).length : n!/(n-p)!p! with p = 2
+    // previous formula was CombinatoricsUtils.factorial(logPepAbundances(0).length) / (2 * CombinatoricsUtils.factorial(logPepAbundances(0).length - 2))
     val length = (1 to pep(0).length - 1).view.sum
     var matrix = ArrayBuffer[Array[Double]]()
 
