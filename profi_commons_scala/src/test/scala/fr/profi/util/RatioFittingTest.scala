@@ -1,6 +1,7 @@
 package fr.profi.util
 
 import fr.profi.util.math._
+import org.apache.commons.math3.linear.{Array2DRowRealMatrix, ArrayRealVector, SingularValueDecomposition}
 import org.junit.Test
 import org.scalatestplus.junit.AssertionsForJUnit
 
@@ -17,9 +18,26 @@ class RatioFittingTest extends AssertionsForJUnit {
       Array(Float.NaN   ,Float.NaN,192.802063f ,Float.NaN,Float.NaN   ,Float.NaN ,Float.NaN   ,7267.249023f,21651.70898f,61014.47266f,Float.NaN   ,Float.NaN,Float.NaN,Float.NaN,Float.NaN   ,Float.NaN  ,Float.NaN   ,5434.973633f,29762.81641f,69735.07813f,Float.NaN,2394.83252f ,Float.NaN   ,Float.NaN   ,Float.NaN   ,Float.NaN   ,Float.NaN   ,11155.42773f,29782.76953f,82598.30469f,Float.NaN,Float.NaN,Float.NaN   ,Float.NaN   ,Float.NaN   ,Float.NaN   ,Float.NaN   ,7757.658203f,27527.72461f,59408.21484f)
     )
   
-       val abundances = RatioFitting.fitWithCountPredicate(matrix, 3)
+      val abundances = RatioFitting.fitWithCountPredicate(matrix, 3)
        println("RatioFitting Summarizer = "+abundances.mkString(","))
+
     }
+
+  @Test
+  def testBuildRatioMatrix(): Unit = {
+    val matrix = Array(
+      Array(     500.0f ,Float.NaN  , 1000.0f ,Float.NaN ),
+      Array(Float.NaN   ,Float.NaN  , 1000.0f ,Float.NaN )
+    )
+
+    val valuesCountByColumns = matrix.transpose.map{col => col.count(!_.isNaN)}
+    val minValues = Array(1.0f, 1.0f, 1.0f, 1.0f)
+
+    var ratios = RatioFitting.buildRatioMatrix(matrix)
+
+    println(ratios)
+
+  }
 
   @Test
   def summarizeNaN {
@@ -29,8 +47,99 @@ class RatioFittingTest extends AssertionsForJUnit {
       Array(Float.NaN   ,Float.NaN  , 1000.0f ,Float.NaN )
     )
 
-    val abundances = RatioFitting.fitWithoutImputation(matrix)
+    val abundances = RatioFitting.fit(matrix)
     println("RatioFitting Summarizer with NaN  = "+abundances.mkString(","))
+  }
+
+  @Test
+  def summarizeSimple {
+
+//    val matrix = Array(
+//      Array(10.0f   ,12.0f  , Float.NaN),
+//      Array(12.0f   ,Float.NaN  , 10.0f)
+//    )
+
+    val matrix = Array(
+      Array(1000.0f   ,1200.0f  , 1400.0f),
+      Array(1200.0f   ,1400.0f  , 1600.0f)
+    )
+
+//    val matrix = Array(
+//      Array(1000.0f   ,1200.0f ),
+//      Array(1200.0f   ,1400.0f )
+//    )
+
+    val abundances = RatioFitting.fit(matrix)
+    println("RatioFitting Summarizer with NaN  = "+abundances.mkString(","))
+
+  }
+
+  @Test
+  def summarizeSimple2 {
+
+    val matrix = Array(
+      Array(1000.0f   ,1400.0f   ,Float.NaN , 1200.0f),
+      Array(1200.0f   ,Float.NaN ,1500.0f   , 1400.0f),
+      Array(1200.0f   ,1600.0f   ,1000.0f   , 1300.0f)
+    )
+
+    val abundances = RatioFitting.fit(matrix)
+    println("RatioFitting Summarizer with NaN  = "+abundances.mkString(","))
+
+  }
+
+
+  @Test
+  def solverTest(): Unit = {
+
+    val coeffs = Array(
+      Array(-1.0, 1.0, 0.0 ),
+      Array(-1.0, 0.0, 1.0 ),
+      Array(0.0, -1.0, 1.0 )
+    )
+    val filteredLogRatios = Array(0.24285652874074526, 0.4506614173989628, 0.20759542650043544)
+
+    val solver = new SingularValueDecomposition(new Array2DRowRealMatrix(coeffs, false)).getSolver()
+    val constants = new ArrayRealVector(filteredLogRatios, false)
+    System.out.println("is non singular ?", solver.isNonSingular)
+    val solution = solver.solve(constants);
+
+    println("Solution = "+solution.toString())
+  }
+
+  @Test
+  def solverTest2(): Unit = {
+
+    val coeffs = Array(
+      Array( 4.0,   -2.0,  -2.0,  1.0),
+      Array(-2.0,   4.0,   -2.0,  1.0),
+      Array(-2.0,   -2.0,  4.0,   1.0),
+      Array( 1.0,   1.0,   1.0,   0.0)
+    )
+    val filteredLogRatios = Array(-1.38589115 , 0.07038933,  1.31550183, 30.98485004)
+
+    val solver = new SingularValueDecomposition(new Array2DRowRealMatrix(coeffs, false)).getSolver()
+    val constants = new ArrayRealVector(filteredLogRatios, false)
+    var solution = solver.solve(constants);
+
+    println("Solution = "+solution.toString())
+  }
+
+  @Test
+  def solverTest3(): Unit = {
+
+    val coeffs = Array(
+      Array( 4.0,   -2.0,  -2.0),
+      Array(-2.0,   4.0,   -2.0),
+      Array(-2.0,   -2.0,  4.0)
+    )
+    val filteredLogRatios = Array(-1.38589115 , 0.07038933,  1.31550183)
+
+    val solver = new SingularValueDecomposition(new Array2DRowRealMatrix(coeffs, false)).getSolver()
+    val constants = new ArrayRealVector(filteredLogRatios, false)
+    var solution = solver.solve(constants);
+
+    println("Solution = "+solution.toString())
   }
 
 }
