@@ -12,7 +12,7 @@
 <!-- Lastest version checkes : 19/06/2017 -->
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <scala.version>2.12.11</scala.version> <!-- Scala version -->
+    <scala.version>2.12.20</scala.version> <!-- Scala version -->
     <scala.compat.version>2.12</scala.compat.version> <!-- Scala library version -->
     <jackson.version>2.12.4</jackson.version>
     <sqlite4java.version>1.0.392</sqlite4java.version>
