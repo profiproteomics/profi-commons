@@ -9,7 +9,7 @@
 	</parent>
 
 	<groupId>fr.profi.util</groupId>
-	<artifactId>profi-commons-scala_${scala.compat.version}</artifactId>
+	<artifactId>profi-commons-scala</artifactId>
 	<name>ProFI-Commons-Scala</name>
 	<properties>
 		<version.path>${basedir}/src/main/scala/fr/profi/util</version.path>
@@ -156,6 +156,23 @@
 <!--						<arg>-feature</arg>-->
 <!--					</args>-->
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>scala-jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+							<classifier>${scala.compat.version}</classifier>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 
 			<!-- Used to replace strings in text files (generate Version.java and 

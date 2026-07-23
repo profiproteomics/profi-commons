@@ -7,7 +7,7 @@
     <version>1.4.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>profi-proteomics_${scala.compat.version}</artifactId>
+  <artifactId>profi-proteomics</artifactId>
 
   <name>ProFI-Proteomics</name>
   <description>Proteomics data modeling and related computations</description>
@@ -17,8 +17,9 @@
     <!-- ProFI commons  -->
     <dependency>
       <groupId>fr.profi.util</groupId>
-      <artifactId>profi-commons-scala_${scala.compat.version}</artifactId>
+      <artifactId>profi-commons-scala</artifactId>
       <version>${project.version}</version>
+      <classifier>${scala.compat.version}</classifier>
     </dependency>
     <dependency>
       <groupId>fr.profi.util</groupId>
@@ -77,6 +78,23 @@
 <!--            <arg>-feature</arg>-->
 <!--          </args>-->
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>scala-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <classifier>${scala.compat.version}</classifier>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
       <!-- xjc configuration : http://mojo.codehaus.org/jaxb2-maven-plugin/usage.html -->
