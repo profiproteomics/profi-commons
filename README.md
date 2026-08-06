@@ -22,6 +22,14 @@ ProFI-Commons Java project contains utilities used by other ProfiProteomics Java
 
 Contains scala utility classes to manipulate MS and chemistry data.
 
+# Release Notes
+
+## 1.4.0 (Snapshot)
+
+*  RatioFitting method no longer uses imputation
+* [Dev] Refactor POM files: replace Scala version suffix with classifier
+
+
 # License
 
 This project is licensed under the [CeCILL License V2.1](http://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html)
