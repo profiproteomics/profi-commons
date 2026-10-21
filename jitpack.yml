@@ -1,0 +1,10 @@
+# JitPack build configuration (https://jitpack.io/docs/BUILDING/)
+# Artifacts are published as com.github.profiproteomics.profi-commons:<artifactId>:<commit|tag|branch-SNAPSHOT>
+jdk:
+  - openjdk17
+before_install:
+  # The parent POM (fr.proline:profi-pom) is not published to Maven Central and is not a reactor module:
+  # install it in the local repository first so that the root POM can resolve it
+  - mvn -q -f profi_pom/pom.xml install
+install:
+  - mvn install -DskipTests
