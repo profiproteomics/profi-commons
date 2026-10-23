@@ -1,5 +1,7 @@
 package fr.profi.util
 
+import scala.collection.parallel.CollectionConverters._
+
 import org.junit.Assert._
 import org.junit.Test
 

@@ -38,6 +38,14 @@
 			<!-- Version inherited from ProFI-Pom -->
 		</dependency>
 
+		<!-- Scala 2.13: .par is used by tests -->
+		<dependency>
+			<groupId>org.scala-lang.modules</groupId>
+			<artifactId>scala-parallel-collections_${scala.compat.version}</artifactId>
+			<scope>test</scope>
+			<!-- Version inherited from ProFI-Pom -->
+		</dependency>
+
 
 		<!-- Logging -->
 

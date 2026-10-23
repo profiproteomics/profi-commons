@@ -42,7 +42,7 @@ trait SQLQueryExecution {
    * @param params are the optional parameters used in the query
    * @param block is a function converting the row to something else
    */
-  def select[T](sql: String, params: ISQLFormattable*)(block: ResultSetRow => T): Seq[T] = {
+  def select[T](sql: String, params: ISQLFormattable*)(block: ResultSetRow => T): scala.collection.Seq[T] = {
     val results = new ArrayBuffer[T]
     _selectIntoBuffer(Some(results), sql, params.toArray )(block)
     results

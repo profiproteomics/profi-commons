@@ -12,8 +12,9 @@
 <!-- Lastest version checkes : 19/06/2017 -->
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <scala.version>2.12.20</scala.version> <!-- Scala version -->
-    <scala.compat.version>2.12</scala.compat.version> <!-- Scala library version -->
+    <maven.compiler.release>17</maven.compiler.release> <!-- Java bytecode level, read by all compiler plugins -->
+    <scala.version>2.13.18</scala.version> <!-- Scala version -->
+    <scala.compat.version>2.13</scala.compat.version> <!-- Scala library version -->
     <jackson.version>2.12.4</jackson.version>
     <sqlite4java.version>1.0.392</sqlite4java.version>
     <msgpack.version>0.9.1</msgpack.version>
@@ -45,6 +46,12 @@
         <artifactId>scala-parser-combinators_${scala.compat.version}</artifactId>
         <version>2.0.0</version>
 
+      </dependency>
+      <!-- Scala 2.13: parallel collections (.par) were moved out of the standard library -->
+      <dependency>
+        <groupId>org.scala-lang.modules</groupId>
+        <artifactId>scala-parallel-collections_${scala.compat.version}</artifactId>
+        <version>1.2.0</version>
       </dependency>
 
 
@@ -332,10 +339,9 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.3</version>
+          <version>3.14.0</version>
           <configuration>
-            <source>17</source>
-            <target>17</target>
+            <release>17</release>
           </configuration>
         </plugin>
 
@@ -354,7 +360,7 @@
         <plugin>
           <groupId>net.alchim31.maven</groupId>
           <artifactId>scala-maven-plugin</artifactId>
-          <version>3.2.2</version>
+          <version>4.9.2</version>
           <executions>
             <execution>
               <goals>
@@ -367,6 +373,9 @@
             <args>
               <!-- work-around for https://issues.scala-lang.org/browse/SI-8358 -->
               <arg>-nobootcp</arg>
+              <!-- same bytecode level as the Java modules (maven-compiler-plugin release) -->
+              <arg>-release</arg>
+              <arg>17</arg>
             </args>
           </configuration>
         </plugin>

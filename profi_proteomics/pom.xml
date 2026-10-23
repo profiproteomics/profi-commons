@@ -32,6 +32,11 @@
       <artifactId>scala-library</artifactId>
       <!-- Version inherited from ProFI-Pom -->
     </dependency>
+    <dependency>
+      <groupId>org.scala-lang.modules</groupId>
+      <artifactId>scala-parallel-collections_${scala.compat.version}</artifactId>
+      <!-- Version inherited from ProFI-Pom -->
+    </dependency>
 
     <!-- Logging -->
     <dependency>

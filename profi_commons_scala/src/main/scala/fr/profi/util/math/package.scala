@@ -7,12 +7,12 @@ import fr.profi.util.primitives.isZeroOrNaN
 package object math {
 
   /** Computes the median value of a sequence of Doubles */
-  /*def median(s: Seq[Double]): Double = {
+  /*def median(s: scala.collection.Seq[Double]): Double = {
     val (lower, upper) = s.sortWith(_<_).splitAt(s.size / 2)
     if (s.size % 2 == 0) (lower.last + upper.head) / 2.0 else upper.head
   }
   
-  def median(s: Seq[Float]): Float = {
+  def median(s: scala.collection.Seq[Float]): Float = {
     val (lower, upper) = s.sortWith(_<_).splitAt(s.size / 2)
     if (s.size % 2 == 0) (lower.last + upper.head) / 2.0f else upper.head
   }*/
@@ -37,13 +37,13 @@ package object math {
     if( defS.isEmpty ) Double.NaN else median(defS)
   }
   
-  def median[T](s: Seq[T])(implicit n: Fractional[T]): T = {
+  def median[T](s: scala.collection.Seq[T])(implicit n: Fractional[T]): T = {
     import n._
     val (lower, upper) = s.sortBy(x=>x).splitAt(s.size / 2)
     if (s.size % 2 == 0) (lower.last + upper.head) / fromInt(2) else upper.head
   }
   
-  def getMedianObject[T]( objects: Seq[T], sortingFunc: Function2[T,T,Boolean] ): T = {
+  def getMedianObject[T]( objects: scala.collection.Seq[T], sortingFunc: Function2[T,T,Boolean] ): T = {
   
     val sortedObjects = objects.sortWith { (a,b) => sortingFunc(a,b) } 
     val nbObjects = sortedObjects.length
@@ -61,7 +61,7 @@ package object math {
   }  
   
   /*object factorizeSeq {
-    def apply (seq : Seq[_]) : Array[Pair[_, _]] = {
+    def apply (seq : scala.collection.Seq[_]) : Array[Pair[_, _]] = {
       val p = new scala.collection.mutable.ArrayBuffer[Pair[_, _]]()
       for (e1 <- seq) for (e2 <- seq) p += Pair(e1, e2)
       p.toArray
@@ -111,7 +111,7 @@ package object math {
    * @return the interpolated Y value
    */
   // TODO: create a LinearInterpolator class which allows to index the XY vector (faster lookup) => use EntityHistogram as backend ???
-  def linearInterpolation( xValue: Double, xyValues: Seq[(Double,Double)], fixOutOfRange: Boolean ): Double = {
+  def linearInterpolation( xValue: Double, xyValues: scala.collection.Seq[(Double,Double)], fixOutOfRange: Boolean ): Double = {
     
     var index = xyValues.indexWhere( _._1 >= xValue )
     if( index == -1 ) {
@@ -143,7 +143,7 @@ package object math {
  
   }
   
-  def linearInterpolation( xValue: Double, xyValues: Seq[(Double,Double)] ): Double = {
+  def linearInterpolation( xValue: Double, xyValues: scala.collection.Seq[(Double,Double)] ): Double = {
     linearInterpolation(xValue,xyValues,true)
   }
   
@@ -159,7 +159,7 @@ package object math {
    * @paramm fixOutOfRange enable/disable the support for out of range values
    * @return the interpolated Y value
    */
-  def linearInterpolation( xValue: Float, xyValues: Seq[(Float,Float)], fixOutOfRange: Boolean ): Float = {
+  def linearInterpolation( xValue: Float, xyValues: scala.collection.Seq[(Float,Float)], fixOutOfRange: Boolean ): Float = {
     
     var index = xyValues.indexWhere( _._1 >= xValue )
     if( index == -1 ) {
@@ -191,7 +191,7 @@ package object math {
  
   }
   
-  def linearInterpolation( xValue: Float, xyValues: Seq[(Float,Float)] ): Float = {
+  def linearInterpolation( xValue: Float, xyValues: scala.collection.Seq[(Float,Float)] ): Float = {
     linearInterpolation(xValue,xyValues,true)
   }
   

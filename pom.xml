@@ -6,6 +6,7 @@
         <artifactId>profi-pom</artifactId>
         <groupId>fr.proline</groupId>
         <version>1.4.0-SNAPSHOT</version>
+        <relativePath>profi_pom/pom.xml</relativePath>
     </parent>
 
     <groupId>fr.profi</groupId>

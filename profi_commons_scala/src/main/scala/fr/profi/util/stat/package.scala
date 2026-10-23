@@ -12,9 +12,9 @@ package stat {
 package object stat {
   
   // Inspired by: https://github.com/geetduggal/growcode/blob/master/src/main/scala/Histogram.scala
-  class EntityHistogramComputer[T]( val entities: Seq[T], val valueExtractor: T => Double ) {
+  class EntityHistogramComputer[T]( val entities: scala.collection.Seq[T], val valueExtractor: T => Double ) {
 
-    def calcHistogram( nbins: Int = sqrt(entities.length).toInt, range: Option[(Double,Double)] = None ): Array[(Bin,Seq[T])] = {
+    def calcHistogram( nbins: Int = sqrt(entities.length).toInt, range: Option[(Double,Double)] = None ): Array[(Bin,scala.collection.Seq[T])] = {
       require( nbins > 0, "the histogram must contain at least one bin" )
       
       if( range.isDefined ) {

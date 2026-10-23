@@ -1,9 +1,7 @@
 package fr.profi.chemistry.model
 
-import scala.collection.generic.ImmutableMapFactory
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.LongMap
-import scala.collection.mutable.MapBuilder
 
 /**
  * @author David Bouyssie

@@ -3,6 +3,7 @@ package fr.profi.ms.algo
 import scala.annotation.tailrec
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.mutable.HashMap
+import scala.collection.parallel.CollectionConverters._
 import fr.profi.chemistry.model._
 import fr.profi.ms.model._
 import fr.profi.util.MathUtils
@@ -183,7 +184,7 @@ object IsotopeDistributionComputer {
   @tailrec
   private def _createNewIsotopeCombinations(
     computedCombinationByFormula: HashMap[String, IsotopeCombination],
-    lastCombinations: Seq[IsotopeCombination],
+    lastCombinations: scala.collection.Seq[IsotopeCombination], // Scala 2.13: Seq is immutable, an ArrayBuffer is passed here
     atomIsotopes: Array[AtomIsotopicVariant],
     targetedAtomCount: Int,
     minProba: Float

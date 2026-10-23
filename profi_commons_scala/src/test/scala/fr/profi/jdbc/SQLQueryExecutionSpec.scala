@@ -167,43 +167,53 @@ class SQLQueryExecutionSpec extends AnyFunSpec with Matchers with BeforeAndAfter
         count should equal(existingItems.size)
       }
 
-      it("should be faster than normal execute-calls") {
+      it("should prepare the statement only once (unlike normal execute-calls)") {
         case class Item(v1: Long, v2: String)
 
-        def executePrepared(query: String, items: Iterable[Item], sqlExecutor: SQLQueryExecution ): Long = {
-          val start = System.currentTimeMillis
-          sqlExecutor.executePrepared(query) { statement =>
-            items.foreach { item =>
-              statement << item.v1 << item.v2 <<!
+        // Spy connection: counts the JDBC statement factory calls and delegates everything else
+        val prepareCount = new java.util.concurrent.atomic.AtomicInteger(0)
+        val createCount = new java.util.concurrent.atomic.AtomicInteger(0)
+        val realConnection = eDBC.connection
+        val spyConnection = java.lang.reflect.Proxy.newProxyInstance(
+          classOf[java.sql.Connection].getClassLoader,
+          Array[Class[_]](classOf[java.sql.Connection]),
+          new java.lang.reflect.InvocationHandler {
+            def invoke(proxy: AnyRef, method: java.lang.reflect.Method, args: Array[AnyRef]): AnyRef = {
+              method.getName match {
+                case "prepareStatement" => prepareCount.incrementAndGet()
+                case "createStatement" => createCount.incrementAndGet()
+                case _ =>
+              }
+              method.invoke(realConnection, args: _*)
             }
           }
-          System.currentTimeMillis - start
-        }
-
-        def normalExecute(query: String, items: Iterable[Item], sqlExecutor: SQLQueryExecution ): Long = {
-          val start = System.currentTimeMillis
-          items.foreach { item =>
-            sqlExecutor.execute(query, item.v1, item.v2)
-          }
-          System.currentTimeMillis - start
-        }
+        ).asInstanceOf[java.sql.Connection]
+        val spiedExecutor = EasyDBC(spyConnection, eDBC.dialect, eDBC.txIsolationLevel)
 
         val size = 1000
-        val items = {
-          val tmp = new ArrayBuffer[Item]
-          for (i <- 0 until size) {
-            tmp += Item(i, "foo" + i)
-          }
-          tmp
-        }
+        val items = (0 until size).map(i => Item(i, "foo" + i))
+        val sql = "insert into transactionspec values(?, ?)"
 
-        eDBC.inTx { tx =>
-          val sql = "insert into transactionspec values(?, ?)"
-          val normalTiming = normalExecute(sql, items, tx)
-          val batchTiming = executePrepared(sql, items, tx)
-          val difference: Double = normalTiming / batchTiming
-          //System.err.println("executing " + size + " made a difference of " + (difference * 100) + "%")
-          difference should be > (1.0)
+        spiedExecutor.inTx { tx =>
+          prepareCount.set(0); createCount.set(0)
+          items.foreach { item => tx.execute(sql, item.v1, item.v2) }
+          val (normalPrepared, normalCreated) = (prepareCount.get, createCount.get)
+
+          prepareCount.set(0); createCount.set(0)
+          tx.executePrepared(sql) { statement =>
+            items.foreach { item => statement << item.v1 << item.v2 <<! }
+          }
+          val (batchPrepared, batchCreated) = (prepareCount.get, createCount.get)
+
+          // normal execute: one Statement per item, no PreparedStatement
+          normalCreated should equal(size)
+          normalPrepared should equal(0)
+
+          // executePrepared: a single PreparedStatement reused for every item
+          batchPrepared should equal(1)
+          batchCreated should equal(0)
+
+          tx.selectLong("select count(*) from transactionspec where name like 'foo%'") should equal(2L * size)
         }
       }
 
